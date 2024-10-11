@@ -1,0 +1,591 @@
+{
+	"__note__": "09/2023 : Version for simulations of historic and current plant growth. There is a different version for historic plant growth because of different headers.",
+	"crop.json": "crop.json",
+	"site.json": "site.json",
+	"climate.csv": "",
+
+	"climate.csv-options": {
+		"_start-date": "1991-01-01",
+        "_end-date": "2017-12-31",
+        "no-of-climate-file-header-lines": 1,
+        "csv-separator": ",",
+        "header-to-acd-names": {
+			"iso-date": "iso-date",
+			"tmin": "tmin",
+			"tavg": "tavg",
+			"tmax": "tmax",
+            "precip": "precip",
+            "relhumid": "relhumid",
+			"globrad": "globrad",
+			"wind": "wind"
+        }
+    },
+	
+	"debug?": false,
+	"path-to-output": "./",
+	"include-file-base-path": "data/params/",
+	
+	"output": { 
+	  "write-file?": false,
+		"file-name": "out.csv",
+	
+		"csv-options": {
+			"include-header-row": true,
+			"include-units-row": false,
+			"csv-separator": ","
+		},
+
+		"obj-outputs?": true,
+
+		
+		"__events": [
+			"crop", [
+				["CM-count", "FIRST"],
+				["Year", "LAST"],
+				["Crop", "FIRST"],
+				["Yield", "LAST"]
+			]
+		],
+		"xxx": [
+	"crop", [
+		["CM-count", "FIRST"],
+		["Year", "LAST"],
+		["Crop", "FIRST"],
+		["Yield", "LAST"]
+	],
+	{
+		"while": ["Stage", "=", 1]
+	}, [
+		["CM-count", "LAST"],
+		["Year", "LAST"],
+		["Crop", "LAST"],
+		["Pwp|Pwp_S1", [5, 5, "LAST"], "LAST"]
+	],
+	{
+		"while": ["Stage", "=", 2]
+	}, [
+		["CM-count", "LAST"],
+		["Year", "LAST"],
+		["Crop", "LAST"],
+		["Pwp|Pwp_S2", [5, 5, "LAST"], "LAST"]
+	],
+	{
+		"while": ["Stage", "=", 3]
+	}, [
+		["CM-count", "LAST"],
+		["Year", "LAST"],
+		["Crop", "LAST"],
+		["Pwp|Pwp_S3", [5, 5, "LAST"], "LAST"]
+	],
+	{
+		"while": ["Stage", "=", 4]
+	}, [
+		["CM-count", "LAST"],
+		["Year", "LAST"],
+		["Crop", "LAST"],
+		["Pwp|Pwp_S4", [5, "LAST"], "LAST"]
+	],
+	{
+		"while": ["Stage", "=", 5]
+	}, [
+		["CM-count", "LAST"],
+		["Year", "LAST"],
+		["Crop", "LAST"],
+		["Pwp|Pwp_S5", [5, "LAST"], "LAST"]
+	],
+	{
+		"while": ["Stage", "=", 6]
+	}, [
+		["CM-count", "LAST"],
+		["Year", "LAST"],
+		["Crop", "LAST"],
+		["Pwp|Pwp_S6", [5, "LAST"], "LAST"]
+	]
+],
+
+		"events": [
+			"Stage-1", ["Date"],
+			"Stage-2", ["Date"],
+			"Stage-3", ["Date"],
+			"Stage-4", ["Date"],
+			"Stage-5", ["Date"],
+			"Stage-6", ["Date"],
+			"Sowing", ["Date"],
+			"Harvest", ["Date"]
+		],
+
+		"_events": [
+			"crop", [
+				["CM-count", "FIRST"],
+				["Year", "LAST"],
+				["Crop", "FIRST"],
+				["Yield", "LAST"],
+				["AbBiom", "LAST"]
+			],
+
+			{"while": ["Stage", "=", 1]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["Mois|Mois_S1", [1,10, "AVG"], "AVG"]
+			],
+
+			{"while": ["Stage", "=", 2]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["Mois|Mois_S2", [1,10, "AVG"], "AVG"]
+			],
+
+			{"while": ["Stage", "=", 3]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["Mois|Mois_S3", [1,10, "AVG"], "AVG"]
+			],
+
+			{"while": ["Stage", "=", 4]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["Mois|Mois_S4", [1,10, "AVG"], "AVG"]
+			],
+
+			{"while": ["Stage", "=", 5]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["Mois|Mois_S5", [1,10, "AVG"], "AVG"]
+			],		
+			
+			{"while": ["Stage", "=", 6]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["Mois|Mois_S6", [1,10, "AVG"], "AVG"]
+			],			
+
+
+
+			{"while": ["Stage", "=", 1]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["AbBiom|AbBiom_S1", "LAST"]
+			],
+
+			{"while": ["Stage", "=", 2]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["AbBiom|AbBiom_S2", "LAST"]
+			],
+
+			{"while": ["Stage", "=", 3]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["AbBiom|AbBiom_S3", "LAST"]
+			],
+
+			{"while": ["Stage", "=", 4]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["AbBiom|AbBiom_S4", "LAST"]
+			],
+
+			{"while": ["Stage", "=", 5]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["AbBiom|AbBiom_S5", "LAST"]
+			],		
+			
+			{"while": ["Stage", "=", 6]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["AbBiom|AbBiom_S6", "LAST"]
+			],		
+
+
+			
+			{"while": ["Stage", "=", 1]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["HeatRed|HeatRed_S1", "AVG"]
+			],
+			{"while": ["Stage", "=", 2]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["HeatRed|HeatRed_S2", "AVG"]
+			],
+			{"while": ["Stage", "=", 3]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["HeatRed|HeatRed_S3", "AVG"]
+			],
+			{"while": ["Stage", "=", 4]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["HeatRed|HeatRed_S4", "AVG"]
+			],
+			{"while": ["Stage", "=", 5]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["HeatRed|HeatRed_S5", "AVG"]
+			],
+			{"while": ["Stage", "=", 6]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["HeatRed|HeatRed_S6", "AVG"]
+			],
+
+
+			{"while": ["Stage", "=", 1]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["FrostRed|FrostRed_S1", "AVG"]
+			],
+			{"while": ["Stage", "=", 2]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["FrostRed|FrostRed_S2", "AVG"]
+			],
+			{"while": ["Stage", "=", 3]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["FrostRed|FrostRed_S3", "AVG"]
+			],
+			{"while": ["Stage", "=", 4]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["FrostRed|FrostRed_S4", "AVG"]
+			],
+			{"while": ["Stage", "=", 5]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["FrostRed|FrostRed_S5", "AVG"]
+			],
+			{"while": ["Stage", "=", 6]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["FrostRed|FrostRed_S6", "AVG"]
+			],
+
+			{"while": ["Stage", "=", 1]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["Nstress|Nstress_S1", "AVG"]
+			],
+			{"while": ["Stage", "=", 2]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["Nstress|Nstress_S2", "AVG"]
+			],
+			{"while": ["Stage", "=", 3]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["Nstress|Nstress_S3", "AVG"]
+			],
+			{"while": ["Stage", "=", 4]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["Nstress|Nstress_S4", "AVG"]
+			],
+			{"while": ["Stage", "=", 5]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["Nstress|Nstress_S5", "AVG"]
+			],
+			{"while": ["Stage", "=", 6]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["Nstress|Nstress_S6", "AVG"]
+			],
+
+			{"while": ["Stage", "=", 1]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["OxRed|OxRed_S1", "AVG"]
+			],
+			{"while": ["Stage", "=", 2]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["OxRed|OxRed_S2", "AVG"]
+			],
+			{"while": ["Stage", "=", 3]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["OxRed|OxRed_S3", "AVG"]
+			],
+			{"while": ["Stage", "=", 4]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["OxRed|OxRed_S4", "AVG"]
+			],
+			{"while": ["Stage", "=", 5]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["OxRed|OxRed_S5", "AVG"]
+			],
+			{"while": ["Stage", "=", 6]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["OxRed|OxRed_S6", "AVG"]
+			],
+
+
+
+			{"while": ["Stage", "=", 1]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["ETa/ETc|ETa/ETc_S1", "AVG"]
+			],
+			{"while": ["Stage", "=", 2]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["ETa/ETc|ETa/ETc_S2", "AVG"]
+			],
+			{"while": ["Stage", "=", 3]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["ETa/ETc|ETa/ETc_S3", "AVG"]
+			],
+			{"while": ["Stage", "=", 4]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["ETa/ETc|ETa/ETc_S4", "AVG"]
+			],
+			{"while": ["Stage", "=", 5]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["ETa/ETc|ETa/ETc_S5", "AVG"]
+			],
+			{"while": ["Stage", "=", 6]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["ETa/ETc|ETa/ETc_S6", "AVG"]
+			],
+
+
+
+			{"while": ["Stage", "=", 1]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["Pwp|Pwp_S1",[1,10, "AVG"], "AVG"]
+			],
+			{"while": ["Stage", "=", 2]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["Pwp|Pwp_S2",[1,10, "AVG"],  "AVG"]
+			],
+			{"while": ["Stage", "=", 3]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["Pwp|Pwp_S3",[1,10, "AVG"],  "AVG"]
+			],
+			{"while": ["Stage", "=", 4]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["Pwp|Pwp_S4",[1,10, "AVG"],  "AVG"]
+			],
+			{"while": ["Stage", "=", 5]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["Pwp|Pwp_S5",[1,10, "AVG"],  "AVG"]
+			],
+			{"while": ["Stage", "=", 6]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["Pwp|Pwp_S6",[1,10, "AVG"],  "AVG"]
+			],
+
+
+			{"while": ["Stage", "=", 1]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["Fc|Fc_S1",[1,10, "AVG"],  "AVG"]
+			],
+			{"while": ["Stage", "=", 2]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["Fc|Fc_S2",[1,10, "AVG"],  "AVG"]
+			],
+			{"while": ["Stage", "=", 3]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["Fc|Fc_S3",[1,10, "AVG"],  "AVG"]
+			],
+			{"while": ["Stage", "=", 4]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["Fc|Fc_S4",[1,10, "AVG"],  "AVG"]
+			],
+			{"while": ["Stage", "=", 5]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["Fc|Fc_S5",[1,10, "AVG"],  "AVG"]
+			],
+			{"while": ["Stage", "=", 6]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["Fc|Fc_S6",[1,10, "AVG"],  "AVG"]
+			],
+
+
+			{"while": ["Stage", "=", 1]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["PASW|PASW_S1",[1,10, "AVG"],  "AVG"]
+			],
+			{"while": ["Stage", "=", 2]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["PASW|PASW_S2",[1,10, "AVG"],  "AVG"]
+			],
+			{"while": ["Stage", "=", 3]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["PASW|PASW_S3",[1,10, "AVG"],  "AVG"]
+			],
+			{"while": ["Stage", "=", 4]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["PASW|PASW_S4",[1,10, "AVG"],  "AVG"]
+			],
+			{"while": ["Stage", "=", 5]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["PASW|PASW_S5",[1,10, "AVG"],  "AVG"]
+			],
+			{"while": ["Stage", "=", 6]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["PASW|PASW_S6",[1,10, "AVG"],  "AVG"]
+			],
+
+
+
+			
+			{"while": ["Stage", "=", 1]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["rootingZone|rootingZone_S1",[1,20, "LAST"],  "LAST"]
+			],
+			{"while": ["Stage", "=", 2]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["rootingZone|rootingZone_S2",[1,20, "LAST"], "LAST"]
+			],
+			{"while": ["Stage", "=", 3]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["rootingZone|rootingZone_S3",[1,20, "LAST"], "LAST"]
+			],
+			{"while": ["Stage", "=", 4]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["rootingZone|rootingZone_S4",[1,20, "LAST"], "LAST"]
+			],
+			{"while": ["Stage", "=", 5]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["rootingZone|rootingZone_S5",[1,20, "LAST"], "LAST"]
+			],
+			{"while": ["Stage", "=", 6]},[
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["rootingZone|rootingZone_S6",[1,20, "LAST"], "LAST"]
+			],
+
+			"yearly", [
+				["CM-count", "LAST"],
+				["Year", "LAST"],
+				["Crop", "LAST"],
+				["HeatRed", "AVG"],
+				["FrostRed", "AVG"],
+				["Nstress", "AVG"]
+			]
+		]
+	},
+
+	"NumberOfLayers": 20,
+	"LayerThickness": [0.1, "m"],
+
+	"UseSecondaryYields": false,
+	"NitrogenResponseOn": true,
+	"WaterDeficitResponseOn": true,
+	"EmergenceMoistureControlOn": false,
+	"EmergenceFloodingControlOn": false,
+
+	"UseAutomaticIrrigation": false,
+	"AutoIrrigationParams": {
+		"irrigationParameters": {
+			"nitrateConcentration": [0, "mg dm-3"],
+			"sulfateConcentration": [0, "mg dm-3"]
+		},
+		"amount": [0, "mm"],
+		"threshold": 0.9
+	},
+
+	"UseNMinMineralFertilisingMethod": true,
+	"NMinUserParams": { "min": 40, "max": 120, "delayInDays": 10 },
+	"NMinFertiliserPartition": ["include-from-file", "mineral-fertilisers/AN.json"],
+	"JulianDayAutomaticFertilising": 89
+}

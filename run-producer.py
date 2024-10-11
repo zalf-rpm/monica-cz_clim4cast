@@ -90,7 +90,7 @@ TEMPLATE_PATH_LATLON = "data/cz_latlon-to-rowcol.json"
 TEMPLATE_PATH_CLIMATE_CSV = "{gcm}/{rcm}/{scenario}/{ensmem}/{version}/row-{crow}/col-{ccol}.csv.gz"
 
 # Additional data for masking the regions
-NUTS3_REGIONS = "data/CZ/cz_nuts3_32633.shp"
+NUTS3_REGIONS = "data/cz/cz_nuts3_32633.shp"
 
 gdf = gpd.read_file(NUTS3_REGIONS)
 

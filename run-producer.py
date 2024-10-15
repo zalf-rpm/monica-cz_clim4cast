@@ -559,13 +559,6 @@ def run_producer(server={"server": None, "port": None}, shared_id=None):
                 #     paths["monica-path-to-climate-dir"] + setup["climate_path_to_csvs"] + subpath_to_csv]
 
                 climate_csv_path = paths["monica-path-to-climate-dir"] + setup["climate_path_to_csvs"] + subpath_to_csv
-
-                # Check if the climate CSV file exists
-                if not os.path.isfile(climate_csv_path):
-                    print(f"Climate CSV file does not exist for row {crow} and col {ccol}, skipping this pixel.")
-                    continue
-
-                print(f"Using climate data from: {climate_csv_path}")
                 env_template["pathToClimateCSV"] = [climate_csv_path]
 
                 if setup["incl_hist"]:

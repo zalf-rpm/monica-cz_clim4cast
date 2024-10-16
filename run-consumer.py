@@ -55,7 +55,7 @@ PATHS = {
         "path-to-csv-output-dir": "/out/csv-out/"
     }
 }
-TEMPLATE_SOIL_PATH = "{local_path_to_data_dir}/cz_soil_1000_32633_etrs89-utm33n.asc"
+TEMPLATE_SOIL_PATH = "{local_path_to_data_dir}/cz/cz_soil_1000_32633_etrs89-utm33n.asc"
 
 
 def create_output(msg):

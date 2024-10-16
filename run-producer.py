@@ -683,7 +683,7 @@ def run_producer(server={"server": None, "port": None}, shared_id=None):
                 climate_csv_path = (paths["monica-path-to-climate-dir"] +
                                     f"czechglobe/hist_csv_1961-01-01_to_2023-01-01/row-{crow}/col-{ccol}.csv.gz")
 
-                env_template["pathToClimateCSV"] = [climate_csv_path]
+                env_template["pathToClimateCSV"] = climate_csv_path
                 print("pathToClimateCSV:", env_template["pathToClimateCSV"])
 
                 # if setup["incl_hist"]:

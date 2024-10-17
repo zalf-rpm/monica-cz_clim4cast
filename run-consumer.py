@@ -35,7 +35,7 @@ import monica_run_lib as Mrunlib
 
 PATHS = {
     "re-local-remote": {
-        "path-to-data-dir": "./data/cz",
+        "path-to-data-dir": "./data",
         "path-to-output-dir": "D:/monica_cz/out/",
         "path-to-csv-output-dir": "D:/monica_cz/csv-out/"
     },
@@ -201,7 +201,7 @@ def run_consumer(leave_after_finished_run=True, server={"server": None, "port": 
         # "mode": "mbm-local-remote",
         "mode": "re-local-remote",
         "port": server["port"] if server["port"] else "7778",
-        "server": server["server"] if server["server"] else "login01.cluster.zalf.de",
+        "server": server["server"] if server["server"] else "login01.cluster.zalf.de",#"10.10.25.25",#"localhost",#"login01.cluster.zalf.de",
         "start-row": "0",
         "end-row": "-1",
         "shared_id": shared_id,
@@ -282,6 +282,21 @@ def run_consumer(leave_after_finished_run=True, server={"server": None, "port": 
 
     def process_message(msg):
         if len(msg["errors"]) > 0:
+            # Check if the error is related to missing climate file
+            missing_climate_file = any("no such file" in error for error in msg["errors"])
+            if missing_climate_file:
+                print(f"Climate file not found {msg['errors']}")
+                # Mark the cell as nodata
+                custom_id = msg["customId"]
+                setup_id = custom_id["setup_id"]
+                row = custom_id["srow"]
+                col = custom_id["scol"]
+
+                data = setup_id_to_data[setup_id]
+                print(f'No climate data for row {row}, col {col}, setting nodata')
+                data["row-col-data"][row][col] = -9999
+                data["datacell-count"][row] -= 1
+                return  # Skip further processing of the message
             print("There were errors in message:", msg, "\nSkipping message!")
             return
 

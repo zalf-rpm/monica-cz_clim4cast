@@ -38,7 +38,7 @@ PATHS = {
         # "include-file-base-path": "/home/berg/GitHub/monica-parameters/", # path to monica-parameters
         "path-to-climate-dir": "F:/",
         # mounted path to archive or hard drive with climate data
-        "monica-path-to-climate-dir": "F:/",
+        "monica-path-to-climate-dir": "/monica_data/climate-data/",
         # mounted path to archive accessable by monica executable
         "path-to-data-dir": "./data/",  # mounted path to archive or hard drive with data
         "path-debug-write-folder": "./debug-out/",
@@ -256,7 +256,7 @@ def run_producer(server={"server": None, "port": None}, shared_id=None):
 
             # Apply the soil mask to the soil grid
             soil_grid_copy = soil_grid.copy()
-            soil_grid[mask == False] = -8888
+            soil_grid[mask == False] = -9999
             soil_grid[soil_grid_copy == -9999] = -9999
 
         cdict = {}
@@ -587,7 +587,7 @@ def run_producer(server={"server": None, "port": None}, shared_id=None):
                 env_template["params"]["userCropParameters"]["__enable_T_response_leaf_expansion__"] = setup[
                     "LeafExtensionModifier"]
 
-                # print("soil:", soil_profile)
+                #print("soil:", soil_profile)
                 env_template["params"]["siteParameters"]["SoilProfileParameters"] = soil_profile
 
                 # setting groundwater level

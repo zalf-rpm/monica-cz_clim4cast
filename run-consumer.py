@@ -36,8 +36,8 @@ import monica_run_lib as Mrunlib
 PATHS = {
     "re-local-remote": {
         "path-to-data-dir": "./data",
-        "path-to-output-dir": "D:/monica_cz/out/",
-        "path-to-csv-output-dir": "D:/monica_cz/csv-out/"
+        "path-to-output-dir": "D:/monica_cz/out/out/",
+        "path-to-csv-output-dir": "D:/monica_cz/out/csv-out/"
     },
     "cj-local-remote": {
         "path-to-data-dir": "data/",
@@ -55,8 +55,8 @@ PATHS = {
         "path-to-csv-output-dir": "/out/csv-out/"
     }
 }
-TEMPLATE_SOIL_PATH = "{local_path_to_data_dir}/cz/cz_soil_1000_32633_etrs89-utm33n.asc"
-
+# TEMPLATE_SOIL_PATH = "{local_path_to_data_dir}/cz/cz_soil_1000_32633_etrs89-utm33n.asc"
+TEMPLATE_SOIL_PATH = "data/cz/cz_soil_1000_32633_etrs89-utm33n.asc"
 
 def create_output(msg):
     cm_count_to_vals = defaultdict(dict)
@@ -424,10 +424,16 @@ def run_consumer(leave_after_finished_run=True, server={"server": None, "port": 
                                                                        include_time_agg=False):
                             writer.writerow(row)
 
-                        for row in monica_io3.write_output(output_ids, results):
+                        # for row in monica_io3.write_output(output_ids, results):
+                        #     writer.writerow(row)
+                        for result in results:
+                            row = []
+                            for output_id in output_ids:
+                                field_name = output_id["name"]
+                                row.append(result.get(field_name, ""))
                             writer.writerow(row)
 
-                    writer.writerow([])
+                writer.writerow([])
 
             process_message.received_env_count = process_message.received_env_count + 1
 

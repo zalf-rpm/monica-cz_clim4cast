@@ -275,26 +275,8 @@ def run_consumer(leave_after_finished_run=True, server={"server": None, "port": 
 
     def process_message(msg):
         if len(msg["errors"]) > 0:
-            # Check if the error is related to missing climate file
-            if 'Could not open climate file' in msg["errors"][0]:
-            # missing_climate_file = any("file" in error for error in msg["errors"])
-            # if missing_climate_file:
-                print(f"Climate file not found {msg['errors']}")
-                msg["customId"]['nodata'] = True  # Mark the cell as nodata
-                # # Mark the cell as nodata
-                custom_id = msg["customId"]
-                # setup_id = custom_id["setup_id"]
-                row = custom_id["srow"]
-                col = custom_id["scol"]
-
-                # data = setup_id_to_data[setup_id]
-                print(f'No climate data for row {row}, col {col}, setting nodata')
-                # data["row-col-data"][row][col] = -9999
-                # data["datacell-count"][row] -= 1
-                # return
-            else:
-                print("There were errors in message:", msg, "\nSkipping message!")
-                return
+            print("There were errors in message:", msg, "\nSkipping message!")
+            return
 
         if not hasattr(process_message, "wnof_count"):
             process_message.wnof_count = 0

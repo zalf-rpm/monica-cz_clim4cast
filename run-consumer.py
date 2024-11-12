@@ -17,25 +17,18 @@
 
 from collections import defaultdict, OrderedDict
 import csv
-from datetime import datetime
-import gc
-import json
 import numpy as np
 import os
 from pyproj import CRS, Transformer
-import sqlite3
 import sys
-import timeit
-import types
 import zmq
 
 import monica_io3
-import cz_soil_io3
 import monica_run_lib as Mrunlib
 
 PATHS = {
     "re-local-remote": {
-        "path-to-data-dir": "./data",
+        "path-to-data-dir": "./data/",
         "path-to-output-dir": "D:/monica_cz/out/out/",
         "path-to-csv-output-dir": "D:/monica_cz/out/csv-out/"
     },
@@ -55,8 +48,8 @@ PATHS = {
         "path-to-csv-output-dir": "/out/csv-out/"
     }
 }
-# TEMPLATE_SOIL_PATH = "{local_path_to_data_dir}/cz/cz_soil_1000_32633_etrs89-utm33n.asc"
-TEMPLATE_SOIL_PATH = "data/cz/cz_soil_1000_32633_etrs89-utm33n.asc"
+TEMPLATE_SOIL_PATH = "{local_path_to_data_dir}/cz/cz_soil_1000_32633_etrs89-utm33n.asc"
+# TEMPLATE_SOIL_PATH = "data/cz/cz_soil_1000_32633_etrs89-utm33n.asc"
 
 def create_output(msg):
     cm_count_to_vals = defaultdict(dict)
@@ -201,7 +194,7 @@ def run_consumer(leave_after_finished_run=True, server={"server": None, "port": 
         # "mode": "mbm-local-remote",
         "mode": "re-local-remote",
         "port": server["port"] if server["port"] else "7778",
-        "server": server["server"] if server["server"] else "login01.cluster.zalf.de",#"10.10.25.25",#"localhost",#"login01.cluster.zalf.de",
+        "server": server["server"] if server["server"] else "login01.cluster.zalf.de",  #"10.10.25.25",  #"localhost",
         "start-row": "0",
         "end-row": "-1",
         "shared_id": shared_id,
@@ -283,22 +276,25 @@ def run_consumer(leave_after_finished_run=True, server={"server": None, "port": 
     def process_message(msg):
         if len(msg["errors"]) > 0:
             # Check if the error is related to missing climate file
-            missing_climate_file = any("no such file" in error for error in msg["errors"])
-            if missing_climate_file:
+            if 'Could not open climate file' in msg["errors"][0]:
+            # missing_climate_file = any("file" in error for error in msg["errors"])
+            # if missing_climate_file:
                 print(f"Climate file not found {msg['errors']}")
-                # Mark the cell as nodata
+                msg["customId"]['nodata'] = True  # Mark the cell as nodata
+                # # Mark the cell as nodata
                 custom_id = msg["customId"]
-                setup_id = custom_id["setup_id"]
+                # setup_id = custom_id["setup_id"]
                 row = custom_id["srow"]
                 col = custom_id["scol"]
 
-                data = setup_id_to_data[setup_id]
+                # data = setup_id_to_data[setup_id]
                 print(f'No climate data for row {row}, col {col}, setting nodata')
-                data["row-col-data"][row][col] = -9999
-                data["datacell-count"][row] -= 1
-                return  # Skip further processing of the message
-            print("There were errors in message:", msg, "\nSkipping message!")
-            return
+                # data["row-col-data"][row][col] = -9999
+                # data["datacell-count"][row] -= 1
+                # return
+            else:
+                print("There were errors in message:", msg, "\nSkipping message!")
+                return
 
         if not hasattr(process_message, "wnof_count"):
             process_message.wnof_count = 0
@@ -398,7 +394,7 @@ def run_consumer(leave_after_finished_run=True, server={"server": None, "port": 
 
             process_message.wnof_count += 1
 
-            path_to_out_dir = config["out"] + str(setup_id) + "/" + str(row) + "/"
+            path_to_out_dir = config["csv-out"] + str(setup_id) + "/" + str(row) + "/"
             print(path_to_out_dir)
             if not os.path.exists(path_to_out_dir):
                 try:

@@ -64,7 +64,7 @@ def create_layer(row, prev_depth, only_raw_data, no_units=False):
     if row["KA5_texture_class"] is not None:
         layer["KA5TextureClass"] = row["KA5_texture_class"]
     elif not only_raw_data and row["sand"] is not None and row["clay"] is not None:
-        layer["KA5TextureClass"] = sand_and_clay_to_ka5_texture(float(row["sand"]) / 100.0, float(row["clay"]) / 100.0)
+        layer["KA5TextureClass"] = sand_and_clay_to_ka5_texture(float(row["sand"]), float(row["clay"]))
 
     if row["sand"] is not None:
         layer["Sand"] = add_units(float(row["sand"]), "% [0-1]")

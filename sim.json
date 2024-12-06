@@ -43,7 +43,23 @@
 				["CM-count", "FIRST"],
 				["Year", "LAST"],
 				["Crop", "FIRST"],
-				["Yield", "LAST"]
+				["Yield", "LAST"],
+				["GPP", "SUM"],
+				["NPP", "SUM"],
+				["NEE", "SUM"],
+				["Act_ET", "SUM"],
+				["LAI", "MAX"]
+			],
+			{"start": "Sowing", "end": "Harvest"}, [
+				"Date",
+				"Crop",
+				"Yield",
+				"LAI",
+				"GPP",
+				"NPP",
+				"NEE",
+				"Act_ET",
+				["Mois", [1, 6]]
 			]
 		]
 	},

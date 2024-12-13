@@ -396,7 +396,7 @@ def run_producer(server={"server": None, "port": None}, shared_id=None):
                 # Check if crop pixel is valid
                 crop_grid_id = int(crop_grid[srow, scol])
                 # print(crop_grid_id)
-                if crop_grid_id != 1 or soil_id == -9999:
+                if crop_grid_id != 1 or soil_id == -8888:
                     # print("row/col:", srow, "/", scol, "is not a crop pixel.")
                     env_template["customId"] = {
                         "setup_id": setup_id,

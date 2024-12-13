@@ -256,7 +256,7 @@ def run_producer(server={"server": None, "port": None}, shared_id=None):
 
             # Apply the soil mask to the soil grid
             soil_grid_copy = soil_grid.copy()
-            soil_grid[mask == False] = -9999
+            soil_grid[mask == False] = -8888
             soil_grid[soil_grid_copy == -9999] = -9999
 
         cdict = {}

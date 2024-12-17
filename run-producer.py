@@ -152,6 +152,10 @@ def run_producer(server={"server": None, "port": None}, shared_id=None):
     if not Path(paths["path-to-data-dir"] + DATA_SOIL_DB).exists():
         print("soil db not found: ", Path(paths["path-to-data-dir"] + DATA_SOIL_DB).absolute())
         exit(1)
+    else:
+        print("soil db found: ", Path(paths["path-to-data-dir"] + DATA_SOIL_DB).absolute())
+
+    # soil_db_con = sqlite3.connect(paths["path-to-data-dir"] + DATA_SOIL_DB)
     soil_db_con = sqlite3.connect(paths["path-to-data-dir"] + DATA_SOIL_DB)
     # soil_db_con = cas_sq3.connect(paths["path-to-data-dir"] + DATA_SOIL_DB) #CAS.
     # connect to monica proxy (if local, it will try to connect to a locally started monica)
@@ -813,4 +817,8 @@ def run_producer(server={"server": None, "port": None}, shared_id=None):
 
 
 if __name__ == "__main__":
+    # Make sure that the git-lfs file for soil db is pulled
+    import subprocess
+    subprocess.run(["git", "lfs", "install"], check=True, stdout=subprocess.PIPE)
+    subprocess.run(["git", "pull"], check=True, stdout=subprocess.PIPE)
     run_producer()

@@ -48,8 +48,8 @@ PATHS = {
         "path-to-csv-output-dir": "/out/csv-out/"
     }
 }
-TEMPLATE_SOIL_PATH = "{local_path_to_data_dir}/cz/cz_soil_1000_32633_etrs89-utm33n.asc"
-# TEMPLATE_SOIL_PATH = "data/cz/cz_soil_1000_32633_etrs89-utm33n.asc"
+# TEMPLATE_SOIL_PATH = "{local_path_to_data_dir}/cz/cz_soil_1000_32633_etrs89-utm33n.asc"
+TEMPLATE_SOIL_PATH = "{local_path_to_data_dir}/cz/cz_soil_500_32633_etrs89-utm33n.asc"
 
 def create_output(msg):
     cm_count_to_vals = defaultdict(dict)
@@ -230,7 +230,7 @@ def run_consumer(leave_after_finished_run=True, server={"server": None, "port": 
     socket.connect("tcp://" + config["server"] + ":" + config["port"])
     socket.RCVTIMEO = config["timeout"]
     leave = False
-    write_normal_output_files = False
+    write_normal_output_files = True
 
     path_to_soil_grid = TEMPLATE_SOIL_PATH.format(local_path_to_data_dir=paths["path-to-data-dir"])
     soil_epsg_code = int(path_to_soil_grid.split("/")[-1].split("_")[3])

@@ -81,11 +81,20 @@ PATHS = {
     }
 }
 
-DATA_SOIL_DB = "cz/cz_soil.sqlite"
-DATA_GRID_HEIGHT = "cz/cz_dem_1000_32633_etrs89-utm33n.asc"
-DATA_GRID_SLOPE = "cz/cz_slope_1000_32633_etrs89-utm33n.asc"
-DATA_GRID_SOIL = "cz/cz_soil_1000_32633_etrs89-utm33n.asc"
-DATA_GRID_CROPS = "cz/cz_crop-cw_1000_32633_etrs89-utm33n.asc"  # crop map for common wheat
+# 1000 m resolution data
+# DATA_SOIL_DB = "cz/cz_soil_1000.sqlite"
+# DATA_GRID_HEIGHT = "cz/cz_dem_1000_32633_etrs89-utm33n.asc"
+# DATA_GRID_SLOPE = "cz/cz_slope_1000_32633_etrs89-utm33n.asc"
+# DATA_GRID_SOIL = "cz/cz_soil_1000_32633_etrs89-utm33n.asc"
+# DATA_GRID_CROPS = "cz/cz_crop-cw_1000_32633_etrs89-utm33n.asc"  # crop map for common wheat
+
+# 500 m resolution data
+DATA_SOIL_DB = "cz/cz_soil_500.sqlite"
+DATA_GRID_HEIGHT = "cz/cz_dem_500_32633_etrs89-utm33n.asc"
+DATA_GRID_SLOPE = "cz/cz_slope_500_32633_etrs89-utm33n.asc"
+DATA_GRID_SOIL = "cz/cz_soil_500_32633_etrs89-utm33n.asc"
+DATA_GRID_CROPS = "cz/cz_crop-cw_500_32633_etrs89-utm33n.asc"  # crop map for common wheat
+
 TEMPLATE_PATH_LATLON = "data/cz_latlon-to-rowcol.json"
 TEMPLATE_PATH_CLIMATE_CSV = "{gcm}/{rcm}/{scenario}/{ensmem}/{version}/row-{crow}/col-{ccol}.csv.gz"
 

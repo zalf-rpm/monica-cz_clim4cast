@@ -24,7 +24,8 @@ import zmq
 
 config = {
     "server": "login01.cluster.zalf.de",
-    "port": "7777"
+    #"server": "localhost",
+    "port": "7778"
 }
 
 if len(sys.argv) > 1:
@@ -39,7 +40,7 @@ socket.connect("tcp://" + config["server"] + ":" + config["port"])
 
 i = 0
 while True:
-    socket.recv_json(encoding="latin-1")
+    socket.recv_json()#encoding="latin-1")
     if i%10 == 0:
         print(i, end=" ", flush=True)
     i = i + 1

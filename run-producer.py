@@ -17,6 +17,8 @@
 
 import copy
 import json
+from pathlib import Path
+
 import numpy as np
 import os
 from pyproj import CRS, Transformer
@@ -147,6 +149,9 @@ def run_producer(server={"server": None, "port": None}, shared_id=None):
     # select paths
     paths = PATHS[config["mode"]]
     # open soil db connection
+    if not Path(paths["path-to-data-dir"] + DATA_SOIL_DB).exists():
+        print("soil db not found: ", Path(paths["path-to-data-dir"] + DATA_SOIL_DB).absolute())
+        exit(1)
     soil_db_con = sqlite3.connect(paths["path-to-data-dir"] + DATA_SOIL_DB)
     # soil_db_con = cas_sq3.connect(paths["path-to-data-dir"] + DATA_SOIL_DB) #CAS.
     # connect to monica proxy (if local, it will try to connect to a locally started monica)

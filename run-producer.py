@@ -194,7 +194,7 @@ def run_producer(server={"server": None, "port": None}, shared_id=None):
     if wgs84_crs not in soil_crs_to_x_transformers:
         soil_crs_to_x_transformers[wgs84_crs] = Transformer.from_crs(soil_crs, wgs84_crs)
     soil_metadata, _ = Mrunlib.read_header(path_to_soil_grid)
-    soil_grid = np.loadtxt(path_to_soil_grid, dtype=int, skiprows=6)
+    soil_grid_original = np.loadtxt(path_to_soil_grid, dtype=int, skiprows=6)
     print("read: ", path_to_soil_grid)
 
     # height data
@@ -253,6 +253,7 @@ def run_producer(server={"server": None, "port": None}, shared_id=None):
 
     # run calculations for each setup
     for _, setup_id in enumerate(run_setups):
+        soil_grid = soil_grid_original.copy()
 
         if setup_id not in setups:
             continue

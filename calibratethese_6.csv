@@ -1,0 +1,7 @@
+name,position in array,low,high,step,optguess,minbound,maxbound,derived params
+SpecificLeafArea,,0.5,1.5,,,,,
+MaxAssimilationRate,,25,35,,,,,
+DaylengthRequirement,,17,23,,,,,
+BaseDaylength,,5,9,,,,,
+CropSpecificMaxRootingDepth,,0.8,2.0,,,,,
+FieldConditionModifier,,0.5,1,,,,,

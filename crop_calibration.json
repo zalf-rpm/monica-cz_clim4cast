@@ -1,67 +1,141 @@
   {
-	"__note__": "01/2022 : Final version for setups with fixed sowing dates, automatic harvest dates and phenology calibrated to DWD data. Adapted from HERMES2Go, BBG Project",
 	"crops": {
 		"WW_dwd": {
 			"is-winter-crop": true,
 			"cropParams": {
-				"species": ["include-from-file", "crops/species/wheat.json"],
-				"cultivar": ["include-from-file", "crops/cultivars/winter-wheat_cz.json"]
+				"species": {
+  					"=": ["include-from-file", "crops/species/wheat.json"],
+					"FieldConditionModifier": 1
+					
+  				},
+				"cultivar": {
+  					"=": ["include-from-file", "crops/cultivars/winter-wheat_bs_dwd_pheno.json"],
+					"CropSpecificMaxRootingDepth": 1.3,
+					  "DaylengthRequirement": [
+						0,
+						20,
+						20,
+						20,
+						0,
+						0
+					],
+					"BaseDaylength": 
+						[
+						  0,
+						  0,
+						  7,
+						  7,
+						  0,
+						  0
+						],
+					"SpecificLeafArea": [
+						0.0018,
+						0.0016,
+						0.0012,
+						0.0010,
+						0.0010,
+						0.0010
+					],
+					"MaxAssimilationRate": 30
+				}
 			},
-			"residueParams": ["include-from-file", "crops/residues/wheat_cz.json"]
+			"residueParams": ["include-from-file", "crops/residues/wheat.json"]
 		},
 		"WB_dwd": {
 			"is-winter-crop": true,
 			"cropParams": {
-				"species": ["include-from-file", "crops/species/barley.json"],
-				"cultivar": ["include-from-file", "crops/cultivars/winter-barley_bs_dwd_pheno.json"]
+				"species": {
+					"=": ["include-from-file", "crops/species/barley.json"]
+				},
+				"cultivar": {
+					"=": ["include-from-file", "crops/cultivars/winter-barley_bs_dwd_pheno.json"],
+					"CropSpecificMaxRootingDepth": 0,
+					"VernalisationRequirement": 0
+				}
 			},
 			"residueParams": ["include-from-file", "crops/residues/barley.json"]
 		},
 		"WR_dwd": {
 			"is-winter-crop": true,
 			"cropParams": {
-				"species": ["include-from-file", "crops/species/rye.json"],
-				"cultivar": ["include-from-file", "crops/cultivars/winter-rye_hhf_dwd_pheno.json"]
+				"species": {
+					"=": ["include-from-file", "crops/species/rye.json"]
+				},
+				"cultivar": {
+					"=": ["include-from-file", "crops/cultivars/winter-rye_hhf_dwd_pheno.json"],
+					"CropSpecificMaxRootingDepth": 0,
+					"VernalisationRequirement": 0
+				}
 			},
 			"residueParams": ["include-from-file", "crops/residues/rye.json"]
 		},
 		"SB_dwd": {
 			"is-winter-crop": true,
 			"cropParams": {
-				"species": ["include-from-file", "crops/species/barley.json"],
-				"cultivar": ["include-from-file", "crops/cultivars/spring-barley_cz.json"]
+				"species": {
+					"=": ["include-from-file", "crops/species/barley.json"]
+				},
+				"cultivar": {
+					"=": ["include-from-file", "crops/cultivars/spring-barley_hhf_dwd_pheno.json"],
+					"CropSpecificMaxRootingDepth": 0,
+					"VernalisationRequirement": 0
+				}
 			},
-			"residueParams": ["include-from-file", "crops/residues/barley_cz.json"]
+			"residueParams": ["include-from-file", "crops/residues/barley.json"]
 		},
 		"WRa_dwd": {
 			"is-winter-crop": true,
 			"cropParams": {
-				"species": ["include-from-file", "crops/species/rape.json"],
-				"cultivar": ["include-from-file", "crops/cultivars/winter-rape_dwd_pheno.json"]
+				"species": {
+					"=": ["include-from-file", "crops/species/rape.json"]
+				},
+				"cultivar": {
+					"=": ["include-from-file", "crops/cultivars/winter-rape_dwd_pheno.json"],
+					"CropSpecificMaxRootingDepth": 0,
+					"VernalisationRequirement": 0
+				}
 			},
 			"residueParams": ["include-from-file", "crops/residues/rape.json"]
 		},
 		"SM_dwd": {
 			"is-winter-crop": true,
 			"cropParams": {
-				"species": ["include-from-file", "crops/species/maize.json"],
-				"cultivar": ["include-from-file", "crops/cultivars/silage-maize_bs_dwd_pheno.json"]
+				"species": {
+					"=": ["include-from-file", "crops/species/maize.json"]
+				},
+				"cultivar": {
+					"=": ["include-from-file", "crops/cultivars/silage-maize_bs_dwd_pheno.json"],
+					"CropSpecificMaxRootingDepth": 0,
+					"VernalisationRequirement": 0
+				}
 			},
 			"residueParams": ["include-from-file", "crops/residues/maize.json"]
 		},
 		"SU_dwd": {
 			"is-winter-crop": true,
 			"cropParams": {
-				"species": ["include-from-file", "crops/species/sugar-beet.json"],
-				"cultivar": ["include-from-file", "crops/cultivars/sugar-beet_bs_dwd_pheno.json"]
+				"species": {
+					"=": ["include-from-file", "crops/species/sugar-beet.json"]
+				},
+				"cultivar": {
+					"=": ["include-from-file", "crops/cultivars/sugar-beet_bs_dwd_pheno.json"],
+					"CropSpecificMaxRootingDepth": 0,
+					"VernalisationRequirement": 0
+				}
 			},
 			"residueParams": ["include-from-file", "crops/residues/beet.json"]
 		},
 		"PO": {
 			"is-winter-crop": true,
 			"cropParams": {
-				"species": ["include-from-file", "crops/species/potato.json"],
-				"cultivar": ["include-from-file", "crops/cultivars/moderately-early-potato.json"]
+				"species": {
+					"=": ["include-from-file", "crops/species/potato.json"]
+				},
+				"cultivar": {
+					"=": ["include-from-file", "crops/cultivars/moderately-early-potato.json"],
+					"CropSpecificMaxRootingDepth": 0,
+					"VernalisationRequirement": 0
+				}
 			},
 			"residueParams": ["include-from-file", "crops/residues/potato.json"]
 		}

@@ -90,10 +90,12 @@ PATHS = {
 # DATA_GRID_CROPS = "cz/cz_crop-cw_1000_32633_etrs89-utm33n.asc"  # crop map for common wheat
 
 # 500 m resolution data
-DATA_SOIL_DB = "cz/cz_soil_500.sqlite"
+# DATA_SOIL_DB = "cz/cz_soil_500.sqlite"
+DATA_SOIL_DB = "cz/cz_soil_500_woesten.sqlite"
 DATA_GRID_HEIGHT = "cz/cz_dem_500_32633_etrs89-utm33n.asc"
 DATA_GRID_SLOPE = "cz/cz_slope_500_32633_etrs89-utm33n.asc"
-DATA_GRID_SOIL = "cz/cz_soil_500_32633_etrs89-utm33n.asc"
+# DATA_GRID_SOIL = "cz/cz_soil_500_32633_etrs89-utm33n.asc"
+DATA_GRID_SOIL = "cz/cz_soil_500_32633_etrs89-utm33n_woesten.asc"
 DATA_GRID_CROPS = "cz/cz_crop-cw_500_32633_etrs89-utm33n.asc"  # crop map for common wheat
 
 TEMPLATE_PATH_LATLON = "data/cz_latlon-to-rowcol.json"
@@ -124,7 +126,7 @@ def run_producer(server={"server": None, "port": None}, shared_id=None):
         # "mode": "mbm-local-remote",
         "mode": "re-local-remote",
         "server-port": server["port"] if server["port"] else "6667",
-        "server": server["server"] if server["server"] else "login01.cluster.zalf.de",
+        "server": server["server"] if server["server"] else "localhost", #"login01.cluster.zalf.de",
         "start-row": "0",
         "end-row": "-1",
         "path_to_dem_grid": "",

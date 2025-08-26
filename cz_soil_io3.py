@@ -108,13 +108,13 @@ def create_layer(row, prev_depth, only_raw_data, no_units=False):
         layer["SoilRawDensity"] = add_units(bulk_density_to_raw_density(float(row["bulk_density"]), layer["Clay"][0]), "kg m-3")
 
     if row["field_capacity"] is not None:
-        layer["FieldCapacity"] = add_units(float(row["field_capacity"]) / 100.0, "vol% [0-1]")
+        layer["FieldCapacity"] = add_units(float(row["field_capacity"]), "vol% [0-1]")
 
     if row["permanent_wilting_point"] is not None:
-        layer["PermanentWiltingPoint"] = add_units(float(row["permanent_wilting_point"]) / 100.0, "vol% [0-1]")
+        layer["PermanentWiltingPoint"] = add_units(float(row["permanent_wilting_point"]), "vol% [0-1]")
 
     if row["saturation"] is not None:
-        layer["PoreVolume"] = add_units(float(row["saturation"]) / 100.0, "vol% [0-1]")
+        layer["PoreVolume"] = add_units(float(row["saturation"]), "vol% [0-1]")
 
     if row["initial_soil_moisture"] is not None:
         layer["SoilMoisturePercentFC"] = add_units(float(row["initial_soil_moisture"]), "% [0-100]")

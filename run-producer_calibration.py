@@ -36,6 +36,7 @@ import geopandas as gpd
 import rasterio
 from rasterio.transform import from_origin
 from rasterio import features
+import subprocess
 
 import monica_io3
 import soil_io3
@@ -91,7 +92,8 @@ PATHS = {
     },
 }
 
-DATA_SOIL_DB = "cz/cz_soil_500.sqlite"
+DATA_SOIL_DB = "cz/cz_soil_500_woesten.sqlite"
+SOIL_DB_URL = "https://github.com/zalf-rpm/monica-cz_clim4cast/raw/refs/heads/main/data/cz/cz_soil_500_woesten.sqlite"
 DATA_GRID_HEIGHT = "cz/cz_dem_500_32633_etrs89-utm33n.asc"
 DATA_GRID_SLOPE = "cz/cz_slope_500_32633_etrs89-utm33n.asc"
 #DATA_GRID_LAND_USE = "germany/landuse_1000_31469_gk5.asc"
@@ -155,6 +157,8 @@ def run_producer(server={"server": None, "port": None}):
     paths = PATHS[config["mode"]]
 
     soil_db_path = paths["path-to-data-dir"] + DATA_SOIL_DB
+    subprocess.run(["wget", "-O", soil_db_path, SOIL_DB_URL], check=True)
+    print("Downloaded soil db successfully.")
 
     # open soil db connection
     # soil_db_con = sqlite3.connect(paths["path-to-data-dir"] + DATA_SOIL_DB)

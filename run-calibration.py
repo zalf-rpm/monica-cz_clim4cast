@@ -133,10 +133,10 @@ def run_calibration(server=None, prod_port=None, cons_port=None):
         reader = csv.reader(file, dialect)
         next(reader, None)  # skip the header
         for row in reader:
-            id = int(row[26])
+            id = int(row[24])
             name = row[1].strip()
             nuts3_region_id_to_name[id] = name
-            for i in range(2, 26):
+            for i in range(2, 24):
                 yield_t = float(row[i])
                 crop_to_observations["WW"].append({
                     "id": id,

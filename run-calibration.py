@@ -136,11 +136,11 @@ def run_calibration(server=None, prod_port=None, cons_port=None):
             id = int(row[24])
             name = row[1].strip()
             nuts3_region_id_to_name[id] = name
-            for i in range(2, 24):
+            for i in range(1, 24):
                 yield_t = float(row[i])
                 crop_to_observations["WW"].append({
                     "id": id,
-                    "year": 2000 + i - 1,
+                    "year": 2000 + i - 2,
                     "value": np.nan if yield_t < 0.0 else yield_t * 1000.0  # t/ha -> kg/ha nan is -9999
                 })
 

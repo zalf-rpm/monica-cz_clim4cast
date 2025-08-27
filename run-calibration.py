@@ -140,7 +140,7 @@ def run_calibration(server=None, prod_port=None, cons_port=None):
                 yield_t = float(row[i])
                 crop_to_observations["WW"].append({
                     "id": id,
-                    "year": 2000 + i - 2,
+                    "year": 2000 + i - 1,
                     "value": np.nan if yield_t < 0.0 else yield_t * 1000.0  # t/ha -> kg/ha nan is -9999
                 })
 

@@ -40,7 +40,7 @@ import subprocess
 
 import monica_io3
 import cz_soil_io3
-import monica_run_lib
+import monica_run_lib as Mrunlib
 import shared
 
 PATH_TO_REPO = Path(os.path.realpath(__file__)).parent
@@ -92,8 +92,9 @@ PATHS = {
     },
 }
 
-DATA_SOIL_DB = "cz/cz_soil_500_woesten.sqlite"
-SOIL_DB_URL = "https://github.com/zalf-rpm/monica-cz_clim4cast/raw/refs/heads/main/data/cz/cz_soil_500_woesten.sqlite"
+# DATA_SOIL_DB = "cz/cz_soil_500_woesten.sqlite"
+DATA_SOIL_DB = "/beegfs/common/data/soilgrids/cz_soil_500_woesten.sqlite"
+# SOIL_DB_URL = "https://github.com/zalf-rpm/monica-cz_clim4cast/raw/refs/heads/main/data/cz/cz_soil_500_woesten.sqlite"
 DATA_GRID_HEIGHT = "cz/cz_dem_500_32633_etrs89-utm33n.asc"
 DATA_GRID_SLOPE = "cz/cz_slope_500_32633_etrs89-utm33n.asc"
 #DATA_GRID_LAND_USE = "germany/landuse_1000_31469_gk5.asc"
@@ -156,9 +157,10 @@ def run_producer(server={"server": None, "port": None}):
      # select paths
     paths = PATHS[config["mode"]]
 
-    soil_db_path = paths["path-to-data-dir"] + DATA_SOIL_DB
-    subprocess.run(["wget", "-O", soil_db_path, SOIL_DB_URL], check=True)
-    print("Downloaded soil db successfully.")
+    # soil_db_path = paths["path-to-data-dir"] + DATA_SOIL_DB
+    soil_db_path = DATA_SOIL_DB
+    # subprocess.run(["wget", "-O", soil_db_path, SOIL_DB_URL], check=True)
+    # print("Downloaded soil db successfully.")
 
     # open soil db connection
     # soil_db_con = sqlite3.connect(paths["path-to-data-dir"] + DATA_SOIL_DB)
@@ -170,7 +172,7 @@ def run_producer(server={"server": None, "port": None}):
 
 
     # read setup from csv file
-    setups = monica_run_lib.read_sim_setups(config["setups-file"])
+    setups = Mrunlib.read_sim_setups(config["setups-file"])
     run_setups = json.loads(config["run-setups"])
     print("read sim setups: ", config["setups-file"])
 
@@ -239,9 +241,9 @@ def run_producer(server={"server": None, "port": None}):
     nuts3_regions_crs = CRS.from_epsg(nuts3_regions_epsg_code)
     if nuts3_regions_crs not in soil_crs_to_x_transformers:
         soil_crs_to_x_transformers[nuts3_regions_crs] = Transformer.from_crs(soil_crs, nuts3_regions_crs)
-    nuts3_regions_metadata, _ = monica_run_lib.read_header(path_to_nuts3_regions_grid)
+    nuts3_regions_metadata, _ = Mrunlib.read_header(path_to_nuts3_regions_grid)
     nuts3_regions_grid = np.loadtxt(path_to_nuts3_regions_grid, dtype=float, skiprows=6)
-    nuts3_regions_interpolate = monica_run_lib.create_ascii_grid_interpolator(nuts3_regions_grid, nuts3_regions_metadata)
+    nuts3_regions_interpolate = Mrunlib.create_ascii_grid_interpolator(nuts3_regions_grid, nuts3_regions_metadata)
     print("read: ", path_to_nuts3_regions_grid)
 
 
@@ -319,7 +321,7 @@ def run_producer(server={"server": None, "port": None}):
                     path_harvest = TEMPLATE_PATH_HARVEST.format(path_to_data_dir=paths["path-to-data-dir"],
                                                                 crop_id=crop_id_short)
                     print("created seed harvest gk5 interpolator and read data: ", path_harvest)
-                    monica_run_lib.create_seed_harvest_geoGrid_interpolator_and_read_data(path_harvest, wgs84_crs, utm32_crs,
+                    Mrunlib.create_seed_harvest_geoGrid_interpolator_and_read_data(path_harvest, wgs84_crs, utm32_crs,
                                                                                           ilr_seed_harvest_data)
                 except IOError:
                     path_harvest = TEMPLATE_PATH_HARVEST.format(path_to_data_dir=paths["path-to-data-dir"],
@@ -335,7 +337,7 @@ def run_producer(server={"server": None, "port": None}):
                 # path = TEMPLATE_PATH_LATLON.format(path_to_climate_dir=paths["path-to-climate-dir"] + setup["climate_path_to_latlon_file"] + "/")
                 path = TEMPLATE_PATH_LATLON.format(
                     path_to_climate_dir=paths["path-to-climate-dir"] + setup["climate_path_to_latlon_file"] + "/")
-                climate_data_interpolator = monica_run_lib.create_climate_geoGrid_interpolator_from_json_file(path, wgs84_crs,
+                climate_data_interpolator = Mrunlib.create_climate_geoGrid_interpolator_from_json_file(path, wgs84_crs,
                                                                                                               soil_crs, cdict)
                 print("created climate_data to gk5 interpolator: ", path)
 
@@ -604,7 +606,7 @@ def run_producer(server={"server": None, "port": None}):
                                     groundwaterlevel = layer_depth
                                     # print("setting groundwaterlevel of soil_id:", str(soil_id), "to", groundwaterlevel, "m")
                                     break
-                                layer_depth += monica_run_lib.get_value(layer["Thickness"])
+                                layer_depth += Mrunlib.get_value(layer["Thickness"])
                             env_template["params"]["userEnvironmentParameters"]["MinGroundwaterDepthMonth"] = 3
                             env_template["params"]["userEnvironmentParameters"]["MinGroundwaterDepth"] = [
                                 max(0, groundwaterlevel - 0.2), "m"]
@@ -613,7 +615,7 @@ def run_producer(server={"server": None, "port": None}):
 
                         # setting impenetrable layer
                         if setup["impenetrable-layer"]:
-                            impenetrable_layer_depth = monica_run_lib.get_value(
+                            impenetrable_layer_depth = Mrunlib.get_value(
                                 env_template["params"]["userEnvironmentParameters"]["LeachingDepth"])
                             layer_depth = 0
                             for layer in soil_profile:
@@ -621,7 +623,7 @@ def run_producer(server={"server": None, "port": None}):
                                     impenetrable_layer_depth = layer_depth
                                     # print("setting leaching depth of soil_id:", str(soil_id), "to", impenetrable_layer_depth, "m")
                                     break
-                                layer_depth += monica_run_lib.get_value(layer["Thickness"])
+                                layer_depth += Mrunlib.get_value(layer["Thickness"])
                             env_template["params"]["userEnvironmentParameters"]["LeachingDepth"] = \
                                 [impenetrable_layer_depth, "m"]
                             env_template["params"]["siteParameters"]["ImpenetrableLayerDepth"] = \

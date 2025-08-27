@@ -92,6 +92,7 @@ PATHS = {
 # 500 m resolution data
 # DATA_SOIL_DB = "cz/cz_soil_500.sqlite"
 DATA_SOIL_DB = "cz/cz_soil_500_woesten.sqlite"
+SOIL_DB_URL = "https://github.com/zalf-rpm/monica-cz_clim4cast/raw/refs/heads/main/data/cz/cz_soil_500_woesten.sqlite"
 DATA_GRID_HEIGHT = "cz/cz_dem_500_32633_etrs89-utm33n.asc"
 DATA_GRID_SLOPE = "cz/cz_slope_500_32633_etrs89-utm33n.asc"
 # DATA_GRID_SOIL = "cz/cz_soil_500_32633_etrs89-utm33n.asc"
@@ -151,6 +152,8 @@ def run_producer(server={"server": None, "port": None}, shared_id=None):
     paths = PATHS[config["mode"]]
 
     soil_db_path = paths["path-to-data-dir"] + DATA_SOIL_DB
+    subprocess.run(["wget", "-O", soil_db_path, SOIL_DB_URL], check=True)
+    print("Downloaded soil db successfully.")
 
     # open soil db connection
     # soil_db_con = sqlite3.connect(paths["path-to-data-dir"] + DATA_SOIL_DB)

@@ -40,7 +40,7 @@ import subprocess
 
 import monica_io3
 import cz_soil_io3
-import monica_run_lib
+import monica_run_lib as Mrunlib
 import shared
 
 PATH_TO_REPO = Path(os.path.realpath(__file__)).parent

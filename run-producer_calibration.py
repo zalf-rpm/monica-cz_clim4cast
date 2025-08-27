@@ -39,7 +39,7 @@ from rasterio import features
 import subprocess
 
 import monica_io3
-import soil_io3
+import cz_soil_io3
 import monica_run_lib
 import shared
 

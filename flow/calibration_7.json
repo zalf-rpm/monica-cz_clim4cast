@@ -1,0 +1,526 @@
+{
+  "version": "0.3",
+  "name": "",
+  "components": "/home/berg/GitHub/mas_python_fbp/local_components.json",
+  "cmds": "/home/berg/GitHub/mas_python_fbp/local_cmds.json",
+  "nodes": [
+    {
+      "nodeId": "monica",
+      "processName": "monica",
+      "location": {
+        "x": 1109.7729797062093,
+        "y": -159.5720780963996
+      },
+      "editable": true,
+      "parallelProcesses": 20,
+      "component": {
+        "info": {
+          "id": "monica-fbp-component",
+          "name": "",
+          "description": ""
+        },
+        "type": "standard",
+        "inPorts": [
+          {
+            "name": "env"
+          }
+        ],
+        "outPorts": [
+          {
+            "name": "result"
+          }
+        ],
+        "cmd": "/home/berg/GitHub/monica/_cmake_debug/monica-capnp-fbp-component"
+      }
+    },
+    {
+      "nodeId": "calibration_producer",
+      "processName": "calibration_producer",
+      "location": {
+        "x": 674.763267973201,
+        "y": -265.1435876746027
+      },
+      "editable": false,
+      "parallelProcesses": 1,
+      "component": {
+        "info": {
+          "id": "calibration_producer_component.py",
+          "name": "calibration_producer_component.py",
+          "description": ""
+        },
+        "type": "standard",
+        "inPorts": [
+          {
+            "name": "params"
+          },
+          {
+            "name": "coords"
+          },
+          {
+            "name": "region"
+          }
+        ],
+        "outPorts": [
+          {
+            "name": "env"
+          }
+        ],
+        "cmd": "/home/berg/GitHub/calibration_flow/flow_components/calibration_producer_component.py"
+      }
+    },
+    {
+      "nodeId": "calibration_consumer",
+      "processName": "calibration_consumer",
+      "location": {
+        "x": 1664.913020676713,
+        "y": -30.28892709073837
+      },
+      "editable": false,
+      "parallelProcesses": 1,
+      "component": {
+        "info": {
+          "id": "calibration_consumer_component.py",
+          "name": "calibration_consumer_component.py",
+          "description": ""
+        },
+        "type": "standard",
+        "inPorts": [
+          {
+            "name": "result"
+          }
+        ],
+        "outPorts": [
+          {
+            "name": "year_to_yield"
+          }
+        ],
+        "cmd": "/home/berg/GitHub/calibration_flow/flow_components/calibration_consumer_component.py"
+      }
+    },
+    {
+      "nodeId": "spotpy",
+      "processName": "spotpy",
+      "location": {
+        "x": 145.94692113229274,
+        "y": -26.949002289342424
+      },
+      "editable": true,
+      "parallelProcesses": 1,
+      "component": {
+        "info": {
+          "id": "spotpy_component",
+          "name": "spotpy_component",
+          "description": "anchor component for spotpy based calibration flow"
+        },
+        "type": "standard",
+        "inPorts": [
+          {
+            "name": "obs_values"
+          },
+          {
+            "name": "sim_values"
+          },
+          {
+            "name": "init_algo"
+          },
+          {
+            "name": "init_params"
+          },
+          {
+            "name": "conf"
+          }
+        ],
+        "outPorts": [
+          {
+            "name": "sampled_params"
+          },
+          {
+            "name": "best"
+          }
+        ],
+        "cmd": "/home/berg/GitHub/calibration_flow/flow_components/spotpy_component.py"
+      }
+    },
+    {
+      "nodeId": "read observed values",
+      "processName": "read observed values",
+      "location": {
+        "x": -997.5540295473057,
+        "y": 165.3430982828706
+      },
+      "editable": true,
+      "parallelProcesses": 1,
+      "component": {
+        "info": {
+          "id": "read_observed_values_component.py",
+          "name": "read_observed_values_component.py",
+          "description": ""
+        },
+        "type": "standard",
+        "inPorts": [
+          {
+            "name": "country_ids"
+          }
+        ],
+        "outPorts": [
+          {
+            "name": "out"
+          }
+        ],
+        "cmd": "/home/berg/GitHub/calibration_flow/flow_components/read_observed_values_component.py"
+      }
+    },
+    {
+      "nodeId": "create lat/lon coord...",
+      "processName": "create lat/lon coords",
+      "location": {
+        "x": 152.59332560341645,
+        "y": -270.5229789114405
+      },
+      "editable": false,
+      "parallelProcesses": 1,
+      "component": {
+        "info": {
+          "id": "create_lat_lon_coords_component.py",
+          "name": "create_lat_lon_coords_component.py",
+          "description": ""
+        },
+        "type": "standard",
+        "inPorts": [
+          {
+            "name": "country_ids"
+          },
+          {
+            "name": "region"
+          }
+        ],
+        "outPorts": [
+          {
+            "name": "lat_lon_coords"
+          }
+        ],
+        "cmd": "/home/berg/GitHub/calibration_flow/flow_components/create_lat_lon_coords_component.py"
+      }
+    },
+    {
+      "nodeId": "IIP [31...]",
+      "componentId": "iip",
+      "location": {
+        "x": -1334.248791075373,
+        "y": -790.4947691401906
+      },
+      "content": "31"
+    },
+    {
+      "nodeId": "flatten observed val...",
+      "processName": "flatten observed values",
+      "location": {
+        "x": -542.88038668717,
+        "y": 319.5953412718023
+      },
+      "editable": true,
+      "parallelProcesses": 1,
+      "component": {
+        "info": {
+          "id": "ordered_flatten_nested_dicts.py",
+          "name": "ordered_flatten_nested_dicts.py",
+          "description": ""
+        },
+        "type": "standard",
+        "inPorts": [
+          {
+            "name": "in"
+          }
+        ],
+        "outPorts": [
+          {
+            "name": "out"
+          }
+        ],
+        "cmd": "/home/berg/GitHub/calibration_flow/flow_components/ordered_flatten_nested_dicts.py"
+      }
+    },
+    {
+      "nodeId": "flatten sim values",
+      "processName": "flatten sim values",
+      "location": {
+        "x": 856.042102322167,
+        "y": 375.3064672916851
+      },
+      "editable": true,
+      "parallelProcesses": 1,
+      "component": {
+        "info": {
+          "id": "ordered_flatten_nested_dicts.py",
+          "name": "ordered_flatten_nested_dicts.py",
+          "description": ""
+        },
+        "type": "standard",
+        "inPorts": [
+          {
+            "name": "in"
+          }
+        ],
+        "outPorts": [
+          {
+            "name": "out"
+          }
+        ],
+        "cmd": "/home/berg/GitHub/calibration_flow/flow_components/ordered_flatten_nested_dicts.py"
+      }
+    },
+    {
+      "nodeId": "IIP [africa...]",
+      "componentId": "iip",
+      "location": {
+        "x": -527.5174836703911,
+        "y": -720.7535839056251
+      },
+      "content": "africa"
+    },
+    {
+      "nodeId": "copy country_ids",
+      "processName": "copy country_ids",
+      "location": {
+        "x": -1306.6069455661554,
+        "y": -321.4944509055318
+      },
+      "editable": false,
+      "parallelProcesses": 1,
+      "component": {
+        "info": {
+          "id": "copy_value.py",
+          "name": "copy_value.py",
+          "description": ""
+        },
+        "type": "standard",
+        "inPorts": [
+          {
+            "name": "in"
+          }
+        ],
+        "outPorts": [
+          {
+            "name": "out_1"
+          },
+          {
+            "name": "out_2"
+          }
+        ],
+        "cmd": "/home/berg/GitHub/calibration_flow/flow_components/copy_value.py"
+      }
+    },
+    {
+      "nodeId": "copy region",
+      "processName": "copy region",
+      "location": {
+        "x": -151.2367885231079,
+        "y": -723.3623316161569
+      },
+      "editable": false,
+      "parallelProcesses": 1,
+      "component": {
+        "info": {
+          "id": "copy_value.py",
+          "name": "copy_value.py",
+          "description": ""
+        },
+        "type": "standard",
+        "inPorts": [
+          {
+            "name": "in"
+          }
+        ],
+        "outPorts": [
+          {
+            "name": "out_1"
+          },
+          {
+            "name": "out_2"
+          }
+        ],
+        "cmd": "/home/berg/GitHub/calibration_flow/flow_components/copy_value.py"
+      }
+    },
+    {
+      "nodeId": "IIP [repetition...]",
+      "componentId": "iip",
+      "location": {
+        "x": -41.828125,
+        "y": 484.0
+      },
+      "content": "repetitions=10\npath_to_out_folder=\"out/\""
+    },
+    {
+      "nodeId": "IIP [[SpecificL...]",
+      "componentId": "iip",
+      "location": {
+        "x": -315.828125,
+        "y": -87.0
+      },
+      "content": "[SpecificLeafArea]\nlow=0.5\nhigh=1.5\n\n[MaxAssimilationRate]\nlow=25\nhigh=35\n\n[DaylengthRequirement]\nlow=17\nhigh=23\n\n[BaseDaylength]\nlow=5\nhigh=9\n\n[CropSpecificMaxRootingDepth]\nlow=0.8\nhigh=2.0\n\n[FieldConditionModifier]\nlow=0.5\nhigh=1"
+    }
+  ],
+  "links": [
+    {
+      "source": {
+        "nodeId": "calibration_producer",
+        "port": "env"
+      },
+      "target": {
+        "nodeId": "monica",
+        "port": "env"
+      }
+    },
+    {
+      "source": {
+        "nodeId": "monica",
+        "port": "result"
+      },
+      "target": {
+        "nodeId": "calibration_consumer",
+        "port": "result"
+      }
+    },
+    {
+      "source": {
+        "nodeId": "spotpy",
+        "port": "sampled_params"
+      },
+      "target": {
+        "nodeId": "calibration_producer",
+        "port": "params"
+      }
+    },
+    {
+      "source": {
+        "nodeId": "create lat/lon coord...",
+        "port": "lat_lon_coords"
+      },
+      "target": {
+        "nodeId": "calibration_producer",
+        "port": "coords"
+      }
+    },
+    {
+      "source": {
+        "nodeId": "copy region",
+        "port": "out_1"
+      },
+      "target": {
+        "nodeId": "calibration_producer",
+        "port": "region"
+      }
+    },
+    {
+      "source": {
+        "nodeId": "calibration_consumer",
+        "port": "year_to_yield"
+      },
+      "target": {
+        "nodeId": "flatten sim values",
+        "port": "in"
+      }
+    },
+    {
+      "source": {
+        "nodeId": "flatten observed val...",
+        "port": "out"
+      },
+      "target": {
+        "nodeId": "spotpy",
+        "port": "obs_values"
+      }
+    },
+    {
+      "source": {
+        "nodeId": "flatten sim values",
+        "port": "out"
+      },
+      "target": {
+        "nodeId": "spotpy",
+        "port": "sim_values"
+      }
+    },
+    {
+      "source": {
+        "nodeId": "IIP [repetition...]",
+        "port": "Top"
+      },
+      "target": {
+        "nodeId": "spotpy",
+        "port": "conf"
+      }
+    },
+    {
+      "source": {
+        "nodeId": "IIP [[SpecificL...]",
+        "port": "Right"
+      },
+      "target": {
+        "nodeId": "spotpy",
+        "port": "init_params"
+      }
+    },
+    {
+      "source": {
+        "nodeId": "copy country_ids",
+        "port": "out_2"
+      },
+      "target": {
+        "nodeId": "read observed values",
+        "port": "country_ids"
+      }
+    },
+    {
+      "source": {
+        "nodeId": "read observed values",
+        "port": "out"
+      },
+      "target": {
+        "nodeId": "flatten observed val...",
+        "port": "in"
+      }
+    },
+    {
+      "source": {
+        "nodeId": "copy country_ids",
+        "port": "out_1"
+      },
+      "target": {
+        "nodeId": "create lat/lon coord...",
+        "port": "country_ids"
+      }
+    },
+    {
+      "source": {
+        "nodeId": "copy region",
+        "port": "out_2"
+      },
+      "target": {
+        "nodeId": "create lat/lon coord...",
+        "port": "region"
+      }
+    },
+    {
+      "source": {
+        "nodeId": "IIP [31...]",
+        "port": "Bottom"
+      },
+      "target": {
+        "nodeId": "copy country_ids",
+        "port": "in"
+      }
+    },
+    {
+      "source": {
+        "nodeId": "IIP [africa...]",
+        "port": "Right"
+      },
+      "target": {
+        "nodeId": "copy region",
+        "port": "in"
+      }
+    }
+  ]
+}

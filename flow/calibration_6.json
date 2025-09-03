@@ -1,0 +1,519 @@
+{
+  "version": "0.3",
+  "name": "",
+  "components": "/home/berg/GitHub/mas_python_fbp/local_components.json",
+  "nodes": [
+    {
+      "nodeId": "f21cbbaa-29ba-4178-b37f-aefa3549dc2c",
+      "processName": "monica",
+      "location": {
+        "x": 1109.7729797062093,
+        "y": -159.5720780963996
+      },
+      "editable": true,
+      "parallelProcesses": 20,
+      "component": {
+          "info": {
+              "id": "monica-fbp-component",
+              "name": "",
+              "description": ""
+          },
+        "type": "standard",
+        "inPorts": [
+          {
+            "name": "env"
+          }
+        ],
+        "outPorts": [
+          {
+            "name": "result"
+          }
+        ],
+      "cmd": "/home/berg/GitHub/monica/_cmake_debug/monica-capnp-fbp-component"
+      }
+    },
+    {
+      "nodeId": "26f0fc6a-f92d-4255-9cef-0cd74f976c42",
+      "processName": "calibration_producer",
+      "location": {
+        "x": 674.763267973201,
+        "y": -265.1435876746027
+      },
+      "editable": false,
+      "parallelProcesses": 1,
+      "component": {
+          "info": {
+              "id": "calibration_producer_component.py",
+              "name": "calibration_producer_component.py",
+              "description": ""
+          },
+        "type": "standard",
+        "inPorts": [
+          {
+            "name": "params"
+          },
+          {
+            "name": "coords"
+          },
+          {
+            "name": "region"
+          }
+        ],
+        "outPorts": [
+          {
+            "name": "env"
+          }
+        ],
+          "cmd": "/home/berg/GitHub/calibration_flow/flow_components/calibration_producer_component.py"
+      }
+    },
+    {
+      "nodeId": "ef5735bb-7da3-4518-b462-5e02af745d58",
+      "processName": "calibration_consumer",
+      "location": {
+        "x": 1664.913020676713,
+        "y": -30.28892709073837
+      },
+      "editable": false,
+      "parallelProcesses": 1,
+      "component": {
+          "info": {
+              "id": "calibration_consumer_component.py",
+              "name": "calibration_consumer_component.py",
+              "description": ""
+          },
+        "type": "standard",
+        "inPorts": [
+          {
+            "name": "result"
+          }
+        ],
+        "outPorts": [
+          {
+            "name": "year_to_yield"
+          }
+        ],
+          "cmd": "/home/berg/GitHub/calibration_flow/flow_components/calibration_consumer_component.py"
+      }
+    },
+    {
+      "nodeId": "b81c6993-cf7a-4cc7-938a-ad232e6f03e7",
+      "processName": "spotpy",
+      "location": {
+        "x": 119.94692113229273,
+        "y": -4.949002289342424
+      },
+      "editable": true,
+      "parallelProcesses": 1,
+      "component": {
+          "info": {
+              "id": "spotpy_component",
+              "name": "spotpy_component",
+              "description": "anchor component for spotpy based calibration flow"
+          },
+        "type": "standard",
+        "inPorts": [
+          {
+            "name": "obs_values"
+          },
+          {
+            "name": "sim_values"
+          },
+          {
+            "name": "init_algo"
+          },
+          {
+            "name": "init_params"
+          }
+        ],
+        "outPorts": [
+          {
+            "name": "sampled_params"
+          },
+          {
+            "name": "best"
+          }
+        ],
+          "cmd": "/home/berg/GitHub/calibration_flow/flow_components/spotpy_component.py"
+      }
+    },
+    {
+      "nodeId": "01f9cc8c-a624-4e9f-af7c-208f3411dec0",
+      "processName": "read calib params",
+      "location": {
+        "x": -503.94981192990247,
+        "y": -400.07625537891477
+      },
+      "editable": true,
+      "parallelProcesses": 1,
+      "component": {
+          "info": {
+              "id": "create_spotpy_calibration_params",
+              "name": "create_spotpy_calibration_params",
+              "description": ""
+          },
+        "type": "standard",
+        "inPorts": [],
+        "outPorts": [
+          {
+            "name": "params"
+          }
+        ],
+          "cmd": "/home/berg/GitHub/calibration_flow/flow_components/create_spotpy_calibration_params.py"
+      }
+    },
+    {
+      "nodeId": "63e04bb9-7ab3-40fd-b58a-f7763e89d6e4",
+      "processName": "read observed values",
+      "location": {
+        "x": -997.5540295473057,
+        "y": 165.3430982828706
+      },
+      "editable": true,
+      "parallelProcesses": 1,
+      "component": {
+          "info": {
+              "id": "read_observed_values_component.py",
+              "name": "read_observed_values_component.py",
+              "description": ""
+          },
+        "type": "standard",
+        "inPorts": [
+          {
+            "name": "country_ids"
+          }
+        ],
+        "outPorts": [
+          {
+            "name": "out"
+          }
+        ],
+          "cmd": "/home/berg/GitHub/calibration_flow/flow_components/read_observed_values_component.py"
+      }
+    },
+    {
+      "nodeId": "6ed02bc4-eb4a-4589-8a48-9ddfcb7bbd6e",
+      "processName": "create lat/lon coords",
+      "location": {
+        "x": 152.59332560341645,
+        "y": -270.5229789114405
+      },
+      "editable": false,
+      "parallelProcesses": 1,
+      "component": {
+          "info": {
+              "id": "create_lat_lon_coords_component.py",
+              "name": "create_lat_lon_coords_component.py",
+              "description": ""
+          },
+        "type": "standard",
+        "inPorts": [
+          {
+            "name": "country_ids"
+          },
+          {
+            "name": "region"
+          }
+        ],
+        "outPorts": [
+          {
+            "name": "lat_lon_coords"
+          }
+        ],
+          "cmd": "/home/berg/GitHub/calibration_flow/flow_components/create_lat_lon_coords_component.py"
+      }
+    },
+    {
+      "nodeId": "3a9519fe-7b46-4b0d-b69e-f4b49723000e",
+      "component_id": "iip",
+      "location": {
+        "x": -1334.248791075373,
+        "y": -790.4947691401906
+      },
+      "content": "31"
+    },
+    {
+      "nodeId": "ca528958-a17b-4089-a252-4d4a77d8f3a6",
+      "processName": "flatten observed values",
+      "location": {
+        "x": -542.88038668717,
+        "y": 319.5953412718023
+      },
+      "editable": true,
+      "parallelProcesses": 1,
+      "component": {
+          "info": {
+              "id": "ordered_flatten_nested_dicts.py",
+              "name": "ordered_flatten_nested_dicts.py",
+              "description": ""
+          },
+        "type": "standard",
+        "inPorts": [
+          {
+            "name": "in"
+          }
+        ],
+        "outPorts": [
+          {
+            "name": "out"
+          }
+        ],
+          "cmd": "/home/berg/GitHub/calibration_flow/flow_components/ordered_flatten_nested_dicts.py"
+      }
+    },
+    {
+      "nodeId": "6a8e04c1-a05f-46f5-b5c4-e7f45b1eeacf",
+      "processName": "flatten sim values",
+      "location": {
+        "x": 856.042102322167,
+        "y": 375.3064672916851
+      },
+      "editable": true,
+      "parallelProcesses": 1,
+      "component": {
+          "info": {
+              "id": "ordered_flatten_nested_dicts.py",
+              "name": "ordered_flatten_nested_dicts.py",
+              "description": ""
+          },
+        "type": "standard",
+        "inPorts": [
+          {
+            "name": "in"
+          }
+        ],
+        "outPorts": [
+          {
+            "name": "out"
+          }
+        ],
+          "cmd": "/home/berg/GitHub/calibration_flow/flow_components/ordered_flatten_nested_dicts.py"
+      }
+    },
+    {
+      "nodeId": "f51ed531-4e0a-4ed0-9567-36d5b97a4fac",
+      "component_id": "iip",
+      "location": {
+        "x": -527.5174836703911,
+        "y": -720.7535839056251
+      },
+      "content": "africa"
+    },
+    {
+      "nodeId": "c0fb5b9c-6c86-487a-812f-bf846a0cf127",
+      "processName": "copy country_ids",
+      "location": {
+        "x": -1306.6069455661554,
+        "y": -321.4944509055318
+      },
+      "editable": false,
+      "parallelProcesses": 1,
+      "component": {
+          "info": {
+              "id": "copy_value.py",
+              "name": "copy_value.py",
+              "description": ""
+          },
+        "type": "standard",
+        "inPorts": [
+          {
+            "name": "in"
+          }
+        ],
+        "outPorts": [
+          {
+            "name": "out_1"
+          },
+          {
+            "name": "out_2"
+          }
+        ],
+          "cmd": "/home/berg/GitHub/calibration_flow/flow_components/copy_value.py"
+      }
+    },
+    {
+      "nodeId": "c3d06131-a622-4549-9423-7bd0b0e8b609",
+      "processName": "copy region",
+      "location": {
+        "x": -151.2367885231079,
+        "y": -723.3623316161569
+      },
+      "editable": false,
+      "parallelProcesses": 1,
+      "component": {
+          "info": {
+              "id": "copy_value.py",
+              "name": "copy_value.py",
+              "description": ""
+          },
+        "type": "standard",
+        "inPorts": [
+          {
+            "name": "in"
+          }
+        ],
+        "outPorts": [
+          {
+            "name": "out_1"
+          },
+          {
+            "name": "out_2"
+          }
+        ],
+          "cmd": "/home/berg/GitHub/calibration_flow/flow_components/copy_value.py"
+      }
+    }
+  ],
+  "links": [
+    {
+      "source": {
+        "nodeId": "26f0fc6a-f92d-4255-9cef-0cd74f976c42",
+        "port": "env"
+      },
+      "target": {
+        "nodeId": "f21cbbaa-29ba-4178-b37f-aefa3549dc2c",
+        "port": "env"
+      }
+    },
+    {
+      "source": {
+        "nodeId": "f21cbbaa-29ba-4178-b37f-aefa3549dc2c",
+        "port": "result"
+      },
+      "target": {
+        "nodeId": "ef5735bb-7da3-4518-b462-5e02af745d58",
+        "port": "result"
+      }
+    },
+    {
+      "source": {
+        "nodeId": "b81c6993-cf7a-4cc7-938a-ad232e6f03e7",
+        "port": "sampled_params"
+      },
+      "target": {
+        "nodeId": "26f0fc6a-f92d-4255-9cef-0cd74f976c42",
+        "port": "params"
+      }
+    },
+    {
+      "source": {
+        "nodeId": "6ed02bc4-eb4a-4589-8a48-9ddfcb7bbd6e",
+        "port": "lat_lon_coords"
+      },
+      "target": {
+        "nodeId": "26f0fc6a-f92d-4255-9cef-0cd74f976c42",
+        "port": "coords"
+      }
+    },
+    {
+      "source": {
+        "nodeId": "c3d06131-a622-4549-9423-7bd0b0e8b609",
+        "port": "out_1"
+      },
+      "target": {
+        "nodeId": "26f0fc6a-f92d-4255-9cef-0cd74f976c42",
+        "port": "region"
+      }
+    },
+    {
+      "source": {
+        "nodeId": "ef5735bb-7da3-4518-b462-5e02af745d58",
+        "port": "year_to_yield"
+      },
+      "target": {
+        "nodeId": "6a8e04c1-a05f-46f5-b5c4-e7f45b1eeacf",
+        "port": "in"
+      }
+    },
+    {
+      "source": {
+        "nodeId": "ca528958-a17b-4089-a252-4d4a77d8f3a6",
+        "port": "out"
+      },
+      "target": {
+        "nodeId": "b81c6993-cf7a-4cc7-938a-ad232e6f03e7",
+        "port": "obs_values"
+      }
+    },
+    {
+      "source": {
+        "nodeId": "6a8e04c1-a05f-46f5-b5c4-e7f45b1eeacf",
+        "port": "out"
+      },
+      "target": {
+        "nodeId": "b81c6993-cf7a-4cc7-938a-ad232e6f03e7",
+        "port": "sim_values"
+      }
+    },
+    {
+      "source": {
+        "nodeId": "01f9cc8c-a624-4e9f-af7c-208f3411dec0",
+        "port": "params"
+      },
+      "target": {
+        "nodeId": "b81c6993-cf7a-4cc7-938a-ad232e6f03e7",
+        "port": "init_params"
+      }
+    },
+    {
+      "source": {
+        "nodeId": "c0fb5b9c-6c86-487a-812f-bf846a0cf127",
+        "port": "out_2"
+      },
+      "target": {
+        "nodeId": "63e04bb9-7ab3-40fd-b58a-f7763e89d6e4",
+        "port": "country_ids"
+      }
+    },
+    {
+      "source": {
+        "nodeId": "63e04bb9-7ab3-40fd-b58a-f7763e89d6e4",
+        "port": "out"
+      },
+      "target": {
+        "nodeId": "ca528958-a17b-4089-a252-4d4a77d8f3a6",
+        "port": "in"
+      }
+    },
+    {
+      "source": {
+        "nodeId": "c0fb5b9c-6c86-487a-812f-bf846a0cf127",
+        "port": "out_1"
+      },
+      "target": {
+        "nodeId": "6ed02bc4-eb4a-4589-8a48-9ddfcb7bbd6e",
+        "port": "country_ids"
+      }
+    },
+    {
+      "source": {
+        "nodeId": "c3d06131-a622-4549-9423-7bd0b0e8b609",
+        "port": "out_2"
+      },
+      "target": {
+        "nodeId": "6ed02bc4-eb4a-4589-8a48-9ddfcb7bbd6e",
+        "port": "region"
+      }
+    },
+    {
+      "source": {
+        "nodeId": "3a9519fe-7b46-4b0d-b69e-f4b49723000e",
+        "port": "Bottom"
+      },
+      "target": {
+        "nodeId": "c0fb5b9c-6c86-487a-812f-bf846a0cf127",
+        "port": "in"
+      }
+    },
+    {
+      "source": {
+        "nodeId": "f51ed531-4e0a-4ed0-9567-36d5b97a4fac",
+        "port": "Right"
+      },
+      "target": {
+        "nodeId": "c3d06131-a622-4549-9423-7bd0b0e8b609",
+        "port": "in"
+      }
+    }
+  ]
+}

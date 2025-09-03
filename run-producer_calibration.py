@@ -18,30 +18,21 @@
 from datetime import datetime
 import capnp
 from collections import defaultdict
-import copy
-import csv
 from datetime import date, timedelta
 import json
-import math
 import numpy as np
 import os
 from pathlib import Path
 from pyproj import CRS, Transformer
 import sqlite3
-import sqlite3 as cas_sq3
 import sys
 import time
 import zmq
 import geopandas as gpd
 import rasterio
-from rasterio.transform import from_origin
-from rasterio import features
-import subprocess
 
 import monica_io3
-import cz_soil_io3
 import monica_run_lib as Mrunlib
-import shared
 
 PATH_TO_REPO = Path(os.path.realpath(__file__)).parent
 PATH_TO_MAS_INFRASTRUCTURE_REPO = PATH_TO_REPO / "../mas-infrastructure"
@@ -299,7 +290,7 @@ def run_producer(server={"server": None, "port": None}):
                 crop_id = setup["crop-id"]
                 #region_name = setup["region_name"]
 
-                ## extract crop_id from crop-id name that has possible an extenstion
+                ## extract crop_id from crop-id name that has possible an extension
                 crop_id_short = crop_id.split('_')[0]
 
                 #with open(config["path_to_out"] + "/spot_setup.out", "a") as _:

@@ -718,6 +718,7 @@ def run_producer(server={"server": None, "port": None}):
                     "crow": int(crow), "ccol": int(ccol),
                     "soil_id": soil_id,
                     "env_id": sent_env_count,
+                    "nuts3_region_id": nuts3_region_id,
                     #"is_sensitivity_analysis": is_sensitivity_analysis,
                     #"param_name": p_name,
                     #"param_value": p_value,

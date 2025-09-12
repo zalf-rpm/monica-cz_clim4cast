@@ -240,6 +240,20 @@ def run_producer(server={"server": None, "port": None}):
     with open(path_to_out_file, "a") as _:
         _.write(f"{datetime.now()} read: {path_to_nuts3_regions_grid}\n")
 
+    cdict = {}
+    # path to latlon-to-rowcol.json
+    # path = TEMPLATE_PATH_LATLON.format(path_to_climate_dir=paths["path-to-climate-dir"] + setup["climate_path_to_latlon_file"] + "/")
+    path = paths["path-to-data-dir"] + TEMPLATE_PATH_LATLON
+    # path = TEMPLATE_PATH_LATLON.format(
+    #    path_to_climate_dir=paths["path-to-climate-dir"] + setup["climate_path_to_latlon_file"] + "/")
+    climate_data_interpolator = (
+        Mrunlib.create_climate_geoGrid_interpolator_from_json_file(
+            path, wgs84_crs, soil_crs, cdict
+        )
+    )
+    with open(path_to_out_file, "a") as _:
+        _.write(f"{datetime.now()} created climate_data to soil_crs interpolator: {path}\n")
+
     # Create the function for the mask. This function will later use the additional column in a setup file!
     def create_mask_from_shapefile(NUTS3_REGIONS, region_name, path_to_soil_grid):
         regions_df = gpd.read_file(NUTS3_REGIONS)
@@ -320,22 +334,8 @@ def run_producer(server={"server": None, "port": None}):
                 #    print("Couldn't read file:", path_harvest)
                 #    continue
 
-                #with open(config["path_to_out"] + "/spot_setup.out", "a") as _:
+                #with open(path_to_out_file, "a") as _:
                 #    _.write(f"{datetime.now()} crop added producer\n") 
-
-                cdict = {}
-                # path to latlon-to-rowcol.json
-                # path = TEMPLATE_PATH_LATLON.format(path_to_climate_dir=paths["path-to-climate-dir"] + setup["climate_path_to_latlon_file"] + "/")
-                path = paths["path-to-data-dir"] + TEMPLATE_PATH_LATLON
-                #path = TEMPLATE_PATH_LATLON.format(
-                #    path_to_climate_dir=paths["path-to-climate-dir"] + setup["climate_path_to_latlon_file"] + "/")
-                climate_data_interpolator = Mrunlib.create_climate_geoGrid_interpolator_from_json_file(path, wgs84_crs,
-                                                                                                              soil_crs, cdict)
-                with open(path_to_out_file, "a") as _:
-                    _.write(f"{datetime.now()} created climate_data to gk5 interpolator: {path}\n")
-
-                #with open(config["path_to_out"] + "/spot_setup.out", "a") as _:
-                #    _.write(f"{datetime.now()} climate data read producer\n") 
 
                 # read template sim.json
                 with open(setup.get("sim.json", config["sim.json"])) as _:
@@ -427,11 +427,11 @@ def run_producer(server={"server": None, "port": None}):
 
                 # unknown_soil_ids = set()
                 soil_id_cache = {}
-                with open(path_to_out_file, "a") as _:
-                    _.write(f"{datetime.now()} All Rows x Cols: {srows} x {scols}\n")
+                #with open(path_to_out_file, "a") as _:
+                #    _.write(f"{datetime.now()} All Rows x Cols: {srows} x {scols}\n")
                 for srow in range(0, srows):
-                    with open(path_to_out_file, "a") as _:
-                        _.write(f"{srow}, ")
+                    #with open(path_to_out_file, "a") as _:
+                    #    _.write(f"{srow}, ")
                     #print(srow, end=", ")
 
                     if srow < int(config["start-row"]):
@@ -649,9 +649,8 @@ def run_producer(server={"server": None, "port": None}):
                         climate_csv_path = (paths["monica-path-to-climate-dir"] +
                                             f"czechglobe/hist_csv_1961-01-01_to_2023-01-01/row-{crow}/col-{ccol}.csv.gz")
                         env_template["pathToClimateCSV"] = climate_csv_path
-                        with open(path_to_out_file, "a") as _:
-                            _.write(f"{datetime.now()} pathToClimateCSV: {env_template['pathToClimateCSV']}\n")
-                        #print("pathToClimateCSV:", env_template["pathToClimateCSV"])
+                        #with open(path_to_out_file, "a") as _:
+                        #    _.write(f"{datetime.now()} pathToClimateCSV: {env_template['pathToClimateCSV']}\n")
 
                         env_template["customId"] = {
                             "setup_id": setup_id,
@@ -668,8 +667,8 @@ def run_producer(server={"server": None, "port": None}):
 
                         socket.send_json(env_template)
 
-                        with open(path_to_out_file, "a") as _:
-                            _.write(f"{datetime.now()} sent env: {sent_env_count}, customId: {env_template['customId']}\n")
+                        #with open(path_to_out_file, "a") as _:
+                        #    _.write(f"{datetime.now()} sent env: {sent_env_count}, customId: {env_template['customId']}\n")
                         #print("sent env ", sent_env_count, " customId: ", env_template["customId"])
                         sent_env_count += 1
 

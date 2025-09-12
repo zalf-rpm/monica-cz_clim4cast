@@ -88,7 +88,6 @@ async def run_component(port_infos_reader_sr: str, config: dict):
 
 
 default_config = {
-    "path_to_yield_data": "data/FAO_yield_data.csv",
     "nuts3_ids": [],
     "port:conf": "[TOML string] -> component configuration",
     "port:csv": "[string] -> csv string",
@@ -98,7 +97,7 @@ default_config = {
 
 def main():
     parser = c.create_default_fbp_component_args_parser(
-        "Copy IP to all attached array out ports"
+        "Read observed values for CZ Clim4Cast"
     )
     port_infos_reader_sr, config, args = c.handle_default_fpb_component_args(
         parser, default_config

@@ -1,0 +1,233 @@
+{
+  "version": "0.3",
+  "name": "",
+  "components": "/home/berg/GitHub/mas_python_fbp/configs/local_components.json",
+  "cmds": "/home/berg/GitHub/mas_python_fbp/configs/local_cmds.json",
+  "nodes": [
+    {
+      "nodeId": "read sim.json",
+      "processName": "read sim.json",
+      "location": {
+        "x": 2506.2677192455176,
+        "y": -2128.356783594137
+      },
+      "editable": false,
+      "parallelProcesses": 1,
+      "config": "file = \"/home/berg/GitHub/monica-cz_clim4cast/sim.json\"\nlines_mode = false",
+      "displayNoOfConfigLines": 3,
+      "componentId": "7ba769ca-eba1-437c-b61a-bef27e24b1dc"
+    },
+    {
+      "nodeId": "read crop.json",
+      "processName": "read crop.json",
+      "location": {
+        "x": 2511.573843492245,
+        "y": -1735.5244109273553
+      },
+      "editable": false,
+      "parallelProcesses": 1,
+      "config": "file = \"/home/berg/GitHub/monica-cz_clim4cast/crop.json\"\nlines_mode = false",
+      "displayNoOfConfigLines": 3,
+      "componentId": "7ba769ca-eba1-437c-b61a-bef27e24b1dc"
+    },
+    {
+      "nodeId": "read site.json",
+      "processName": "read site.json",
+      "location": {
+        "x": 2502.16376575561,
+        "y": -1304.7262144185995
+      },
+      "editable": false,
+      "parallelProcesses": 1,
+      "config": "file = \"/home/berg/GitHub/monica-cz_clim4cast/site.json\"\nlines_mode = false",
+      "displayNoOfConfigLines": 3,
+      "componentId": "7ba769ca-eba1-437c-b61a-bef27e24b1dc"
+    },
+    {
+      "nodeId": "update sim.json",
+      "processName": "update sim.json",
+      "location": {
+        "x": 3717.985347427269,
+        "y": -2121.450285136464
+      },
+      "editable": false,
+      "parallelProcesses": 1,
+      "config": "[types]\n\"@setup\" = \"zalfmas_capnp_schemas/model/monica/sim_setup.capnp:Setup\"\n\n[update]\n\"climate.csv-options\".start-date = [\"@setup\", \"startDate\"]\n\"climate.csv-options\".end-date = \"1999-01-09\"\n",
+      "displayNoOfConfigLines": 7,
+      "componentId": "67b31990-452a-4058-8a99-6785be345216"
+    },
+    {
+      "nodeId": "update crop.json",
+      "processName": "update crop.json",
+      "location": {
+        "x": 3211.0268873713,
+        "y": -1759.061404825384
+      },
+      "editable": false,
+      "parallelProcesses": 1,
+      "config": "[types]\n\"@crop_id\" = \"Text\"\n\n[update]\ncropRotation.2 = \"@crop_id\"\ncrops.\"@crop_id\".cropParams.cultivar.DaylengthRequirement.1 = \"@param\"\ncrops.\"@crop_id\".cropParams.cultivar.DaylengthRequirement.2 = \"@param\"\ncrops.\"@crop_id\".cropParams.cultivar.DaylengthRequirement.3 = \"@param\"",
+      "displayNoOfConfigLines": 9,
+      "componentId": "67b31990-452a-4058-8a99-6785be345216"
+    },
+    {
+      "nodeId": "Create MONICA JSON e...",
+      "processName": "Create MONICA JSON env",
+      "location": {
+        "x": 3392.4291543358704,
+        "y": -1104.6212992759324
+      },
+      "editable": false,
+      "parallelProcesses": 1,
+      "config": "",
+      "displayNoOfConfigLines": 3,
+      "componentId": "128af0c8-2614-4398-9043-ff3581958bd4"
+    },
+    {
+      "nodeId": "output to console 3",
+      "processName": "output to console 3",
+      "location": {
+        "x": 4087.4255525064345,
+        "y": -1117.1922935580874
+      },
+      "editable": false,
+      "parallelProcesses": 1,
+      "config": "",
+      "displayNoOfConfigLines": 3,
+      "componentId": "2de9c491-d8a6-4b36-84de-db7f4a312731"
+    },
+    {
+      "nodeId": "read setup",
+      "processName": "read setup",
+      "location": {
+        "x": 3073.973787812501,
+        "y": -2586.5310147968753
+      },
+      "editable": false,
+      "parallelProcesses": 1,
+      "config": "file = \"/home/berg/GitHub/monica-cz_clim4cast/sim_setups_calibration2.csv\"\nsend_ids = [1]\nid_col = \"runId\"\npath_to_capnp_struct = \"zalfmas_capnp_schemas/model/monica/sim_setup.capnp:Setup\"\n",
+      "displayNoOfConfigLines": 6,
+      "componentId": "0e7507f8-97ae-4479-a608-4c1ebf37c4ba"
+    },
+    {
+      "nodeId": "add setup",
+      "processName": "add setup",
+      "location": {
+        "x": 3139.0641475000007,
+        "y": -2134.280643125
+      },
+      "editable": false,
+      "parallelProcesses": 1,
+      "config": "to_attr = \"setup\"",
+      "displayNoOfConfigLines": 3,
+      "componentId": "1d442f41-dee4-4973-ad99-09855af1d7ad"
+    },
+    {
+      "nodeId": "read observed values...",
+      "processName": "read observed values 6",
+      "location": {
+        "x": 2536.678073050127,
+        "y": -443.36246863103077
+      },
+      "editable": false,
+      "parallelProcesses": 1,
+      "config": "",
+      "displayNoOfConfigLines": 3,
+      "componentId": "1f02cbbf-2072-48b3-93bf-7ba74bf98667"
+    },
+    {
+      "nodeId": "Spotpy calibration c...",
+      "processName": "Spotpy calibration component 7",
+      "location": {
+        "x": 3121.8814264370276,
+        "y": -455.47115329800306
+      },
+      "editable": false,
+      "parallelProcesses": 1,
+      "config": "",
+      "displayNoOfConfigLines": 3,
+      "componentId": "09dbe4c2-c9df-46ab-a30c-239b84d5c6ab"
+    }
+  ],
+  "links": [
+    {
+      "source": {
+        "nodeId": "read sim.json",
+        "port": "out"
+      },
+      "target": {
+        "nodeId": "add setup",
+        "port": "in"
+      }
+    },
+    {
+      "source": {
+        "nodeId": "read crop.json",
+        "port": "out"
+      },
+      "target": {
+        "nodeId": "update crop.json",
+        "port": "in"
+      }
+    },
+    {
+      "source": {
+        "nodeId": "read site.json",
+        "port": "out"
+      },
+      "target": {
+        "nodeId": "Create MONICA JSON e...",
+        "port": "site"
+      }
+    },
+    {
+      "source": {
+        "nodeId": "update sim.json",
+        "port": "out"
+      },
+      "target": {
+        "nodeId": "Create MONICA JSON e...",
+        "port": "sim"
+      }
+    },
+    {
+      "source": {
+        "nodeId": "add setup",
+        "port": "out"
+      },
+      "target": {
+        "nodeId": "update sim.json",
+        "port": "in"
+      }
+    },
+    {
+      "source": {
+        "nodeId": "update crop.json",
+        "port": "out"
+      },
+      "target": {
+        "nodeId": "Create MONICA JSON e...",
+        "port": "crop"
+      }
+    },
+    {
+      "source": {
+        "nodeId": "Create MONICA JSON e...",
+        "port": "out"
+      },
+      "target": {
+        "nodeId": "output to console 3",
+        "port": "in"
+      }
+    },
+    {
+      "source": {
+        "nodeId": "read setup",
+        "port": "out"
+      },
+      "target": {
+        "nodeId": "add setup",
+        "port": "attr"
+      }
+    }
+  ]
+}

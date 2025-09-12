@@ -1,0 +1,34 @@
+{
+    "categories": [
+        {
+            "id": "cz_clim4cast",
+            "name": "CZ Clim4Cast"
+        }
+    ],
+    "entries": [
+        {
+            "categoryId": "cz_clim4cast",
+            "component": {
+                "info": {
+                    "id": "1f02cbbf-2072-48b3-93bf-7ba74bf98667",
+                    "name": "read observed values",
+                    "description": "Read observed values"
+                },
+                "type": "standard",
+                "inPorts": [
+                    {
+                        "name": "conf"
+                    }, {
+                        "name": "csv"
+                    }
+                ],
+                "outPorts": [
+                    {
+                        "name": "out"
+                    }
+                ],
+                "defaultConfig": "#nuts3_ids = []\n"
+            }
+        }
+    ]
+}

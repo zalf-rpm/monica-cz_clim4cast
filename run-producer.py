@@ -285,7 +285,7 @@ def run_producer(server={"server": None, "port": None}, shared_id=None):
         # path = TEMPLATE_PATH_LATLON.format(path_to_climate_dir=paths["path-to-climate-dir"] + setup["climate_path_to_latlon_file"] + "/")
         path = TEMPLATE_PATH_LATLON.format(
             path_to_climate_dir=paths["path-to-climate-dir"] + setup["climate_path_to_latlon_file"] + "/")
-        climate_data_source_crs = CRS.from_epsg(3035)  # CRS of JSON mapping
+        climate_data_source_crs = CRS.from_epsg(4326)  # CRS of JSON mapping
         climate_data_target_crs = CRS.from_epsg(32633)  # CRS of simulation
         climate_data_interpolator = Mrunlib.create_climate_geoGrid_interpolator_from_json_file(path,
                                                                                                climate_data_source_crs,

@@ -17,7 +17,21 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/sim_setups.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/sim_setups_calibration.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/sim_setups_calibration2.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />

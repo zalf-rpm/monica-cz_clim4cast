@@ -15,7 +15,6 @@
 
 from datetime import datetime
 import capnp
-from collections import defaultdict
 import json
 import numpy as np
 import os
@@ -81,7 +80,7 @@ PATHS = {
     },
 }
 
-# DATA_SOIL_DB = "cz/cz_soil_500_woesten.sqlite"
+#DATA_SOIL_DB = "cz/cz_soil_500_woesten.sqlite"
 DATA_SOIL_DB = "/beegfs/common/data/soilgrids/cz_soil_500_woesten.sqlite"
 # SOIL_DB_URL = "https://github.com/zalf-rpm/monica-cz_clim4cast/raw/refs/heads/main/data/cz/cz_soil_500_woesten.sqlite"
 DATA_GRID_HEIGHT = "cz/cz-dem_500_32633_etrs89-utm33n.asc"
@@ -149,7 +148,7 @@ def run_producer(server={"server": None, "port": None}):
     # soil_db_path = paths["path-to-data-dir"] + DATA_SOIL_DB
     soil_db_path = DATA_SOIL_DB
     # subprocess.run(["wget", "-O", soil_db_path, SOIL_DB_URL], check=True)
-    # print("Downloaded soil db successfully.")
+    #print("Downloaded soil db successfully.")
 
     # open soil db connection
     # soil_db_con = sqlite3.connect(paths["path-to-data-dir"] + DATA_SOIL_DB)
@@ -175,15 +174,15 @@ def run_producer(server={"server": None, "port": None}):
     utm32_crs = CRS.from_epsg(32633)
     # transformers[wgs84] = Transformer.from_crs(wgs84_crs, gk5_crs, always_xy=True)
 
-    ilr_seed_harvest_data = defaultdict(
-        lambda: {"interpolate": None, "data": defaultdict(dict), "is-winter-crop": None})
+    #ilr_seed_harvest_data = defaultdict(
+    #    lambda: {"interpolate": None, "data": defaultdict(dict), "is-winter-crop": None})
 
     # Load grids
     ## note numpy is able to load from a compressed file, ending with .gz or .bz2
 
     # soil data
     path_to_soil_grid = paths["path-to-data-dir"] + DATA_GRID_SOIL
-    soil_epsg_code = int(path_to_soil_grid.split("/")[-1].split("_")[3])
+    soil_epsg_code = int(path_to_soil_grid.split("/")[-1].split("_")[2])
     soil_crs = CRS.from_epsg(soil_epsg_code)
     if wgs84_crs not in soil_crs_to_x_transformers:
         soil_crs_to_x_transformers[wgs84_crs] = Transformer.from_crs(soil_crs, wgs84_crs)
@@ -193,7 +192,7 @@ def run_producer(server={"server": None, "port": None}):
 
     # height data
     path_to_dem_grid = paths["path-to-data-dir"] + DATA_GRID_HEIGHT
-    dem_epsg_code = int(path_to_dem_grid.split("/")[-1].split("_")[3])
+    dem_epsg_code = int(path_to_dem_grid.split("/")[-1].split("_")[2])
     dem_crs = CRS.from_epsg(dem_epsg_code)
     if dem_crs not in soil_crs_to_x_transformers:
         soil_crs_to_x_transformers[dem_crs] = Transformer.from_crs(soil_crs, dem_crs)
@@ -204,7 +203,7 @@ def run_producer(server={"server": None, "port": None}):
 
     # slope data
     path_to_slope_grid = paths["path-to-data-dir"] + DATA_GRID_SLOPE
-    slope_epsg_code = int(path_to_slope_grid.split("/")[-1].split("_")[3])
+    slope_epsg_code = int(path_to_slope_grid.split("/")[-1].split("_")[2])
     slope_crs = CRS.from_epsg(slope_epsg_code)
     if slope_crs not in soil_crs_to_x_transformers:
         soil_crs_to_x_transformers[slope_crs] = Transformer.from_crs(soil_crs, slope_crs)
@@ -215,7 +214,7 @@ def run_producer(server={"server": None, "port": None}):
 
     # crop mask data
     path_to_crop_grid = paths["path-to-data-dir"] + DATA_GRID_CROPS
-    crop_epsg_code = int(path_to_crop_grid.split("/")[-1].split("_")[3])
+    crop_epsg_code = int(path_to_crop_grid.split("/")[-1].split("_")[2])
     crop_crs = CRS.from_epsg(crop_epsg_code)
     if crop_crs not in soil_crs_to_x_transformers:
         soil_crs_to_x_transformers[crop_crs] = Transformer.from_crs(soil_crs, crop_crs)

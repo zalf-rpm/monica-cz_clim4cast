@@ -234,15 +234,16 @@ def run_calibration(server=None, prod_port=None, cons_port=None):
         #kstop = max number of evolution loops before convergence
         #peps = convergence criterion
         #pcento = percent change allowed in kstop loops before convergence
+        with open(path_to_out_folder + "/spot_setup.out", "a") as _:
+            _.write(f"{datetime.now()} sampler starts run-cal\n")
+
         sampler.sample(rep, ngs=len(params)*2+1, kstop = 100 , peps=0.0001, pcento=0.0001)
 
-        #with open(path_to_out_folder + "/spot_setup.out", "a") as _:
-        #    _.write(f"{datetime.now()} sampler starts run-cal\n")
 
         # sampler.sample(rep, nChains = 20, nCr = 3, eps = (10e-6), convergence_limit=1.0)
 
-        #with open(path_to_out_folder + "/spot_setup.out", "a") as _:
-        #    _.write(f"{datetime.now()} sampler ends run-cal\n")
+        with open(path_to_out_folder + "/spot_setup.out", "a") as _:
+            _.write(f"{datetime.now()} sampler ends run-cal\n")
         # end timer
         end_time = time.time()
         time_taken = end_time - start_time

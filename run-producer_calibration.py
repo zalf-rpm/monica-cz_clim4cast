@@ -93,7 +93,8 @@ DATA_GRID_CROPS = "cz/cz-crop-cw_500_32633_etrs89-utm33n.asc" # Added as a cropm
 # DATA_GRID_CROPS = "germany/crops-all2017-2019_1000_25832_etrs89-utm32n.asc"
 # DATA_GRID_CROPS = "germany/dwd-stations-pheno_1000_25832_etrs89-utm32n.asc"
 # DATA_GRID_CROPS = "germany/germany-complete_1000_25832_etrs89-utm32n.asc"
-TEMPLATE_PATH_LATLON = "{path_to_climate_dir}/latlon-to-rowcol.json"
+#TEMPLATE_PATH_LATLON = "{path_to_climate_dir}/latlon-to-rowcol.json"
+TEMPLATE_PATH_LATLON = "cz/cz_latlon-to-rowcol.json"
 
 # Additional data for masking the regions
 NUTS3_REGIONS = "data/cz/cz_nuts3_32633.shp"

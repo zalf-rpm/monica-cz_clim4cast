@@ -138,7 +138,7 @@ def run_producer(server={"server": None, "port": None}):
     with open(path_to_out_file, "a") as _:
         _.write(f"config: {config}\n")
 
-    with open(config["path_to_out"] + "/spot_setup.out", "a") as _:
+    with open(path_to_out_file, "a") as _:
         _.write(f"{datetime.now()} start producer in producer\n") 
 
     nuts3_region_ids = json.loads(config["only_nuts3_region_ids"])
@@ -165,7 +165,7 @@ def run_producer(server={"server": None, "port": None}):
     run_setups = json.loads(config["run-setups"])
     print("read sim setups: ", config["setups-file"])
 
-    with open(config["path_to_out"] + "/spot_setup.out", "a") as _:
+    with open(path_to_out_file, "a") as _:
         _.write(f"{datetime.now()} setup read\n") 
 
     # transforms geospatial coordinates from one coordinate reference system to another
@@ -189,7 +189,8 @@ def run_producer(server={"server": None, "port": None}):
         soil_crs_to_x_transformers[wgs84_crs] = Transformer.from_crs(soil_crs, wgs84_crs)
     soil_metadata, _ = Mrunlib.read_header(path_to_soil_grid)
     soil_grid = np.loadtxt(path_to_soil_grid, dtype=int, skiprows=6)
-    print("read: ", path_to_soil_grid)
+    with open(path_to_out_file, "a") as _:
+        _.write(f"{datetime.now()} read: {path_to_soil_grid}\n")
 
     # height data
     path_to_dem_grid = paths["path-to-data-dir"] + DATA_GRID_HEIGHT
@@ -200,7 +201,8 @@ def run_producer(server={"server": None, "port": None}):
     dem_metadata, _ = Mrunlib.read_header(path_to_dem_grid)
     dem_grid = np.loadtxt(path_to_dem_grid, dtype=float, skiprows=6)
     dem_interpolate = Mrunlib.create_ascii_grid_interpolator(dem_grid, dem_metadata)
-    print("read: ", path_to_dem_grid)
+    with open(path_to_out_file, "a") as _:
+        _.write(f"{datetime.now()} read: {path_to_dem_grid}\n")
 
     # slope data
     path_to_slope_grid = paths["path-to-data-dir"] + DATA_GRID_SLOPE
@@ -211,7 +213,8 @@ def run_producer(server={"server": None, "port": None}):
     slope_metadata, _ = Mrunlib.read_header(path_to_slope_grid)
     slope_grid = np.loadtxt(path_to_slope_grid, dtype=float, skiprows=6)
     slope_interpolate = Mrunlib.create_ascii_grid_interpolator(slope_grid, slope_metadata)
-    print("read: ", path_to_slope_grid)
+    with open(path_to_out_file, "a") as _:
+        _.write(f"{datetime.now()} read: {path_to_slope_grid}\n")
 
     # crop mask data
     path_to_crop_grid = paths["path-to-data-dir"] + DATA_GRID_CROPS
@@ -222,7 +225,8 @@ def run_producer(server={"server": None, "port": None}):
     crop_meta, _ = Mrunlib.read_header(path_to_crop_grid)
     crop_grid = np.loadtxt(path_to_crop_grid, dtype=int, skiprows=6)
     crop_interpolate = Mrunlib.create_ascii_grid_interpolator(crop_grid, crop_meta)
-    print("read: ", path_to_crop_grid)
+    with open(path_to_out_file, "a") as _:
+        _.write(f"{datetime.now()} read: {path_to_crop_grid}\n")
 
     # nuts3_regions
     path_to_nuts3_regions_grid = paths["path-to-data-dir"] + "cz/nuts3-regions_500_32633_etrs89-utm33n.asc"
@@ -233,9 +237,8 @@ def run_producer(server={"server": None, "port": None}):
     nuts3_regions_metadata, _ = Mrunlib.read_header(path_to_nuts3_regions_grid)
     nuts3_regions_grid = np.loadtxt(path_to_nuts3_regions_grid, dtype=float, skiprows=6)
     nuts3_regions_interpolate = Mrunlib.create_ascii_grid_interpolator(nuts3_regions_grid, nuts3_regions_metadata)
-    print("read: ", path_to_nuts3_regions_grid)
-
-
+    with open(path_to_out_file, "a") as _:
+        _.write(f"{datetime.now()} read: {path_to_nuts3_regions_grid}\n")
 
     # Create the function for the mask. This function will later use the additional column in a setup file!
     def create_mask_from_shapefile(NUTS3_REGIONS, region_name, path_to_soil_grid):
@@ -268,7 +271,7 @@ def run_producer(server={"server": None, "port": None}):
             if msg.which() == "done":
                 break
 
-            with open(config["path_to_out"] + "/spot_setup.out", "a") as _:
+            with open(path_to_out_file, "a") as _:
                 _.write(f"{datetime.now()} connected\n") 
 
             env_template = None
@@ -329,7 +332,8 @@ def run_producer(server={"server": None, "port": None}):
                 #    path_to_climate_dir=paths["path-to-climate-dir"] + setup["climate_path_to_latlon_file"] + "/")
                 climate_data_interpolator = Mrunlib.create_climate_geoGrid_interpolator_from_json_file(path, wgs84_crs,
                                                                                                               soil_crs, cdict)
-                print("created climate_data to gk5 interpolator: ", path)
+                with open(path_to_out_file, "a") as _:
+                    _.write(f"{datetime.now()} created climate_data to gk5 interpolator: {path}\n")
 
                 #with open(config["path_to_out"] + "/spot_setup.out", "a") as _:
                 #    _.write(f"{datetime.now()} climate data read producer\n") 
@@ -348,8 +352,8 @@ def run_producer(server={"server": None, "port": None}):
                 with open(setup.get("site.json", config["site.json"])) as _:
                     site_json = json.load(_)
 
-                #with open(config["path_to_out"] + "/spot_setup.out", "a") as _:
-                #    _.write(f"{datetime.now()} read site and sim json producer\n\n") 
+                with open(path_to_out_file, "a") as _:
+                    _.write(f"{datetime.now()} read site and sim json producer\n\n")
 
                 #site_json["EnvironmentParameters"]["rcp"] = scenario
 
@@ -398,7 +402,10 @@ def run_producer(server={"server": None, "port": None}):
                                     else:
                                         ps["cultivar"][pname] = pval
                     else:
-                        print("Error couldn't find sowing workstep in crop.json")
+                        with open(path_to_out_file, "a") as _:
+                            _.write(
+                                f"{datetime.now()} Error couldn't find sowing workstep in crop.json\n"
+                            )
                         exit(1)
 
                 crop_json["CropParameters"]["__enable_vernalisation_factor_fix__"] = setup[
@@ -421,9 +428,12 @@ def run_producer(server={"server": None, "port": None}):
 
                 # unknown_soil_ids = set()
                 soil_id_cache = {}
-                print("All Rows x Cols: " + str(srows) + "x" + str(scols))
+                with open(path_to_out_file, "a") as _:
+                    _.write(f"{datetime.now()} All Rows x Cols: {srows} x {scols}\n")
                 for srow in range(0, srows):
-                    print(srow, end=", ")
+                    with open(path_to_out_file, "a") as _:
+                        _.write(f"{srow}, ")
+                    #print(srow, end=", ")
 
                     if srow < int(config["start-row"]):
                         continue
@@ -440,6 +450,8 @@ def run_producer(server={"server": None, "port": None}):
                         sr = xllcorner + (scellsize / 2) + scol * scellsize
                         # inter = crow/ccol encoded into integer
                         crow, ccol = climate_data_interpolator(sr, sh)
+                        crow = int(crow)
+                        ccol = int(ccol)
 
                         crop_grid_id = int(crop_grid[srow, scol])
                         # print(crop_grid_id)
@@ -584,40 +596,44 @@ def run_producer(server={"server": None, "port": None}):
                         env_template["params"]["userCropParameters"]["__enable_T_response_leaf_expansion__"] = setup[
                             "LeafExtensionModifier"]
 
+                        with open(path_to_out_file, "a") as _:
+                            _.write(
+                                f"{datetime.now()} soil: {soil_profile}\n"
+                            )
                         # print("soil:", soil_profile)
                         env_template["params"]["siteParameters"]["SoilProfileParameters"] = soil_profile
 
                         # setting groundwater level
-                        if setup["groundwater-level"]:
-                            groundwaterlevel = 20
-                            layer_depth = 0
-                            for layer in soil_profile:
-                                if layer.get("is_in_groundwater", False):
-                                    groundwaterlevel = layer_depth
-                                    # print("setting groundwaterlevel of soil_id:", str(soil_id), "to", groundwaterlevel, "m")
-                                    break
-                                layer_depth += Mrunlib.get_value(layer["Thickness"])
-                            env_template["params"]["userEnvironmentParameters"]["MinGroundwaterDepthMonth"] = 3
-                            env_template["params"]["userEnvironmentParameters"]["MinGroundwaterDepth"] = [
-                                max(0, groundwaterlevel - 0.2), "m"]
-                            env_template["params"]["userEnvironmentParameters"]["MaxGroundwaterDepth"] = [
-                                groundwaterlevel + 0.2, "m"]
+                        # if setup["groundwater-level"]:
+                        #     groundwaterlevel = 20
+                        #     layer_depth = 0
+                        #     for layer in soil_profile:
+                        #         if layer.get("is_in_groundwater", False):
+                        #             groundwaterlevel = layer_depth
+                        #             # print("setting groundwaterlevel of soil_id:", str(soil_id), "to", groundwaterlevel, "m")
+                        #             break
+                        #         layer_depth += Mrunlib.get_value(layer["Thickness"])
+                        #     env_template["params"]["userEnvironmentParameters"]["MinGroundwaterDepthMonth"] = 3
+                        #     env_template["params"]["userEnvironmentParameters"]["MinGroundwaterDepth"] = [
+                        #         max(0, groundwaterlevel - 0.2), "m"]
+                        #     env_template["params"]["userEnvironmentParameters"]["MaxGroundwaterDepth"] = [
+                        #         groundwaterlevel + 0.2, "m"]
 
                         # setting impenetrable layer
-                        if setup["impenetrable-layer"]:
-                            impenetrable_layer_depth = Mrunlib.get_value(
-                                env_template["params"]["userEnvironmentParameters"]["LeachingDepth"])
-                            layer_depth = 0
-                            for layer in soil_profile:
-                                if layer.get("is_impenetrable", False):
-                                    impenetrable_layer_depth = layer_depth
-                                    # print("setting leaching depth of soil_id:", str(soil_id), "to", impenetrable_layer_depth, "m")
-                                    break
-                                layer_depth += Mrunlib.get_value(layer["Thickness"])
-                            env_template["params"]["userEnvironmentParameters"]["LeachingDepth"] = \
-                                [impenetrable_layer_depth, "m"]
-                            env_template["params"]["siteParameters"]["ImpenetrableLayerDepth"] = \
-                                [impenetrable_layer_depth, "m"]
+                        # if setup["impenetrable-layer"]:
+                        #     impenetrable_layer_depth = Mrunlib.get_value(
+                        #         env_template["params"]["userEnvironmentParameters"]["LeachingDepth"])
+                        #     layer_depth = 0
+                        #     for layer in soil_profile:
+                        #         if layer.get("is_impenetrable", False):
+                        #             impenetrable_layer_depth = layer_depth
+                        #             # print("setting leaching depth of soil_id:", str(soil_id), "to", impenetrable_layer_depth, "m")
+                        #             break
+                        #         layer_depth += Mrunlib.get_value(layer["Thickness"])
+                        #     env_template["params"]["userEnvironmentParameters"]["LeachingDepth"] = \
+                        #         [impenetrable_layer_depth, "m"]
+                        #     env_template["params"]["siteParameters"]["ImpenetrableLayerDepth"] = \
+                        #         [impenetrable_layer_depth, "m"]
 
                         if setup["elevation"]:
                             env_template["params"]["siteParameters"]["heightNN"] = float(height_nn)
@@ -646,8 +662,11 @@ def run_producer(server={"server": None, "port": None}):
                                 "StageTemperatureSum"][0]
                             if len(stage_ts) != len(orig_stage_ts):
                                 stage_ts = orig_stage_ts
-                                print('The provided StageTemperatureSum array is not '
-                                      'sufficiently long. Falling back to original StageTemperatureSum')
+                                with open(path_to_out_file, "a") as _:
+                                    _.write(f"{datetime.now()} The provided StageTemperatureSum array is not "
+                                            "sufficiently long. Falling back to original StageTemperatureSum\n")
+                                #print('The provided StageTemperatureSum array is not '
+                                #      'sufficiently long. Falling back to original StageTemperatureSum')
 
                             env_template["cropRotation"][0]["worksteps"][0]["crop"]["cropParams"]["cultivar"]["="][
                                 "StageTemperatureSum"][0] = stage_ts
@@ -677,7 +696,9 @@ def run_producer(server={"server": None, "port": None}):
                                     f"czechglobe/hist_csv_1961-01-01_to_2023-01-01/row-{crow}/col-{ccol}.csv.gz")
 
                 env_template["pathToClimateCSV"] = climate_csv_path
-                print("pathToClimateCSV:", env_template["pathToClimateCSV"])
+                with open(path_to_out_file, "a") as _:
+                    _.write(f"{datetime.now()} pathToClimateCSV: {env_template['pathToClimateCSV']}\n")
+                #print("pathToClimateCSV:", env_template["pathToClimateCSV"])
 
                 # if setup["incl_hist"]:
                 #
@@ -736,7 +757,10 @@ def run_producer(server={"server": None, "port": None}):
 
                 #if not DEBUG_DONOT_SEND:
                 socket.send_json(env_template)
-                print("sent env ", sent_env_count, " customId: ", env_template["customId"])
+
+                with open(path_to_out_file, "a") as _:
+                    _.write(f"{datetime.now()} sent env: {sent_env_count}, customId: {env_template['customId']}\n")
+                #print("sent env ", sent_env_count, " customId: ", env_template["customId"])
 
                 sent_env_count += 1
                 # write debug output, as json file
@@ -757,7 +781,7 @@ def run_producer(server={"server": None, "port": None}):
             # print("unknown_soil_ids:", unknown_soil_ids)
             except Exception as e:
                 with open(path_to_out_file, "a") as _:
-                    _.write(f"raised exception: {e}\n")
+                    _.write(f"{datetime.now()} raised exception: {e}\n")
                 print("Exception raised:", e)
                 raise e            
 

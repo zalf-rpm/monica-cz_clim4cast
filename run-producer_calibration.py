@@ -285,7 +285,6 @@ def run_producer(server={"server": None, "port": None}):
                     del params["only_nuts3_region_ids"]
 
                 start_setup_time = time.perf_counter()
-            
 
                 setup = setups[setup_id]
                 crop_id = setup["crop-id"]
@@ -596,44 +595,12 @@ def run_producer(server={"server": None, "port": None}):
                         env_template["params"]["userCropParameters"]["__enable_T_response_leaf_expansion__"] = setup[
                             "LeafExtensionModifier"]
 
-                        with open(path_to_out_file, "a") as _:
-                            _.write(
-                                f"{datetime.now()} soil: {soil_profile}\n"
-                            )
+                        #with open(path_to_out_file, "a") as _:
+                        #    _.write(
+                        #        f"{datetime.now()} soil: {soil_profile}\n"
+                        #    )
                         # print("soil:", soil_profile)
                         env_template["params"]["siteParameters"]["SoilProfileParameters"] = soil_profile
-
-                        # setting groundwater level
-                        # if setup["groundwater-level"]:
-                        #     groundwaterlevel = 20
-                        #     layer_depth = 0
-                        #     for layer in soil_profile:
-                        #         if layer.get("is_in_groundwater", False):
-                        #             groundwaterlevel = layer_depth
-                        #             # print("setting groundwaterlevel of soil_id:", str(soil_id), "to", groundwaterlevel, "m")
-                        #             break
-                        #         layer_depth += Mrunlib.get_value(layer["Thickness"])
-                        #     env_template["params"]["userEnvironmentParameters"]["MinGroundwaterDepthMonth"] = 3
-                        #     env_template["params"]["userEnvironmentParameters"]["MinGroundwaterDepth"] = [
-                        #         max(0, groundwaterlevel - 0.2), "m"]
-                        #     env_template["params"]["userEnvironmentParameters"]["MaxGroundwaterDepth"] = [
-                        #         groundwaterlevel + 0.2, "m"]
-
-                        # setting impenetrable layer
-                        # if setup["impenetrable-layer"]:
-                        #     impenetrable_layer_depth = Mrunlib.get_value(
-                        #         env_template["params"]["userEnvironmentParameters"]["LeachingDepth"])
-                        #     layer_depth = 0
-                        #     for layer in soil_profile:
-                        #         if layer.get("is_impenetrable", False):
-                        #             impenetrable_layer_depth = layer_depth
-                        #             # print("setting leaching depth of soil_id:", str(soil_id), "to", impenetrable_layer_depth, "m")
-                        #             break
-                        #         layer_depth += Mrunlib.get_value(layer["Thickness"])
-                        #     env_template["params"]["userEnvironmentParameters"]["LeachingDepth"] = \
-                        #         [impenetrable_layer_depth, "m"]
-                        #     env_template["params"]["siteParameters"]["ImpenetrableLayerDepth"] = \
-                        #         [impenetrable_layer_depth, "m"]
 
                         if setup["elevation"]:
                             env_template["params"]["siteParameters"]["heightNN"] = float(height_nn)
@@ -677,107 +644,35 @@ def run_producer(server={"server": None, "port": None}):
 
                         env_template["params"]["simulationParameters"]["NitrogenResponseOn"] = setup["NitrogenResponseOn"]
 
-                env_template["csvViaHeaderOptions"] = sim_json["climate.csv-options"]
+                        env_template["csvViaHeaderOptions"] = sim_json["climate.csv-options"]
 
-                # crow = int(crow)
-                # ccol = int(ccol)
+                        climate_csv_path = (paths["monica-path-to-climate-dir"] +
+                                            f"czechglobe/hist_csv_1961-01-01_to_2023-01-01/row-{crow}/col-{ccol}.csv.gz")
+                        env_template["pathToClimateCSV"] = climate_csv_path
+                        with open(path_to_out_file, "a") as _:
+                            _.write(f"{datetime.now()} pathToClimateCSV: {env_template['pathToClimateCSV']}\n")
+                        #print("pathToClimateCSV:", env_template["pathToClimateCSV"])
 
-                # subpath_to_csv = TEMPLATE_PATH_CLIMATE_CSV.format(gcm=gcm, rcm=rcm, scenario=scenario, ensmem=ensmem,
-                #                                                   version=version, crow=str(int(crow)),
-                #                                                   ccol=str(int(ccol)))
-                # for _ in range(4):
-                #     subpath_to_csv = subpath_to_csv.replace("//", "/")
-                # env_template["pathToClimateCSV"] = [
-                #     paths["monica-path-to-climate-dir"] + setup["climate_path_to_csvs"] + subpath_to_csv]
+                        env_template["customId"] = {
+                            "setup_id": setup_id,
+                            "srow": srow, "scol": scol,
+                            "crow": int(crow), "ccol": int(ccol),
+                            "soil_id": soil_id,
+                            "env_id": sent_env_count,
+                            "nuts3_region_id": nuts3_region_id,
+                            #"is_sensitivity_analysis": is_sensitivity_analysis,
+                            #"param_name": p_name,
+                            #"param_value": p_value,
+                            "nodata": False
+                        }
 
-                # climate_csv_path = paths["monica-path-to-climate-dir"] + setup["climate_path_to_csvs"] + subpath_to_csv
-                # env_template["pathToClimateCSV"] = [climate_csv_path]
-                climate_csv_path = (paths["monica-path-to-climate-dir"] +
-                                    f"czechglobe/hist_csv_1961-01-01_to_2023-01-01/row-{crow}/col-{ccol}.csv.gz")
+                        socket.send_json(env_template)
 
-                env_template["pathToClimateCSV"] = climate_csv_path
-                with open(path_to_out_file, "a") as _:
-                    _.write(f"{datetime.now()} pathToClimateCSV: {env_template['pathToClimateCSV']}\n")
-                #print("pathToClimateCSV:", env_template["pathToClimateCSV"])
+                        with open(path_to_out_file, "a") as _:
+                            _.write(f"{datetime.now()} sent env: {sent_env_count}, customId: {env_template['customId']}\n")
+                        #print("sent env ", sent_env_count, " customId: ", env_template["customId"])
+                        sent_env_count += 1
 
-                # if setup["incl_hist"]:
-                #
-                #     if rcm[:3] == "UHO":
-                #         hist_subpath_to_csv = TEMPLATE_PATH_CLIMATE_CSV.format(gcm=gcm, rcm="CLMcom-CCLM4-8-17",
-                #                                                                scenario="historical", ensmem=ensmem,
-                #                                                                version=version, crow=str(crow),
-                #                                                                ccol=str(ccol))
-                #         for _ in range(4):
-                #             hist_subpath_to_csv = hist_subpath_to_csv.replace("//", "/")
-                #         env_template["pathToClimateCSV"].insert(0, paths["monica-path-to-climate-dir"] + setup[
-                #             "climate_path_to_csvs"] + "/" + hist_subpath_to_csv)
-                #
-                #     elif rcm[:3] == "SMH":
-                #         hist_subpath_to_csv = TEMPLATE_PATH_CLIMATE_CSV.format(gcm=gcm, rcm="CLMcom-CCLM4-8-17",
-                #                                                                scenario="historical", ensmem=ensmem,
-                #                                                                version=version, crow=str(crow),
-                #                                                                ccol=str(ccol))
-                #         for _ in range(4):
-                #             hist_subpath_to_csv = hist_subpath_to_csv.replace("//", "/")
-                #         env_template["pathToClimateCSV"].insert(0, paths["monica-path-to-climate-dir"] + setup[
-                #             "climate_path_to_csvs"] + "/" + hist_subpath_to_csv)
-                #
-                #     hist_subpath_to_csv = TEMPLATE_PATH_CLIMATE_CSV.format(gcm=gcm, rcm=rcm, scenario="historical",
-                #                                                            ensmem=ensmem, version=version,
-                #                                                            crow=str(crow), ccol=str(ccol))
-                #     for _ in range(4):
-                #         hist_subpath_to_csv = hist_subpath_to_csv.replace("//", "/")
-                #     env_template["pathToClimateCSV"].insert(0, paths["monica-path-to-climate-dir"] + setup[
-                #         "climate_path_to_csvs"] + "/" + hist_subpath_to_csv)
-                # print("pathToClimateCSV:", env_template["pathToClimateCSV"])
-                # if DEBUG_WRITE_CLIMATE:
-                #     listOfClimateFiles.add(subpath_to_csv)
-
-                env_template["customId"] = {
-                    "setup_id": setup_id,
-                    "srow": srow, "scol": scol,
-                    "crow": int(crow), "ccol": int(ccol),
-                    "soil_id": soil_id,
-                    "env_id": sent_env_count,
-                    "nuts3_region_id": nuts3_region_id,
-                    #"is_sensitivity_analysis": is_sensitivity_analysis,
-                    #"param_name": p_name,
-                    #"param_value": p_value,
-                    "nodata": False
-                }
-
-                # print("Harvest type:", setup["harvest-date"])
-                # print("Srow: ", env_template["customId"]["srow"], "Scol:", env_template["customId"]["scol"])
-                # harvest_ws = next(
-                #     filter(lambda ws: ws["type"][-7:] == "Harvest", env_template["cropRotation"][0]["worksteps"]))
-                # if setup["harvest-date"] == "fixed":
-                #     print("Harvest-date:", harvest_ws["date"])
-                # elif setup["harvest-date"] == "auto":
-                #     print("Harvest-date:", harvest_ws["latest-date"])
-
-                #if not DEBUG_DONOT_SEND:
-                socket.send_json(env_template)
-
-                with open(path_to_out_file, "a") as _:
-                    _.write(f"{datetime.now()} sent env: {sent_env_count}, customId: {env_template['customId']}\n")
-                #print("sent env ", sent_env_count, " customId: ", env_template["customId"])
-
-                sent_env_count += 1
-                # write debug output, as json file
-                #if DEBUG_WRITE:
-                #    debug_write_folder = paths["path-debug-write-folder"]
-                #    if not os.path.exists(debug_write_folder):
-                #        os.makedirs(debug_write_folder)
-                #    if sent_env_count < DEBUG_ROWS:
-
-                #        path_to_debug_file = debug_write_folder + "/row_" + str(sent_env_count - 1) + "_" + str(
-                #            setup_id) + ".json"
-
-                #        if not os.path.isfile(path_to_debug_file):
-                #            with open(path_to_debug_file, "w") as _:
-                #                _.write(json.dumps(env_template))
-                #        else:
-                #            print("WARNING: Row ", (sent_env_count - 1), " already exists")
             # print("unknown_soil_ids:", unknown_soil_ids)
             except Exception as e:
                 with open(path_to_out_file, "a") as _:
@@ -785,39 +680,20 @@ def run_producer(server={"server": None, "port": None}):
                 print("Exception raised:", e)
                 raise e            
 
-        if env_template:# and is_sensitivity_analysis:
-            env_template["pathToClimateCSV"] = ""
-            env_template["customId"] = {
-                "setup_id": setup_id,
-                "no_of_sent_envs": sent_env_count,
-                #"is_sensitivity_analysis": is_sensitivity_analysis,
-            }
-            socket.send_json(env_template)
+            if env_template:# and is_sensitivity_analysis:
+                env_template["pathToClimateCSV"] = ""
+                env_template["customId"] = {
+                    "setup_id": setup_id,
+                    "no_of_sent_envs": sent_env_count,
+                    #"is_sensitivity_analysis": is_sensitivity_analysis,
+                }
+                socket.send_json(env_template)
 
-            # print("crows/cols:", crows_cols)
-        # cs__.close()
-        stop_setup_time = time.perf_counter()
-        print("\nSetup ", sent_env_count, " envs took ", (stop_setup_time - start_setup_time), " seconds")
-        sent_env_count = 0
+            stop_setup_time = time.perf_counter()
+            print("\nSetup ", sent_env_count, " envs took ", (stop_setup_time - start_setup_time), " seconds")
+            sent_env_count = 0
 
-    #stop_time = time.perf_counter()
-
-    # write summary of used json files
-    #if DEBUG_WRITE_CLIMATE:
-    #    debug_write_folder = paths["path-debug-write-folder"]
-    #    if not os.path.exists(debug_write_folder):
-    #        os.makedirs(debug_write_folder)
-
-    #    path_to_climate_summary = debug_write_folder + "/climate_file_list" + ".csv"
-    #    with open(path_to_climate_summary, "w") as _:
-    #        _.write('\n'.join(listOfClimateFiles))
-
-    #try:
-        #print("sending ", (sent_env_count - 1), " envs took ", (stop_time - start_time), " seconds")
-        # print("ran from ", start, "/", row_cols[start], " to ", end, "/", row_cols[end]
     print("exiting run_producer()")
-    #except Exception:
-    #    raise
 
 
 if __name__ == "__main__":

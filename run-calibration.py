@@ -14,8 +14,6 @@ import subprocess as sp
 import sys
 import time
 import uuid
-import pandas as pd
-import seaborn as sns
 
 import calibration_spotpy_setup_MONICA
 
@@ -248,7 +246,9 @@ def run_calibration(server=None, prod_port=None, cons_port=None):
         end_time = time.time()
         time_taken = end_time - start_time
         if time_taken > 10:
-            print(f"Time taken to calibrate: {time_taken:.2f} seconds")
+            with open(path_to_out_folder + "/spot_setup.out", "a") as _:
+                _.write(f"{datetime.now()} Time taken to calibrate: {time_taken:.2f} seconds\n")
+            #print(f"Time taken to calibrate: {time_taken:.2f} seconds")
 
 
         def print_status_final(self, stream):

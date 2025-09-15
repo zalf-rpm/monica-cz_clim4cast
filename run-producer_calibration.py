@@ -595,10 +595,8 @@ def run_producer(server={"server": None, "port": None}):
                         env_template["params"]["userCropParameters"]["__enable_T_response_leaf_expansion__"] = setup[
                             "LeafExtensionModifier"]
 
-                        #with open(path_to_out_file, "a") as _:
-                        #    _.write(
-                        #        f"{datetime.now()} soil: {soil_profile}\n"
-                        #    )
+                        with open(path_to_out_file, "a") as _:
+                            _.write(f"{datetime.now()} soil: {soil_profile}\n")
                         # print("soil:", soil_profile)
                         env_template["params"]["siteParameters"]["SoilProfileParameters"] = soil_profile
 

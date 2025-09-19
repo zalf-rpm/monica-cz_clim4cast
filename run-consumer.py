@@ -29,8 +29,8 @@ import monica_run_lib as Mrunlib
 PATHS = {
     "re-local-remote": {
         "path-to-data-dir": "./data/",
-        "path-to-output-dir": "D:/monica_cz/out/out/",
-        "path-to-csv-output-dir": "D:/monica_cz/out/csv-out/"
+        "path-to-output-dir": "D:/monica_cz_clim4cast/out/out/",
+        "path-to-csv-output-dir": "D:/monica_cz_clim4cast/out/csv-out/"
     },
     "cj-local-remote": {
         "path-to-data-dir": "data/",
@@ -49,7 +49,7 @@ PATHS = {
     }
 }
 # TEMPLATE_SOIL_PATH = "{local_path_to_data_dir}/cz/cz_soil_1000_32633_etrs89-utm33n.asc"
-TEMPLATE_SOIL_PATH = "{local_path_to_data_dir}/cz/cz_soil_500_32633_etrs89-utm33n.asc"
+TEMPLATE_SOIL_PATH = "{local_path_to_data_dir}/cz/cz_soil_500_32633_etrs89-utm33n_woesten.asc"
 
 def create_output(msg):
     cm_count_to_vals = defaultdict(dict)
@@ -197,8 +197,8 @@ def run_consumer(leave_after_finished_run=True, server={"server": None, "port": 
     config = {
         # "mode": "mbm-local-remote",
         "mode": "re-local-remote",
-        "port": server["port"] if server["port"] else "7778",
-        "server": server["server"] if server["server"] else "login01.cluster.zalf.de",  #"10.10.25.25",  #"localhost",
+        "port": server["port"] if server["port"] else "7780",
+        "server": server["server"] if server["server"] else "login01.cluster.zalf.de",
         "start-row": "0",
         "end-row": "-1",
         "shared_id": shared_id,

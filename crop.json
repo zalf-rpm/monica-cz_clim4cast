@@ -7,7 +7,7 @@
 				"species": ["include-from-file", "crops/species/wheat.json"],
 				"cultivar": ["include-from-file", "crops/cultivars/winter-wheat_cz_general.json"]
 			},
-			"residueParams": ["include-from-file", "crops/residues/wheat_cz.json"]
+			"residueParams": ["include-from-file", "crops/residues/wheat.json"]
 		},
 		"WB_dwd": {
 			"is-winter-crop": true,

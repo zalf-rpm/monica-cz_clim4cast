@@ -1,0 +1,5 @@
+{
+    "id": "ad48c4f1-2955-4b22-bd07-c99d0d84bf8c",
+    "name": "local debuggable python execution",
+    "1f02cbbf-2072-48b3-93bf-7ba74bf98667": "python -m flow.read_observed_values"
+}

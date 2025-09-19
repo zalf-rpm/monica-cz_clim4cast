@@ -93,7 +93,7 @@ def run_consumer(server=None, port=None):
                 envs_received += 1
 
                 #with open(path_to_out_file, "a") as _:
-                #    _.write(f"received result customId: {custom_id}\n")
+                #    _.write(f"received result customId: {custom_id}\nresult: {msg.get('data',[])}")
                 #print("received result customId:", custom_id)
 
                 nuts3_region_id = custom_id["nuts3_region_id"]
@@ -114,6 +114,9 @@ def run_consumer(server=None, port=None):
                         no_of_yields = len(yields)
                         if no_of_yields > 0:
                             nuts3_region_id_and_year_to_avg_yield[f"{nuts3_region_id}|{year}"] = sum(yields) / no_of_yields
+
+                #with open(path_to_out_file, "a") as _:
+                #    _.write(f"{datetime.now()} region_id to year to avg yield: {nuts3_region_id_and_year_to_avg_yield}\n")
 
                 out_ip = fbp_capnp.IP.new_message(content=json.dumps(nuts3_region_id_and_year_to_avg_yield))
                 writer.write(value=out_ip).wait()

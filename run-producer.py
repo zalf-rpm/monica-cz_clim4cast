@@ -90,8 +90,8 @@ PATHS = {
 
 # 500 m resolution data
 # DATA_SOIL_DB = "cz/cz_soil_500.sqlite"
-# DATA_SOIL_DB = "data/cz/cz_soil_500_woesten.sqlite"
-DATA_SOIL_DB = "/beegfs/common/data/soilgrids/cz_soil_500_woesten.sqlite"
+DATA_SOIL_DB = "data/cz/cz_soil_500_woesten.sqlite"
+# DATA_SOIL_DB = "/beegfs/common/data/soilgrids/cz_soil_500_woesten.sqlite"
 SOIL_DB_URL = "https://github.com/zalf-rpm/monica-cz_clim4cast/raw/refs/heads/main/data/cz/cz_soil_500_woesten.sqlite"
 DATA_GRID_HEIGHT = "cz/cz_dem_500_32633_etrs89-utm33n.asc"
 DATA_GRID_SLOPE = "cz/cz_slope_500_32633_etrs89-utm33n.asc"

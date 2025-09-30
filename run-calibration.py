@@ -167,14 +167,14 @@ def run_calibration(server=None, prod_port=None, cons_port=None):
             params.append(p)
 
     # read weights
-    #weights = {}
-    #with open("Weights.csv") as weights_csv:
-        #dialect = csv.Sniffer().sniff(weights_csv.read(), delimiters=';,\t')
-        #weights_csv.seek(0)
-        #reader = csv.reader(weights_csv, dialect)
-        #next(reader, None)  # skip the header
-        #for row in reader:
-            #weights[int(row[2])] = float(row[4])
+    weights = {}
+    with open("Weights.csv") as weights_csv:
+        dialect = csv.Sniffer().sniff(weights_csv.read(), delimiters=';,\t')
+        weights_csv.seek(0)
+        reader = csv.reader(weights_csv, dialect)
+        next(reader, None)  # skip the header
+        for row in reader:
+            weights[int(row[2])] = float(row[4])
     #print("weights:", weights)
 
     con_man = common.ConnectionManager()
@@ -215,11 +215,11 @@ def run_calibration(server=None, prod_port=None, cons_port=None):
         if spot_setup:
             del spot_setup
         #print("selected weight for region:", weights[current_only_nuts3_region_ids[0]], flush=True)
-        spot_setup = calibration_spotpy_setup_MONICA.spot_setup(params, filtered_observations, prod_writer, cons_reader,
-                                                                path_to_out_folder, current_only_nuts3_region_ids)
-        
         #spot_setup = calibration_spotpy_setup_MONICA.spot_setup(params, filtered_observations, prod_writer, cons_reader,
-                                                        #path_to_out_folder, current_only_nuts3_region_ids, weights[current_only_nuts3_region_ids[0]])
+                                                                #path_to_out_folder, current_only_nuts3_region_ids)
+        
+        spot_setup = calibration_spotpy_setup_MONICA.spot_setup(params, filtered_observations, prod_writer, cons_reader,
+                                                        path_to_out_folder, current_only_nuts3_region_ids, weights[current_only_nuts3_region_ids[0]])
 
         rep = int(config["repetitions"]) #initial number was 10
         results = []
@@ -308,7 +308,7 @@ def run_calibration(server=None, prod_port=None, cons_port=None):
         #plt.plot(results["like1"],  marker='o')
         plt.plot(results["like1"], "r+")
         plt.show()
-        plt.ylabel("RMSE")
+        plt.ylabel("W_RMSE")
         plt.xlabel("Iteration")
         fig.savefig(f"{path_to_out_folder}/{nuts3_region_folder_name}_SCEUA_objectivefunctiontrace_MONICA.png", dpi=150)
         plt.close(fig)

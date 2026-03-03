@@ -1,0 +1,15 @@
+NUTS_ID,NUTS_NAME,region_id,_count,weight
+CZ010,Hlavní město Praha,"14",167,0.004
+CZ020,Středočeský kraj,"1",8637,0.201
+CZ042,Ústecký kraj,"2",3767,0.063
+CZ051,Liberecký kraj,"3",565,0.014
+CZ052,Královéhradecký kraj,"4",2995,0.068
+CZ031,Jihočeský kraj,"5",4315,0.109
+CZ053,Pardubický kraj,"6",2754,0.065
+CZ080,Moravskoslezský kraj,"7",1932,0.048
+CZ071,Olomoucký kraj,"8",2537,0.066
+CZ041,Karlovarský kraj,"9",748,0.012
+CZ063,Kraj Vysočina,"10",4580,0.100
+CZ064,Jihomoravský kraj,"11",5791,0.127
+CZ032,Plzeňský kraj,"12",4058,0.089
+CZ072,Zlínský kraj,"13",1517,0.037

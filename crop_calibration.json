@@ -1,143 +1,148 @@
   {
 	"crops": {
-		"WW_dwd": {
+		"WW": {
 			"is-winter-crop": true,
 			"cropParams": {
 				"species": {
-  					"=": ["include-from-file", "crops/species/wheat.json"],
+  					"=": ["include-from-file", "crops/species/Pip/wheat_cz.json"],
 					"FieldConditionModifier": 1
 					
   				},
 				"cultivar": {
-  					"=": ["include-from-file", "crops/cultivars/winter-wheat_bs_dwd_pheno.json"],
-					"CropSpecificMaxRootingDepth": 1.3,
-					  "DaylengthRequirement": [
-						0,
-						20,
-						20,
-						20,
-						0,
-						0
-					],
-					"BaseDaylength": 
-						[
-						  0,
-						  0,
-						  7,
-						  7,
-						  0,
-						  0
-						],
-					"SpecificLeafArea": [
-						0.0018,
-						0.0016,
-						0.0012,
-						0.0010,
-						0.0010,
-						0.0010
-					],
-					"MaxAssimilationRate": 30
+  					"=": ["include-from-file", "crops/cultivars/Pip/winter-wheat_cz.json"]
 				}
 			},
 			"residueParams": ["include-from-file", "crops/residues/wheat.json"]
 		},
-		"WB_dwd": {
+		"WB": {
 			"is-winter-crop": true,
 			"cropParams": {
 				"species": {
-					"=": ["include-from-file", "crops/species/barley.json"]
+					"=": ["include-from-file", "crops/species/Pip/barley_cz.json"],
+					"FieldConditionModifier": 1
 				},
 				"cultivar": {
-					"=": ["include-from-file", "crops/cultivars/winter-barley_bs_dwd_pheno.json"],
-					"CropSpecificMaxRootingDepth": 0,
-					"VernalisationRequirement": 0
+					"=": ["include-from-file", "crops/cultivars/Pip/winter-barley_cz.json"]
 				}
 			},
 			"residueParams": ["include-from-file", "crops/residues/barley.json"]
 		},
-		"WR_dwd": {
+		"WR": {
 			"is-winter-crop": true,
 			"cropParams": {
 				"species": {
-					"=": ["include-from-file", "crops/species/rye.json"]
+					"=": ["include-from-file", "crops/species/Pip/rye_cz.json"],
+					"FieldConditionModifier": 1
 				},
 				"cultivar": {
-					"=": ["include-from-file", "crops/cultivars/winter-rye_hhf_dwd_pheno.json"],
-					"CropSpecificMaxRootingDepth": 0,
-					"VernalisationRequirement": 0
+					"=": ["include-from-file", "crops/cultivars/Pip/winter-rye_cz.json"]
 				}
 			},
 			"residueParams": ["include-from-file", "crops/residues/rye.json"]
 		},
-		"SB_dwd": {
-			"is-winter-crop": true,
+		"SB": {
+			"is-winter-crop": false,
 			"cropParams": {
 				"species": {
-					"=": ["include-from-file", "crops/species/barley.json"]
+					"=": ["include-from-file", "crops/species/Pip/barley_cz.json"],
+					"FieldConditionModifier": 1
 				},
 				"cultivar": {
-					"=": ["include-from-file", "crops/cultivars/spring-barley_hhf_dwd_pheno.json"],
-					"CropSpecificMaxRootingDepth": 0,
-					"VernalisationRequirement": 0
+					"=": ["include-from-file", "crops/cultivars/Pip/spring-barley_cz.json"]
 				}
 			},
 			"residueParams": ["include-from-file", "crops/residues/barley.json"]
 		},
-		"WRa_dwd": {
+		"WRa": {
 			"is-winter-crop": true,
 			"cropParams": {
 				"species": {
-					"=": ["include-from-file", "crops/species/rape.json"]
+					"=": ["include-from-file", "crops/species/Pip/rape_cz.json"],
+					"FieldConditionModifier": 1
 				},
 				"cultivar": {
-					"=": ["include-from-file", "crops/cultivars/winter-rape_dwd_pheno.json"],
-					"CropSpecificMaxRootingDepth": 0,
-					"VernalisationRequirement": 0
+					"=": ["include-from-file", "crops/cultivars/Pip/winter-rape_cz.json"]
 				}
 			},
 			"residueParams": ["include-from-file", "crops/residues/rape.json"]
 		},
-		"SM_dwd": {
-			"is-winter-crop": true,
+		"SM": {
+			"is-winter-crop": false,
 			"cropParams": {
 				"species": {
-					"=": ["include-from-file", "crops/species/maize.json"]
+					"=": ["include-from-file", "crops/species/Pip/maize_cz.json"],
+					"FieldConditionModifier": 1
 				},
 				"cultivar": {
-					"=": ["include-from-file", "crops/cultivars/silage-maize_bs_dwd_pheno.json"],
-					"CropSpecificMaxRootingDepth": 0,
-					"VernalisationRequirement": 0
+					"=": ["include-from-file", "crops/cultivars/Pip/silage-maize_cz.json"]
 				}
 			},
 			"residueParams": ["include-from-file", "crops/residues/maize.json"]
 		},
-		"SU_dwd": {
-			"is-winter-crop": true,
+		"SU": {
+			"is-winter-crop": false,
 			"cropParams": {
 				"species": {
-					"=": ["include-from-file", "crops/species/sugar-beet.json"]
+					"=": ["include-from-file", "crops/species/Pip/sugar-beet_cz.json"],
+					"FieldConditionModifier": 1
 				},
 				"cultivar": {
-					"=": ["include-from-file", "crops/cultivars/sugar-beet_bs_dwd_pheno.json"],
-					"CropSpecificMaxRootingDepth": 0,
-					"VernalisationRequirement": 0
+					"=": ["include-from-file", "crops/cultivars/Pip/sugar-beet_cz.json"]
 				}
 			},
 			"residueParams": ["include-from-file", "crops/residues/beet.json"]
 		},
 		"PO": {
-			"is-winter-crop": true,
+			"is-winter-crop": false,
 			"cropParams": {
 				"species": {
-					"=": ["include-from-file", "crops/species/potato.json"]
+					"=": ["include-from-file", "crops/species/Pip/potato_cz.json"],
+					"FieldConditionModifier": 1
 				},
 				"cultivar": {
-					"=": ["include-from-file", "crops/cultivars/moderately-early-potato.json"],
-					"CropSpecificMaxRootingDepth": 0,
-					"VernalisationRequirement": 0
+					"=": ["include-from-file", "crops/cultivars/Pip/moderately-early-potato_cz.json"]
 				}
 			},
 			"residueParams": ["include-from-file", "crops/residues/potato.json"]
+		},
+		"OA": {
+			"is-winter-crop": false,
+			"cropParams": {
+				"species": {
+					"=": ["include-from-file", "crops/species/Pip/oat_cz.json"],
+					"FieldConditionModifier": 1
+				},
+				"cultivar": {
+					"=": ["include-from-file", "crops/cultivars/Pip/oat_cz.json"]
+				}
+			},
+			"residueParams": ["include-from-file", "crops/residues/oat.json"]
+		},
+		"SW": {
+			"is-winter-crop": false,
+			"cropParams": {
+				"species": {
+					"=": ["include-from-file", "crops/species/Pip/wheat_cz.json"],
+					"FieldConditionModifier": 1
+				},
+				"cultivar": {
+					"=": ["include-from-file", "crops/cultivars/Pip/spring-wheat_cz.json"]
+				}
+			},
+			"residueParams": ["include-from-file", "crops/residues/wheat.json"]
+		},
+		"TRI": {
+			"is-winter-crop": false,
+			"cropParams": {
+				"species": {
+					"=": ["include-from-file", "crops/species/Pip/triticale_cz.json"],
+					"FieldConditionModifier": 1
+				},
+				"cultivar": {
+					"=": ["include-from-file", "crops/cultivars/Pip/winter-triticale_cz.json"]
+				}
+			},
+			"residueParams": ["include-from-file", "crops/residues/triticale.json"]
 		}
 	},
 	"fert-params": {
@@ -149,7 +154,7 @@
 		"WW_sfix_hauto": [{
 			"worksteps": [
 				{
-					"date": "0000-09-22", "type": "Sowing", "crop": ["ref", "crops", "WW_dwd"] 
+					"date": "0000-09-22", "type": "Sowing", "crop": ["ref", "crops", "WW"] 
 				},
 				{
 					"type": "NDemandFertilization",
@@ -194,7 +199,7 @@
 		"WB_sfix_hauto": [{
 			"worksteps": [
 				{
-					"date": "0000-09-22", "type": "Sowing", "crop": ["ref", "crops", "WB_dwd"] 
+					"date": "0000-09-22", "type": "Sowing", "crop": ["ref", "crops", "WB"] 
 				},
 				{
 					"type": "NDemandFertilization",
@@ -226,7 +231,7 @@
 		"WR_sfix_hauto": [{
 			"worksteps": [
 				{
-					"date": "0000-09-22", "type": "Sowing", "crop": ["ref", "crops", "WR_dwd"] 
+					"date": "0000-09-22", "type": "Sowing", "crop": ["ref", "crops", "WR"] 
 				},
 				{
 					"type": "NDemandFertilization",
@@ -258,7 +263,7 @@
 		"SB_sfix_hauto": [{
 			"worksteps": [
 				{
-					"date": "0000-03-01", "type": "Sowing", "crop": ["ref", "crops", "SB_dwd"] 
+					"date": "0000-03-01", "type": "Sowing", "crop": ["ref", "crops", "SB"] 
 				},
 				{
 					"type": "NDemandFertilization",
@@ -290,7 +295,7 @@
 		"WRa_sfix_hauto": [{
 			"worksteps": [
 				{
-					"date": "0000-09-22", "type": "Sowing", "crop": ["ref", "crops", "WRa_dwd"]
+					"date": "0000-09-22", "type": "Sowing", "crop": ["ref", "crops", "WRa"]
 				},
 				{
 					"type": "NDemandFertilization",
@@ -330,7 +335,7 @@
 		"SM_sfix_hauto": [{
 			"worksteps": [
 				{
-					"date": "0000-03-31", "type": "Sowing", "crop": ["ref", "crops", "SM_dwd"]
+					"date": "0000-03-31", "type": "Sowing", "crop": ["ref", "crops", "SM"]
 				},
 				{
 					"type": "NDemandFertilization",
@@ -370,7 +375,7 @@
 		"SU_sfix_hauto": [{
 			"worksteps": [
 				{
-					"date": "0000-04-01", "type": "Sowing", "crop": ["ref", "crops", "SU_dwd"]
+					"date": "0000-04-01", "type": "Sowing", "crop": ["ref", "crops", "SU"]
 				},
 				{
 					"type": "NDemandFertilization",
@@ -443,6 +448,102 @@
 					"max-%-asw": 99.0,
 					"max-3d-precip-sum": 5,
 					"max-curr-day-precip": 0.5,
+					"harvest-time": "maturity"
+				}
+			]
+		}],
+		"OA_sfix_hauto": [{
+			"worksteps": [
+				{
+					"date": "0000-03-01", "type": "Sowing", "crop": ["ref", "crops", "OA"] 
+				},
+				{
+					"type": "NDemandFertilization",
+					"days": 55,
+					"after": "Sowing",
+					"N-demand": [50.0, "kg"],
+					"depth": [0.9, "m"],
+					"partition": ["include-from-file", "mineral-fertilisers/AN.json"]
+				  },
+				  {
+					"type": "NDemandFertilization",
+					"days": 150,
+					"after": "Sowing",
+					"N-demand": [90.0, "kg"],
+					"depth": [0.9, "m"],
+					"partition": ["include-from-file", "mineral-fertilisers/AN.json"]
+				  },
+				{ 
+					"type": "AutomaticHarvest", 
+					"latest-date": "0000-09-07",
+					"min-%-asw": 0,
+					"max-%-asw": 99.0,
+					"max-3d-precip-sum": 2,
+					"max-curr-day-precip": 0.1,
+					"harvest-time": "maturity"
+				}
+			]
+		}],
+		"SW_sfix_hauto": [{
+			"worksteps": [
+				{
+					"date": "0000-03-01", "type": "Sowing", "crop": ["ref", "crops", "SW"] 
+				},
+				{
+					"type": "NDemandFertilization",
+					"days": 55,
+					"after": "Sowing",
+					"N-demand": [50.0, "kg"],
+					"depth": [0.9, "m"],
+					"partition": ["include-from-file", "mineral-fertilisers/AN.json"]
+				  },
+				  {
+					"type": "NDemandFertilization",
+					"days": 150,
+					"after": "Sowing",
+					"N-demand": [90.0, "kg"],
+					"depth": [0.9, "m"],
+					"partition": ["include-from-file", "mineral-fertilisers/AN.json"]
+				  },
+				{ 
+					"type": "AutomaticHarvest", 
+					"latest-date": "0000-09-07",
+					"min-%-asw": 0,
+					"max-%-asw": 99.0,
+					"max-3d-precip-sum": 2,
+					"max-curr-day-precip": 0.1,
+					"harvest-time": "maturity"
+				}
+			]
+		}],
+		"TRI_sfix_hauto": [{
+			"worksteps": [
+				{
+					"date": "0000-03-01", "type": "Sowing", "crop": ["ref", "crops", "TRI"] 
+				},
+				{
+					"type": "NDemandFertilization",
+					"days": 55,
+					"after": "Sowing",
+					"N-demand": [50.0, "kg"],
+					"depth": [0.9, "m"],
+					"partition": ["include-from-file", "mineral-fertilisers/AN.json"]
+				  },
+				  {
+					"type": "NDemandFertilization",
+					"days": 150,
+					"after": "Sowing",
+					"N-demand": [90.0, "kg"],
+					"depth": [0.9, "m"],
+					"partition": ["include-from-file", "mineral-fertilisers/AN.json"]
+				  },
+				{ 
+					"type": "AutomaticHarvest", 
+					"latest-date": "0000-09-07",
+					"min-%-asw": 0,
+					"max-%-asw": 99.0,
+					"max-3d-precip-sum": 2,
+					"max-curr-day-precip": 0.1,
 					"harvest-time": "maturity"
 				}
 			]

@@ -64,14 +64,14 @@ def run_calibration(server=None, prod_port=None, cons_port=None):
         "site.json": "site.json",
         "setups-file": "sim_setups_calibration.csv",
         "path_to_out": "out/",
-        "run-setups": "[1]",
+        "run-setups": "[1]", ## Define on rundeck ##
         "path_to_channel": "/home/berg/GitHub/mas-infrastructure/src/cpp/common/_cmake_debug/channel" if local_run else
         "/home/rpm/start_manual_test_services/GitHub/mas-infrastructure/src/cpp/common/_cmake_release/channel",
         "path_to_python": "python" if local_run else "/home/rpm/.conda/envs/clim4cast/bin/python",
-        "repetitions": "5",
+        "repetitions": "5", ## Define on rundeck ##
         "test_mode": "false",
-        "all_nuts3_regions_one_by_one": False,
-        "only_nuts3_region_ids": "[]",  # "[]",
+        "all_nuts3_regions_one_by_one": False, ## Define on rundeck ##
+        "only_nuts3_region_ids": "[]",  ## Define on rundeck ##
     }
 
     common.update_config(config, sys.argv, print_config=True, allow_new_keys=False)
@@ -125,7 +125,7 @@ def run_calibration(server=None, prod_port=None, cons_port=None):
 
     crop_to_observations = defaultdict(list)
     nuts3_region_id_to_name = {}
-    with (open("Winter_Wheat_Calibration.csv") as file):
+    with (open("calibration_WW.csv") as file): # Define per crop #
         dialect = csv.Sniffer().sniff(file.read(), delimiters=';,\t')
         file.seek(0)
         reader = csv.reader(file, dialect)
@@ -136,7 +136,7 @@ def run_calibration(server=None, prod_port=None, cons_port=None):
             nuts3_region_id_to_name[id] = name
             for i in range(1, 24):
                 yield_t = float(row[i])
-                crop_to_observations["WW"].append({
+                crop_to_observations["WW"].append({ ## Will this need to change?##
                     "id": id,
                     "year": 2000 + i - 1,
                     "value": np.nan if yield_t < 0.0 else yield_t * 1000.0  # t/ha -> kg/ha nan is -9999
@@ -150,7 +150,7 @@ def run_calibration(server=None, prod_port=None, cons_port=None):
 
     # read parameters which are to be calibrated
     params = []
-    with open("calibratethese.csv") as params_csv:
+    with open("calibratethese.csv") as params_csv: # Define per crop #
         dialect = csv.Sniffer().sniff(params_csv.read(), delimiters=';,\t')
         params_csv.seek(0)
         reader = csv.reader(params_csv, dialect)
@@ -168,7 +168,7 @@ def run_calibration(server=None, prod_port=None, cons_port=None):
 
     # read weights
     weights = {}
-    with open("Weights.csv") as weights_csv:
+    with open("Weights_WW.csv") as weights_csv: # Define per crop #
         dialect = csv.Sniffer().sniff(weights_csv.read(), delimiters=';,\t')
         weights_csv.seek(0)
         reader = csv.reader(weights_csv, dialect)

@@ -1,0 +1,222 @@
+{
+	"CultivarName": "winter rape",
+	"metadata": {
+		"description": "Calibrated for MACSUR crop rotation exercise for Czech Republic",
+		"parameter version": 1,
+		"model version": 2.1
+	},
+	"WinterCrop": true,
+	"AssimilatePartitioningCoeff": [
+		[
+			0.5,
+			0.5,
+			0,
+			0
+		],
+		[
+			0.2,
+			0.4,
+			0.4,
+			0
+		],
+		[
+			0.13,
+			0.17,
+			0.7,
+			0
+		],
+		[
+			0,
+			0,
+			0.1,
+			0.9
+		],
+		[
+			0,
+			0,
+			0,
+			0
+		],
+		[
+			0,
+			0,
+			0,
+			0
+		]
+	],
+	"BaseDaylength": [
+		[
+			0,
+			0,
+			5.72251,
+			6.98432,
+			0,
+			0
+		],
+		"h"
+	],
+	"BeginSensitivePhaseHeatStress": [
+		0,
+		"°C d"
+	],
+	"CriticalTemperatureHeatStress": [
+		31,
+		"°C"
+	],
+	"CropHeightP1": 9,
+	"CropHeightP2": 0.35,
+	"CropSpecificMaxRootingDepth": 1.4,
+	"DaylengthRequirement": [
+		[
+			0,
+			19.0624,
+			14.9232,
+			18.2631,
+			0,
+			0
+		],
+		"h"
+	],
+	"Description": "",
+	"DroughtStressThreshold": [
+		0.8,
+		0.8,
+		0.8,
+		0.8,
+		0.8,
+		0.8
+	],
+	"EndSensitivePhaseHeatStress": [
+		0,
+		"°C d"
+	],
+	"FrostDehardening": 5.05,
+	"FrostHardening": 0.014,
+	"HeatSumIrrigationEnd": 1000,
+	"HeatSumIrrigationStart": 450,
+	"LT50cultivar": -18,
+	"LatestHarvestDoy": -1,
+	"LowTemperatureExposure": 0.654,
+	"MaxAssimilationRate": 47.4471,
+	"MaxCropHeight": [
+		0.8,
+		"m"
+	],
+	"OptimumTemperature": [
+		[
+			30,
+			30,
+			30,
+			30,
+			30,
+			30
+		],
+		"°C"
+	],
+	"OrganIdsForCutting": [],
+	"OrganIdsForPrimaryYield": [
+		{
+			"organId": 4,
+			"type": "YieldComponent",
+			"yieldDryMatter": 0.91,
+			"yieldPercentage": 0.55
+		}
+	],
+	"OrganIdsForSecondaryYield": [
+		{
+			"organId": 2,
+			"type": "YieldComponent",
+			"yieldDryMatter": 0.35,
+			"yieldPercentage": 0.85
+		},
+		{
+			"organId": 3,
+			"type": "YieldComponent",
+			"yieldDryMatter": 0.35,
+			"yieldPercentage": 0.85
+		}
+	],
+	"OrganSenescenceRate": [
+		[
+			0,
+			0,
+			0,
+			0
+		],
+		[
+			0,
+			0,
+			0,
+			0
+		],
+		[
+			0,
+			0,
+			0,
+			0
+		],
+		[
+			0,
+			0.01,
+			0,
+			0
+		],
+		[
+			0,
+			0.01,
+			0,
+			0
+		],
+		[
+			0,
+			0.01,
+			0,
+			0
+		]
+	],
+	"Perennial": false,
+	"ResidueNRatio": 0.3,
+	"RespiratoryStress": 0.54,
+	"SpecificLeafArea": [
+		[
+			0.002,
+			0.002,
+			0.002,
+			0.002,
+			0.002,
+			0.002
+		],
+		"ha kg-1"
+	],
+	"StageKcFactor": [
+		[
+			0.781539,
+			1.17709,
+			1.19139,
+			1.25664,
+			0.760043,
+			0.680487
+		],
+		"1;0"
+	],
+	"StageTemperatureSum": [
+		[
+			171.688,
+			364.171,
+			159.009,
+			280.775,
+			827.784,
+			27.5796
+		],
+		"°C d"
+	],
+	"VernalisationRequirement": [
+		0,
+		47.5465,
+		0,
+		0,
+		0,
+		0
+	],
+	"type": "CultivarParameters"
+}

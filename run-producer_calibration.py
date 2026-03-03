@@ -83,17 +83,10 @@ PATHS = {
 #DATA_SOIL_DB = "cz/cz_soil_500_woesten.sqlite"
 DATA_SOIL_DB = "/beegfs/common/data/soilgrids/cz_soil_500_woesten.sqlite"
 # SOIL_DB_URL = "https://github.com/zalf-rpm/monica-cz_clim4cast/raw/refs/heads/main/data/cz/cz_soil_500_woesten.sqlite"
-DATA_GRID_HEIGHT = "cz/cz-dem_500_32633_etrs89-utm33n.asc"
-DATA_GRID_SLOPE = "cz/cz-slope_500_32633_etrs89-utm33n.asc"
-#DATA_GRID_LAND_USE = "germany/landuse_1000_31469_gk5.asc"
-DATA_GRID_SOIL = "cz/cz-soil_500_32633_etrs89-utm33n.asc"
-DATA_GRID_SOIL_OW = "germany/buek200_1000_25832_etrs89-utm32n_OW.asc"
-DATA_GRID_CROPS = "cz/cz-crop-cw_500_32633_etrs89-utm33n.asc" # Added as a cropmap for winter wheat OW
-# ORIGINAL DATA_GRID_SOIL = "germany/buek200_1000_25832_etrs89-utm32n.asc"
-# DATA_GRID_CROPS = "germany/crops-all2017-2019_1000_25832_etrs89-utm32n.asc"
-# DATA_GRID_CROPS = "germany/dwd-stations-pheno_1000_25832_etrs89-utm32n.asc"
-# DATA_GRID_CROPS = "germany/germany-complete_1000_25832_etrs89-utm32n.asc"
-#TEMPLATE_PATH_LATLON = "{path_to_climate_dir}/latlon-to-rowcol.json"
+DATA_GRID_HEIGHT = "cz/cz_dem_500_32633_etrs89-utm33n.asc"
+DATA_GRID_SLOPE = "cz/cz_slope_500_32633_etrs89-utm33n.asc"
+DATA_GRID_SOIL = "cz/cz_soil_500_32633_etrs89-utm33n.asc"
+DATA_GRID_CROPS = "cz/cz_crop-ww_500_32633_etrs89-utm33n.asc" ## Define per crop ##
 TEMPLATE_PATH_LATLON = "cz/cz_latlon-to-rowcol.json"
 
 # Additional data for masking the regions
@@ -119,11 +112,11 @@ def run_producer(server={"server": None, "port": None}):
         "sim.json": "sim_calibration.json",
         "crop.json": "crop_calibration.json",
         "site.json": "site.json",
-        "setups-file": "sim_setups_calibration_OW.csv",
+        "setups-file": "sim_setups_calibration.csv", ## This does not exist any more?!##
         "run-setups": "[1]",
         "reader_sr": None,
         "path_to_out": "out/",
-        "only_nuts3_region_ids": "[]",  # "[10]",
+        "only_nuts3_region_ids": "[]",  ## Define on rundeck ##
     }
 
 
@@ -620,23 +613,23 @@ def run_producer(server={"server": None, "port": None}):
                             #env_template["cropRotation"][0]["worksteps"][0]["crop"]["cropParams"]["species"][
                                 #"FieldConditionModifier"] = float(setup["FieldConditionModifier"])
 
-                        if setup["StageTemperatureSum"]:
-                            stage_ts = setup["StageTemperatureSum"].split('_')
-                            stage_ts = [int(temp_sum) for temp_sum in stage_ts]
-                            orig_stage_ts = env_template["cropRotation"][0]["worksteps"][0]["crop"]["cropParams"]["cultivar"]["="][
-                                "StageTemperatureSum"][0]
-                            if len(stage_ts) != len(orig_stage_ts):
-                                stage_ts = orig_stage_ts
-                                with open(path_to_out_file, "a") as _:
-                                    _.write(f"{datetime.now()} The provided StageTemperatureSum array is not "
-                                            "sufficiently long. Falling back to original StageTemperatureSum\n")
-                                #print('The provided StageTemperatureSum array is not '
-                                #      'sufficiently long. Falling back to original StageTemperatureSum')
+                        # if setup["StageTemperatureSum"]: ## Be careful here ##
+                        #     stage_ts = setup["StageTemperatureSum"].split('_')
+                        #     stage_ts = [int(temp_sum) for temp_sum in stage_ts]
+                        #     orig_stage_ts = env_template["cropRotation"][0]["worksteps"][0]["crop"]["cropParams"]["cultivar"]["="][
+                        #         "StageTemperatureSum"][0]
+                        #     if len(stage_ts) != len(orig_stage_ts):
+                        #         stage_ts = orig_stage_ts
+                        #         with open(path_to_out_file, "a") as _:
+                        #             _.write(f"{datetime.now()} The provided StageTemperatureSum array is not "
+                        #                     "sufficiently long. Falling back to original StageTemperatureSum\n")
+                        #         #print('The provided StageTemperatureSum array is not '
+                        #         #      'sufficiently long. Falling back to original StageTemperatureSum')
 
-                            env_template["cropRotation"][0]["worksteps"][0]["crop"]["cropParams"]["cultivar"]["="][
-                                "StageTemperatureSum"][0] = stage_ts
+                        #     env_template["cropRotation"][0]["worksteps"][0]["crop"]["cropParams"]["cultivar"]["="][
+                        #         "StageTemperatureSum"][0] = stage_ts
 
-                        env_template["params"]["simulationParameters"]["UseNMinMineralFertilisingMethod"] = setup[
+                        env_template["params"]["simulationParameters"]["UseNMinMineralFertilisingMethod"] = setup[ ## Muss ich das auf true setzen?##
                             "fertilization"]
                         env_template["params"]["simulationParameters"]["UseAutomaticIrrigation"] = setup["irrigation"]
 

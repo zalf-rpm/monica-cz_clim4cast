@@ -102,7 +102,7 @@ def run_consumer(server=None, port=None):
                     results = data.get("results", [])
                     for vals in results:
                         if "Year" in vals:
-                            nuts3_region_id_to_year_to_yields[nuts3_region_id][int(vals["Year"])].append(vals["Yield"]*1.16)
+                            nuts3_region_id_to_year_to_yields[nuts3_region_id][int(vals["Year"])].append(vals["Yield"]*1.16) ## Conversion to fresh matter yields ##
 
             if no_of_envs_expected == envs_received and writer:
                 with open(path_to_out_file, "a") as _:

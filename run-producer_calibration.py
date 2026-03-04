@@ -81,7 +81,8 @@ PATHS = {
 }
 
 #DATA_SOIL_DB = "cz/cz_soil_500_woesten.sqlite"
-DATA_SOIL_DB = "/beegfs/common/data/soilgrids/cz_soil_500_woesten.sqlite"
+# DATA_SOIL_DB = "/beegfs/common/data/soilgrids/cz_soil_500_woesten.sqlite"
+DATA_SOIL_DB = "cz/cz_soil_500_woesten.sqlite"
 # SOIL_DB_URL = "https://github.com/zalf-rpm/monica-cz_clim4cast/raw/refs/heads/main/data/cz/cz_soil_500_woesten.sqlite"
 DATA_GRID_HEIGHT = "cz/cz_dem_500_32633_etrs89-utm33n.asc"
 DATA_GRID_SLOPE = "cz/cz_slope_500_32633_etrs89-utm33n.asc"
@@ -112,8 +113,7 @@ def run_producer(server={"server": None, "port": None}):
         "sim.json": "sim_calibration.json",
         "crop.json": "crop_calibration.json",
         "site.json": "site.json",
-        "setups-file": "sim_setups_calibration.csv", ## This does not exist any more?!##
-        "run-setups": "[1]",
+        "setups-file": "sim_setups_calibration.csv", 
         "reader_sr": None,
         "path_to_out": "out/",
         "only_nuts3_region_ids": "[]",  ## Define on rundeck ##

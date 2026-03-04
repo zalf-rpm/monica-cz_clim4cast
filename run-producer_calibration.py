@@ -105,7 +105,7 @@ def run_producer(server={"server": None, "port": None}):
     # config_and_no_data_socket = context.socket(zmq.PUSH)
 
     config = {
-        "mode": "mbm-local-remote",
+        "mode": "hpc-local-remote",
         "server-port": server["port"] if server["port"] else "6666",
         "server": server["server"] if server["server"] else "login01.cluster.zalf.de",
         "start-row": "0",

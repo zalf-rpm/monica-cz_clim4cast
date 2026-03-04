@@ -81,18 +81,18 @@ PATHS = {
     },
 }
 
-#DATA_SOIL_DB = "cz/cz_soil_500_woesten.sqlite"
-# DATA_SOIL_DB = "/beegfs/common/data/soilgrids/cz_soil_500_woesten.sqlite"
-DATA_SOIL_DB = "cz/cz_soil_500_woesten.sqlite"
-# SOIL_DB_URL = "https://github.com/zalf-rpm/monica-cz_clim4cast/raw/refs/heads/main/data/cz/cz_soil_500_woesten.sqlite"
-DATA_GRID_HEIGHT = "cz/cz_dem_500_32633_etrs89-utm33n.asc"
-DATA_GRID_SLOPE = "cz/cz_slope_500_32633_etrs89-utm33n.asc"
-DATA_GRID_SOIL = "cz/cz_soil_500_32633_etrs89-utm33n.asc"
-DATA_GRID_CROPS = "cz/cz_crop-ww_500_32633_etrs89-utm33n.asc" ## Define per crop ##
-TEMPLATE_PATH_LATLON = "cz/cz_latlon-to-rowcol.json"
+#DATA_SOIL_DB = "cz/cz-soil_500_woesten.sqlite"
+# DATA_SOIL_DB = "/beegfs/common/data/soilgrids/cz-soil_500_woesten.sqlite"
+DATA_SOIL_DB = "cz/cz-soil_500_woesten.sqlite"
+# SOIL_DB_URL = "https://github.com/zalf-rpm/monica-cz_clim4cast/raw/refs/heads/main/data/cz/cz-soil_500_woesten.sqlite"
+DATA_GRID_HEIGHT = "cz/cz-dem_500_32633_etrs89-utm33n.asc"
+DATA_GRID_SLOPE = "cz/cz-slope_500_32633_etrs89-utm33n.asc"
+DATA_GRID_SOIL = "cz/cz-soil_500_32633_etrs89-utm33n.asc"
+DATA_GRID_CROPS = "cz/cz-crop-ww_500_32633_etrs89-utm33n.asc" ## Define per crop ##
+TEMPLATE_PATH_LATLON = "cz/cz-latlon-to-rowcol.json"
 
 # Additional data for masking the regions
-NUTS3_REGIONS = "data/cz/cz_nuts3_32633.shp"
+NUTS3_REGIONS = "data/cz/cz-nuts3_32633.shp"
 
 #TEMPLATE_PATH_HARVEST = "{path_to_data_dir}/projects/monica-germany/ILR_SEED_HARVEST_doys_{crop_id}.csv"
 

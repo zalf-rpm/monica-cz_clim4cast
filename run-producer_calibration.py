@@ -115,6 +115,7 @@ def run_producer(server={"server": None, "port": None}):
         "crop.json": "crop_calibration.json",
         "site.json": "site.json",
         "setups-file": "sim_setups_calibration.csv", 
+        "run-setups": "[1]",
         "reader_sr": None,
         "path_to_out": "out/",
         "only_nuts3_region_ids": "[]",  ## Define on rundeck ##

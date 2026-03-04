@@ -74,7 +74,8 @@ PATHS = {
         # "path-to-climate-dir": "/beegfs/common/data/soil/global_soil_dataset_for_earth_system_modeling/",
         # mounted path to archive or hard drive with climate data
         "path-to-climate-dir": "/beegfs/common/data/climate/",  # mounted path to archive or hard drive with climate data
-        "monica-path-to-climate-dir": "/monica_data/climate-data/",
+        # "monica-path-to-climate-dir": "/monica_data/climate-data/",
+        "monica-path-to-climate-dir": "/beegfs/common/data/climate/",
         # mounted path to archive accessable by monica executable
         "path-to-data-dir": "./data/",  # mounted path to archive or hard drive with data
     },

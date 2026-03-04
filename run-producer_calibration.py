@@ -92,7 +92,7 @@ DATA_GRID_CROPS = "cz/cz-crop-ww_500_32633_etrs89-utm33n.asc" ## Define per crop
 TEMPLATE_PATH_LATLON = "cz/cz-latlon-to-rowcol.json"
 
 # Additional data for masking the regions
-NUTS3_REGIONS = "data/cz/cz-nuts3_32633.shp"
+NUTS3_REGIONS = "data/cz/cz_nuts3_32633.shp"
 
 #TEMPLATE_PATH_HARVEST = "{path_to_data_dir}/projects/monica-germany/ILR_SEED_HARVEST_doys_{crop_id}.csv"
 

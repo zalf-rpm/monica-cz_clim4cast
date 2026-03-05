@@ -78,7 +78,7 @@ PATHS = {
         #"monica-path-to-climate-dir": "/beegfs/common/data/climate/",
         # mounted path to archive accessable by monica executable
         "path-to-data-dir": "./data/",  # mounted path to archive or hard drive with data
-    },
+    }
 }
 
 #DATA_SOIL_DB = "cz/cz-soil_500_woesten.sqlite"

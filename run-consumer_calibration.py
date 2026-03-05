@@ -93,7 +93,7 @@ def run_consumer(server=None, port=None):
                 envs_received += 1
 
                  with open(path_to_out_file, "a") as _:
-                     _.write(f"received result customId: {custom_id}\nerrors: {msg.get('errors',"no errors")} result: {msg.get('data',[])}\n")
+                    _.write(f"received result customId: {custom_id}\nerrors: {msg.get('errors',"no errors")} result: {msg.get('data',[])}\n")
                 # print("received result customId:", custom_id)
 
                 #with open(path_to_out_file, "a") as _:

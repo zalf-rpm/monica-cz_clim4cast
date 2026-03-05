@@ -88,7 +88,7 @@ DATA_SOIL_DB = "/beegfs/common/data/soil/cz-soil_500_woesten.sqlite"
 DATA_GRID_HEIGHT = "cz/cz-dem_500_32633_etrs89-utm33n.asc"
 DATA_GRID_SLOPE = "cz/cz-slope_500_32633_etrs89-utm33n.asc"
 DATA_GRID_SOIL = "cz/cz-soil_500_32633_etrs89-utm33n.asc"
-DATA_GRID_CROPS = "cz/cz-crop-sb_500_32633_etrs89-utm33n.asc" ## Define per crop ##
+DATA_GRID_CROPS = "cz/cz-crop-wra_500_32633_etrs89-utm33n.asc" ## Define per crop ##
 TEMPLATE_PATH_LATLON = "cz/cz-latlon-to-rowcol.json"
 
 # Additional data for masking the regions

@@ -641,7 +641,7 @@ def run_producer(server={"server": None, "port": None}):
 
                         climate_csv_path = (paths["monica-path-to-climate-dir"] +
                                             f"czechglobe/hist_csv_1961-01-01_to_2023-01-01/row-{crow}/col-{ccol}.csv.gz")
-                        env_template["pathToClimateCSV"] = "/beegfs/common/data/col-304.csv" #climate_csv_path
+                        env_template["pathToClimateCSV"] = "/beegfs/common/data/col-304.csv.gz" #climate_csv_path
                         with open(path_to_out_file, "a") as _:
                             _.write(f"{datetime.now()} pathToClimateCSV: {env_template['pathToClimateCSV']}\n")
 

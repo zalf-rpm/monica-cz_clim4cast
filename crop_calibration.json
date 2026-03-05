@@ -9,7 +9,16 @@
 					
   				},
 				"cultivar": {
-  					"=": ["include-from-file", "crops/cultivars/Pip/winter-wheat_cz.json"]
+  					"=": ["include-from-file", "crops/cultivars/Pip/winter-wheat_cz.json"],
+					"CropSpecificMaxRootingDepth": 1.3,
+					"SpecificLeafArea": [
+						0.0018,
+						0.0016,
+						0.0012,
+						0.0010,
+						0.0010,
+						0.0010
+					]
 				}
 			},
 			"residueParams": ["include-from-file", "crops/residues/wheat.json"]

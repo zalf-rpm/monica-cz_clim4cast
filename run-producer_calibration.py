@@ -74,8 +74,8 @@ PATHS = {
         # "path-to-climate-dir": "/beegfs/common/data/soil/global_soil_dataset_for_earth_system_modeling/",
         # mounted path to archive or hard drive with climate data
         "path-to-climate-dir": "/beegfs/common/data/climate/",  # mounted path to archive or hard drive with climate data
-        # "monica-path-to-climate-dir": "/monica_data/climate-data/",
-        "monica-path-to-climate-dir": "/beegfs/common/data/climate/",
+        "monica-path-to-climate-dir": "/monica_data/climate-data/",
+        #"monica-path-to-climate-dir": "/beegfs/common/data/climate/",
         # mounted path to archive accessable by monica executable
         "path-to-data-dir": "./data/",  # mounted path to archive or hard drive with data
     },
@@ -639,10 +639,10 @@ def run_producer(server={"server": None, "port": None}):
 
                         env_template["csvViaHeaderOptions"] = sim_json["climate.csv-options"]
 
-                        # climate_csv_path = (paths["monica-path-to-climate-dir"] +
-                        #                     f"czechglobe/hist_csv_1961-01-01_to_2023-01-01/row-{crow}/col-{ccol}.csv.gz")
-                        # env_template["pathToClimateCSV"] = climate_csv_path
-                        env_template["pathToClimateCSV"] = "/beegfs/common/data/col-304.csv"
+                        climate_csv_path = (paths["monica-path-to-climate-dir"] +
+                                            f"czechglobe/hist_csv_1961-01-01_to_2023-01-01/row-{crow}/col-{ccol}.csv.gz")
+                        env_template["pathToClimateCSV"] = climate_csv_path
+                        #env_template["pathToClimateCSV"] = "/beegfs/common/data/col-304.csv"
                         # with open(path_to_out_file, "a") as _:
                         #     _.write(f"{datetime.now()} pathToClimateCSV: {env_template['pathToClimateCSV']}\n")
 

@@ -9,7 +9,17 @@
 					
   				},
 				"cultivar": {
-  					"=": ["include-from-file", "crops/cultivars/Pip/winter-wheat_cz.json"]
+  					"=": ["include-from-file", "crops/cultivars/Pip/winter-wheat_cz.json"],
+					  "CropSpecificMaxRootingDepth": 1.3,
+					  "MaxAssimilationRate": 30,
+					  "SpecificLeafArea": [
+						  0.0018,
+						  0.0016,
+						  0.0012,
+						  0.0010,
+						  0.0010,
+						  0.0010
+					  ]
 				}
 			},
 			"residueParams": ["include-from-file", "crops/residues/wheat.json"]
@@ -22,7 +32,17 @@
 					"FieldConditionModifier": 1
 				},
 				"cultivar": {
-					"=": ["include-from-file", "crops/cultivars/Pip/winter-barley_cz.json"]
+					"=": ["include-from-file", "crops/cultivars/Pip/winter-barley_cz.json"],
+					"CropSpecificMaxRootingDepth": 1.3,
+					"MaxAssimilationRate": 30,
+					"SpecificLeafArea": [
+						0.0018,
+						0.0016,
+						0.0012,
+						0.0010,
+						0.0010,
+						0.0010
+					]
 				}
 			},
 			"residueParams": ["include-from-file", "crops/residues/barley.json"]
@@ -35,7 +55,17 @@
 					"FieldConditionModifier": 1
 				},
 				"cultivar": {
-					"=": ["include-from-file", "crops/cultivars/Pip/winter-rye_cz.json"]
+					"=": ["include-from-file", "crops/cultivars/Pip/winter-rye_cz.json"],
+					"CropSpecificMaxRootingDepth": 1.3,
+					"MaxAssimilationRate": 30,
+					"SpecificLeafArea": [
+						0.0018,
+						0.0016,
+						0.0012,
+						0.0010,
+						0.0010,
+						0.0010
+					]
 				}
 			},
 			"residueParams": ["include-from-file", "crops/residues/rye.json"]
@@ -48,7 +78,17 @@
 					"FieldConditionModifier": 1
 				},
 				"cultivar": {
-					"=": ["include-from-file", "crops/cultivars/Pip/spring-barley_cz.json"]
+					"=": ["include-from-file", "crops/cultivars/Pip/spring-barley_cz.json"],
+					"CropSpecificMaxRootingDepth": 1.3,
+					"MaxAssimilationRate": 30,
+					"SpecificLeafArea": [
+						0.0018,
+						0.0016,
+						0.0012,
+						0.0010,
+						0.0010,
+						0.0010
+					]
 				}
 			},
 			"residueParams": ["include-from-file", "crops/residues/barley.json"]
@@ -61,7 +101,17 @@
 					"FieldConditionModifier": 1
 				},
 				"cultivar": {
-					"=": ["include-from-file", "crops/cultivars/Pip/winter-rape_cz.json"]
+					"=": ["include-from-file", "crops/cultivars/Pip/winter-rape_cz.json"],
+					"CropSpecificMaxRootingDepth": 1.3,
+					"MaxAssimilationRate": 30,
+					"SpecificLeafArea": [
+						0.0018,
+						0.0016,
+						0.0012,
+						0.0010,
+						0.0010,
+						0.0010
+					]
 				}
 			},
 			"residueParams": ["include-from-file", "crops/residues/rape.json"]
@@ -74,7 +124,17 @@
 					"FieldConditionModifier": 1
 				},
 				"cultivar": {
-					"=": ["include-from-file", "crops/cultivars/Pip/silage-maize_cz.json"]
+					"=": ["include-from-file", "crops/cultivars/Pip/silage-maize_cz.json"],
+					"CropSpecificMaxRootingDepth": 1.3,
+					"MaxAssimilationRate": 30,
+					"SpecificLeafArea": [
+						0.0018,
+						0.0016,
+						0.0012,
+						0.0010,
+						0.0010,
+						0.0010
+					]
 				}
 			},
 			"residueParams": ["include-from-file", "crops/residues/maize.json"]
@@ -87,7 +147,17 @@
 					"FieldConditionModifier": 1
 				},
 				"cultivar": {
-					"=": ["include-from-file", "crops/cultivars/Pip/sugar-beet_cz.json"]
+					"=": ["include-from-file", "crops/cultivars/Pip/sugar-beet_cz.json"],
+					"CropSpecificMaxRootingDepth": 1.3,
+					"MaxAssimilationRate": 30,
+					"SpecificLeafArea": [
+						0.0018,
+						0.0016,
+						0.0012,
+						0.0010,
+						0.0010,
+						0.0010
+					]
 				}
 			},
 			"residueParams": ["include-from-file", "crops/residues/beet.json"]
@@ -100,7 +170,17 @@
 					"FieldConditionModifier": 1
 				},
 				"cultivar": {
-					"=": ["include-from-file", "crops/cultivars/Pip/moderately-early-potato_cz.json"]
+					"=": ["include-from-file", "crops/cultivars/Pip/moderately-early-potato_cz.json"],
+					"CropSpecificMaxRootingDepth": 1.3,
+					"MaxAssimilationRate": 30,
+					"SpecificLeafArea": [
+						0.0018,
+						0.0016,
+						0.0012,
+						0.0010,
+						0.0010,
+						0.0010
+					]
 				}
 			},
 			"residueParams": ["include-from-file", "crops/residues/potato.json"]
@@ -113,7 +193,17 @@
 					"FieldConditionModifier": 1
 				},
 				"cultivar": {
-					"=": ["include-from-file", "crops/cultivars/Pip/oat_cz.json"]
+					"=": ["include-from-file", "crops/cultivars/Pip/oat_cz.json"],
+					"CropSpecificMaxRootingDepth": 1.3,
+					"MaxAssimilationRate": 30,
+					"SpecificLeafArea": [
+						0.0018,
+						0.0016,
+						0.0012,
+						0.0010,
+						0.0010,
+						0.0010
+					]
 				}
 			},
 			"residueParams": ["include-from-file", "crops/residues/oat.json"]
@@ -126,7 +216,17 @@
 					"FieldConditionModifier": 1
 				},
 				"cultivar": {
-					"=": ["include-from-file", "crops/cultivars/Pip/spring-wheat_cz.json"]
+					"=": ["include-from-file", "crops/cultivars/Pip/spring-wheat_cz.json"],
+					"CropSpecificMaxRootingDepth": 1.3,
+					"MaxAssimilationRate": 30,
+					"SpecificLeafArea": [
+						0.0018,
+						0.0016,
+						0.0012,
+						0.0010,
+						0.0010,
+						0.0010
+					]
 				}
 			},
 			"residueParams": ["include-from-file", "crops/residues/wheat.json"]
@@ -139,7 +239,17 @@
 					"FieldConditionModifier": 1
 				},
 				"cultivar": {
-					"=": ["include-from-file", "crops/cultivars/Pip/winter-triticale_cz.json"]
+					"=": ["include-from-file", "crops/cultivars/Pip/winter-triticale_cz.json"],
+					"CropSpecificMaxRootingDepth": 1.3,
+					"MaxAssimilationRate": 30,
+					"SpecificLeafArea": [
+						0.0018,
+						0.0016,
+						0.0012,
+						0.0010,
+						0.0010,
+						0.0010
+					]
 				}
 			},
 			"residueParams": ["include-from-file", "crops/residues/triticale.json"]

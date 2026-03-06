@@ -150,7 +150,7 @@ def run_calibration(server=None, prod_port=None, cons_port=None):
 
     # read parameters which are to be calibrated
     params = []
-    with open("calibratethese_WW.csv") as params_csv: # Define per crop #
+    with open("calibratethese_WOR.csv") as params_csv: # Define per crop #
         dialect = csv.Sniffer().sniff(params_csv.read(), delimiters=';,\t')
         params_csv.seek(0)
         reader = csv.reader(params_csv, dialect)
@@ -168,7 +168,7 @@ def run_calibration(server=None, prod_port=None, cons_port=None):
 
     # read weights
     weights = {}
-    with open("Weights_WOR.csv") as weights_csv: # Define per crop #
+    with open("Weights_WW.csv") as weights_csv: # Define per crop #
         dialect = csv.Sniffer().sniff(weights_csv.read(), delimiters=';,\t')
         weights_csv.seek(0)
         reader = csv.reader(weights_csv, dialect)

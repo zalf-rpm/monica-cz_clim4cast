@@ -93,7 +93,7 @@
 			},
 			"residueParams": ["include-from-file", "crops/residues/barley.json"]
 		},
-		"WRa": {
+		"RA": {
 			"is-winter-crop": true,
 			"cropParams": {
 				"species": {
@@ -402,10 +402,10 @@
 				}
 			]
 		}],
-		"WRa_sfix_hauto": [{
+		"RA_sfix_hauto": [{
 			"worksteps": [
 				{
-					"date": "0000-09-22", "type": "Sowing", "crop": ["ref", "crops", "WRa"]
+					"date": "0000-09-22", "type": "Sowing", "crop": ["ref", "crops", "RA"]
 				},
 				{
 					"type": "NDemandFertilization",

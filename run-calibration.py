@@ -125,7 +125,7 @@ def run_calibration(server=None, prod_port=None, cons_port=None):
 
     crop_to_observations = defaultdict(list)
     nuts3_region_id_to_name = {}
-    with (open("calibration_WOR.csv") as file): # Define per crop #
+    with (open("calibration_WW.csv") as file): # Define per crop #
         dialect = csv.Sniffer().sniff(file.read(), delimiters=';,\t')
         file.seek(0)
         reader = csv.reader(file, dialect)
@@ -168,7 +168,7 @@ def run_calibration(server=None, prod_port=None, cons_port=None):
 
     # read weights
     weights = {}
-    with open("Weights_WW.csv") as weights_csv: # Define per crop #
+    with open("Weights_WOR.csv") as weights_csv: # Define per crop #
         dialect = csv.Sniffer().sniff(weights_csv.read(), delimiters=';,\t')
         weights_csv.seek(0)
         reader = csv.reader(weights_csv, dialect)

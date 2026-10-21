@@ -131,13 +131,13 @@ def run_calibration(server=None, prod_port=None, cons_port=None):
         reader = csv.reader(file, dialect)
         next(reader, None)  # skip the header
         for row in reader:
-            region_id = int(row["region_id"])
-            name = row["NUTS_id"].strip()
-            nuts3_region_id_to_name[region_id] = name
+            id = int(row[1])
+            name = row[0].strip()
+            nuts3_region_id_to_name[id] = name
             for year in range(1979, 2025):
-                yield_t = float(row[str(year)])
+                yield_t = float(row[year - 1979 + 2])
                 crop_to_observations["WW"].append({
-                    "id": region_id,
+                    "id": id,
                     "year": year,
                     "value": (
                         np.nan if yield_t < 0.0

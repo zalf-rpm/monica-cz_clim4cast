@@ -33,8 +33,11 @@ abs_imports = [str(PATH_TO_CAPNP_SCHEMAS)]
 fbp_capnp = capnp.load(str(PATH_TO_CAPNP_SCHEMAS / "fbp.capnp"), imports=abs_imports)
 
 class spot_setup(object):
-    #def __init__(self, user_params, observations, prod_writer, cons_reader, path_to_out, only_nuts3_region_ids):
-    def __init__(self, user_params, observations, prod_writer, cons_reader, path_to_out, only_nuts3_region_ids, weight_per_region):
+    # weight_per_region is kept for compatibility with the callers, but it is not used by the
+    # objective: a single constant weight scales the objective without changing the optimum and
+    # only makes like1 hard to interpret. like1 is the plain RMSE (kg/ha) over valid obs/sim pairs.
+    def __init__(self, user_params, observations, prod_writer, cons_reader, path_to_out, only_nuts3_region_ids,
+                 weight_per_region=None):
         self.user_params = user_params
         self.params = []
         self.observations = observations
@@ -84,6 +87,11 @@ class spot_setup(object):
         in_ip = msg.value.as_struct(fbp_capnp.IP)
         s: str = in_ip.content.as_text()
         nuts3_region_id_and_year_to_avg_yield = json.loads(s)
+        if len(nuts3_region_id_and_year_to_avg_yield) == 0:
+            # nothing was simulated (e.g. region ids unknown to the producer's region grid);
+            # stop instead of silently calibrating against nothing
+            raise RuntimeError(f"No simulation results received for regions {self.only_nuts3_region_ids}. "
+                               f"Check producer.out (number of sent envs) and the region ids.")
 
         #with open(self.path_to_out_file, "a") as _:
         #    _.write(f"{datetime.now()} jsons loaded cal-sp-set-M\n")
@@ -123,52 +131,40 @@ class spot_setup(object):
         #return unbiased_rmse_RB(evaluation, simulation)
         #return spotpy.objectivefunctions.rmse(evaluation, simulation)
         #return calculate_percentage_difference_new(evaluation, simulation)
-        return calculate_weighted_rmse(evaluation, simulation, self.weight_per_region)
+        return calculate_weighted_rmse(evaluation, simulation)
 
 
 
-def calculate_weighted_rmse(evaluation, simulation, weight_per_region):
+def calculate_weighted_rmse(evaluation, simulation, weights=None):
     """
-    Calculate the weighted RMSE (Root Mean Squared Error).
+    Weighted RMSE over all pairs where both observation and simulation are available.
 
     .. math::
 
-        RMSE_weighted = \\sqrt{\\frac{\\sum_{i=1}^N w_i * (sim_i - obs_i)^2}{\\sum_{i=1}^N w_i}}
+        RMSE_weighted = \\sqrt{\\frac{\\sum_{i} w_i (sim_i - obs_i)^2}{\\sum_{i} w_i}}
 
-        w_i = \\frac{pixels_i}{\\sum pixels}
+    With weights=None all pairs get the same weight, i.e. the plain RMSE (same unit as the yields).
+    Pairs where obs or sim is NaN (missing or left-out observations) are excluded from the
+    numerator and the denominator.
 
-    :param evaluation: Observed data to compare with simulation data.
-    :type evaluation: list or numpy array of numeric values
-
-    :param simulation: Simulated data to compare with evaluation data.
-    :type simulation: list or numpy array of numeric values
-
-    :param pixels: Number of pixels in each region.
-    :type pixels: list or numpy array of numeric values
-
-    :return: Weighted RMSE
-    :rtype: float
+    :param evaluation: observed values
+    :param simulation: simulated values, same length and order as evaluation
+    :param weights: optional weight per pair (e.g. region crop-area fraction), same length
+    :return: weighted RMSE
+    :raises RuntimeError: if there is no valid obs/sim pair (nothing to calibrate against)
     """
+    obs = np.asarray(evaluation, dtype=float)
+    sim = np.asarray(simulation, dtype=float)
+    w = np.ones_like(obs) if weights is None else np.asarray(weights, dtype=float)
+    if not (len(obs) == len(sim) == len(w)):
+        raise ValueError(f"evaluation ({len(obs)}), simulation ({len(sim)}) and weights ({len(w)}) "
+                         f"must have the same length")
 
-
-    if len(evaluation) == len(simulation):
-        obs = np.array(evaluation)
-        sim = np.array(simulation)
-        #pixels_array = np.array(pixels) It's used for weights calculation and they're already stored in the csv file
-        
-        # Calculate weights
-        #weights = pixels_array / np.sum(pixels_array)
-        
-        # Weighted squared differences
-        weighted_squared_diff = weight_per_region * (sim - obs) ** 2
-        
-        # Weighted RMSE calculation
-        weighted_rmse = np.sqrt(np.nansum(weighted_squared_diff) / 1)
-        
-        return weighted_rmse
-    else:
-        logging.warning("evaluation, simulation, and pixels must have the same non-zero length.")
-        return np.nan
+    valid = ~np.isnan(obs) & ~np.isnan(sim) & ~np.isnan(w)
+    if not valid.any() or w[valid].sum() <= 0:
+        raise RuntimeError("No valid observation/simulation pair: simulated region-years do not match "
+                           "any observed region-year.")
+    return np.sqrt(np.sum(w[valid] * (sim[valid] - obs[valid]) ** 2) / np.sum(w[valid]))
 
 
 
@@ -277,29 +273,6 @@ def calculate_mbe(evaluation, simulation):
     return mbe
 
 
-def rmse(evaluation, simulation):
-    """
-    Root Mean Squared Error
-
-        .. math::
-
-         RMSE=\\sqrt{\\frac{1}{N}\\sum_{i=1}^{N}(e_{i}-s_{i})^2}
-
-    :evaluation: Observed data to compared with simulation data.
-    :type: list
-
-    :simulation: simulation data to compared with evaluation data
-    :type: list
-
-    :return: Root Mean Squared Error
-    :rtype: float
-    """
-    if len(evaluation) == len(simulation) > 0:
-        return np.sqrt(mse(evaluation, simulation))
-    else:
-        logging.warning("evaluation and simulation lists do not have the same length.")
-        return np.nan
-
 #RB addition
 
 def unbiased_rmse_RB(evaluation, simulation):
@@ -320,40 +293,3 @@ def unbiased_rmse_RB(evaluation, simulation):
     #This will give bias corrected simulation.
     y_pred_adjusted = simulation - mbe
     return rmse(evaluation, y_pred_adjusted)
-
-
-
-def mse(evaluation, simulation):
-    """
-    Mean Squared Error
-
-        .. math::
-
-         MSE=\\frac{1}{N}\\sum_{i=1}^{N}(e_{i}-s_{i})^2
-
-    :evaluation: Observed data to compared with simulation data.
-    :type: list
-
-    :simulation: simulation data to compared with evaluation data
-    :type: list
-
-    :return: Mean Squared Error
-    :rtype: float
-    """
-
-    if len(evaluation) == len(simulation):
-        obs, sim = np.array(evaluation), np.array(simulation)
-        mse = np.nanmean((obs - sim) ** 2)
-        return mse
-    else:
-        #logging.warning(
-        #    "evaluation and simulation lists does not have the same length."
-        #)
-        return np.nan
-
-
-
-
-
-
-

@@ -1,4 +1,5 @@
 
+import atexit
 from datetime import datetime
 import capnp
 from collections import defaultdict
@@ -181,6 +182,8 @@ def run_calibration(server=None, prod_port=None, cons_port=None):
 
     # all inputs are fine -> start channels, producer and consumer
     procs = []
+    # make sure channels, producer and consumer are stopped even if the calibration raises an error
+    atexit.register(lambda: [proc.terminate() for proc in procs if proc.poll() is None])
 
     prod_chan_data = get_reader_writer_srs_from_channel(config["path_to_channel"], "prod_chan")
     procs.append(prod_chan_data["chan"])
@@ -322,7 +325,7 @@ def run_calibration(server=None, prod_port=None, cons_port=None):
         #plt.plot(results["like1"],  marker='o')
         plt.plot(results["like1"], "r+")
         plt.show()
-        plt.ylabel("W_RMSE")
+        plt.ylabel("RMSE (kg/ha)")
         plt.xlabel("Iteration")
         fig.savefig(f"{path_to_out_folder}/{nuts3_region_folder_name}_SCEUA_objectivefunctiontrace_MONICA.png", dpi=150)
         plt.close(fig)

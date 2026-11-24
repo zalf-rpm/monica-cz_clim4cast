@@ -88,7 +88,7 @@ DATA_SOIL_DB = "/beegfs/common/data/soil/buek200.sqlite"
 DATA_GRID_HEIGHT = "de/dem_1000_25832_etrs89-utm32n.asc"
 DATA_GRID_SLOPE = "de/slope_1000_25832_etrs89-utm32n.asc"
 DATA_GRID_SOIL = "de/buek200_1000_25832_etrs89-utm32n.asc"
-DATA_GRID_CROPS = "de/de-crop-ww_1000_25832_etrs89-utm32n.asc" ## Define per crop ##
+DATA_GRID_CROPS = "de/de-crop-{crop}_1000_25832_etrs89-utm32n.asc"  # {crop} is set from the setup's crop-id
 TEMPLATE_PATH_LATLON = "de/de-latlon-to-rowcol.json"
 
 # Additional data for masking the regions
@@ -211,8 +211,9 @@ def run_producer(server={"server": None, "port": None}):
     with open(path_to_out_file, "a") as _:
         _.write(f"{datetime.now()} read: {path_to_slope_grid}\n")
 
-    # crop mask data
-    path_to_crop_grid = paths["path-to-data-dir"] + DATA_GRID_CROPS
+    # crop mask data: chosen by the crop of the setup to run (e.g. "WW_sfix_hauto" -> de-crop-ww_...)
+    crop_short = setups[run_setups[0]]["crop-id"].split("_")[0].lower()
+    path_to_crop_grid = paths["path-to-data-dir"] + DATA_GRID_CROPS.format(crop=crop_short)
     crop_epsg_code = int(path_to_crop_grid.split("/")[-1].split("_")[2])
     crop_crs = CRS.from_epsg(crop_epsg_code)
     if crop_crs not in soil_crs_to_x_transformers:

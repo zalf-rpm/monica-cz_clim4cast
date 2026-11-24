@@ -97,38 +97,49 @@ def run_calibration(server=None, prod_port=None, cons_port=None):
     setup_id = run_setups[0]
     setup = setups[setup_id]
 
-    crop_to_observations = defaultdict(list)
+    # the crop is taken from the setup's crop-id (e.g. "WW_sfix_hauto" -> "WW"), so the input files
+    # always match the crop that the producer simulates
+    crop = setup["crop-id"].split("_")[0]
+    path_to_obs_csv = f"calibration_{crop}_de.csv"
+    path_to_weights_csv = f"Weights_{crop}_de.csv"
+    # prefer a German parameter file if there is one
+    path_to_params_csv = next((p for p in [f"calibratethese_{crop}_de.csv", f"calibratethese_{crop}.csv"]
+                               if os.path.exists(p)), None)
+    missing_files = [p for p in [path_to_obs_csv, path_to_weights_csv] if not os.path.exists(p)]
+    if path_to_params_csv is None:
+        missing_files.append(f"calibratethese_{crop}_de.csv or calibratethese_{crop}.csv")
+    if missing_files:
+        raise FileNotFoundError(f"run-calibration_de.py: missing input files for crop {crop}: {missing_files}")
+    with open(path_to_out_file, "a") as _:
+        _.write(f"{datetime.now()} crop: {crop}, observations: {path_to_obs_csv}, "
+                f"parameters: {path_to_params_csv}, weights: {path_to_weights_csv}\n")
+
+    # read observations (t/ha -> kg/ha, negative values = missing); years are taken from the header
+    observations = []
     nuts3_region_id_to_name = {}
-    with (open("calibration_WW_de.csv") as file): # Define per crop #
+    with open(path_to_obs_csv) as file:
         dialect = csv.Sniffer().sniff(file.read(), delimiters=';,\t')
         file.seek(0)
         reader = csv.reader(file, dialect)
-        next(reader, None)  # skip the header
+        years = [int(y) for y in next(reader)[2:]]
         for row in reader:
             id = int(row[1])
             name = row[0].strip()
             nuts3_region_id_to_name[id] = name
-            for year in range(1979, 2025):
-                yield_t = float(row[year - 1979 + 2])
-                crop_to_observations["WW"].append({
+            for year, value in zip(years, row[2:]):
+                yield_t = float(value)
+                observations.append({
                     "id": id,
                     "year": year,
-                    "value": (
-                        np.nan if yield_t < 0.0
-                        else yield_t * 1000.0
-                    )
+                    "value": np.nan if yield_t < 0.0 else yield_t * 1000.0
                 })
 
-
-    #with open(path_to_out_folder + "/spot_setup.out", "a") as _:
-    #    _.write(f"{datetime.now()} Consumer received and finished\n")
     # order obs list by id to avoid mismatch between observation/evaluation lists
-    for crop, obs in crop_to_observations.items():
-        obs.sort(key=lambda r: [r["id"], r["year"]])
+    observations.sort(key=lambda r: [r["id"], r["year"]])
 
     # read parameters which are to be calibrated
     params = []
-    with open("calibratethese_WW.csv") as params_csv: # Define per crop #
+    with open(path_to_params_csv) as params_csv:
         dialect = csv.Sniffer().sniff(params_csv.read(), delimiters=';,\t')
         params_csv.seek(0)
         reader = csv.reader(params_csv, dialect)
@@ -148,7 +159,7 @@ def run_calibration(server=None, prod_port=None, cons_port=None):
 
     # read weights
     weights = {}
-    with open("Weights_WW_de.csv") as weights_csv: # Define per crop #
+    with open(path_to_weights_csv) as weights_csv:
         dialect = csv.Sniffer().sniff(weights_csv.read(), delimiters=';,\t')
         weights_csv.seek(0)
         reader = csv.reader(weights_csv, dialect)
@@ -158,7 +169,6 @@ def run_calibration(server=None, prod_port=None, cons_port=None):
     #print("weights:", weights)
 
     # configure MONICA setup for spotpy
-    observations = crop_to_observations[setup["crop-id"][:2]]
     only_nuts3_region_ids = json.loads(config["only_nuts3_region_ids"])
 
     # every requested region must have observations and a weight, otherwise the run would

@@ -383,18 +383,25 @@ def run_producer(server={"server": None, "port": None}):
                                 if len(pname_arr) == 2:
                                     pname = pname_arr[0]
                                     i = int(pname_arr[1])
-                                if pname in ps["species"]:
-                                    if i:
-                                        if len(ps["species"][pname]) < i:
-                                            ps["species"][pname][i] = pval
+                                # i can be 0 (first array element), so compare against None;
+                                # an index is valid if it is smaller than the array length
+                                section = "species" if pname in ps["species"] else \
+                                    ("cultivar" if pname in ps["cultivar"] else None)
+                                if section is None:
+                                    # only parameters listed explicitly in crop.json (not just included
+                                    # via "include-from-file") can be set here
+                                    with open(path_to_out_file, "a") as _:
+                                        _.write(f"{datetime.now()} WARNING: parameter {pname} not found "
+                                                f"in crop.json species/cultivar of {real_crop_id}, not set\n")
+                                elif i is not None:
+                                    if len(ps[section][pname]) > i:
+                                        ps[section][pname][i] = pval
                                     else:
-                                        ps["species"][pname] = pval
-                                elif pname in ps["cultivar"]:
-                                    if i:
-                                        if len(ps["cultivar"][pname]) > i:
-                                            ps["cultivar"][pname][i] = pval
-                                    else:
-                                        ps["cultivar"][pname] = pval
+                                        with open(path_to_out_file, "a") as _:
+                                            _.write(f"{datetime.now()} WARNING: index {i} out of range for "
+                                                    f"parameter {pname}, not set\n")
+                                else:
+                                    ps[section][pname] = pval
                     else:
                         with open(path_to_out_file, "a") as _:
                             _.write(

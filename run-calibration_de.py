@@ -86,42 +86,15 @@ def run_calibration(server=None, prod_port=None, cons_port=None):
     with open(path_to_out_file, "a") as _:
         _.write(f"{datetime.now()} config: {config}\n")
 
-    procs = []
-
-    prod_chan_data = get_reader_writer_srs_from_channel(config["path_to_channel"], "prod_chan")
-    procs.append(prod_chan_data["chan"])
-    cons_chan_data = get_reader_writer_srs_from_channel(config["path_to_channel"], "cons_chan")
-    procs.append(cons_chan_data["chan"])
-
-    #with open(path_to_out_folder + "/spot_setup.out", "a") as _:
-    #    _.write(f"{datetime.now()} Process procs.append(sp.Popen(.()producer\n")
-
-    procs.append(sp.Popen([
-        config["path_to_python"],
-        "run-producer_calibration.py",
-        "mode=mbm-local-remote" if local_run else "mode=hpc-local-remote",
-        f"server={config['server']}",
-        f"port={config['prod-port']}",
-        f"setups-file={config['setups-file']}",
-        f"run-setups={config['run-setups']}",
-        f"reader_sr={prod_chan_data['reader_sr']}",
-        f"test_mode={config['test_mode']}",
-        f"path_to_out={config['path_to_out']}",
-    ]))
-
-    #with open(path_to_out_folder + "/spot_setup.out", "a") as _:
-    #    _.write(f"{datetime.now()} Process procs.append(sp.Popen(.()consumer\n")
-
-    procs.append(sp.Popen([
-        config["path_to_python"],
-        "run-consumer_calibration_de.py",
-        # "mode=remoteConsumer-remoteMonica",
-        f"server={config['server']}",
-        f"port={config['cons-port']}",
-        f"run-setups={config['run-setups']}",
-        f"writer_sr={cons_chan_data['writer_sr']}",
-        f"path_to_out={config['path_to_out']}",
-    ]))
+    # read and validate all inputs before starting any subprocess, so that input errors fail fast
+    # and don't leave channels/producer/consumer running on the HPC
+    setups = monica_run_lib.read_sim_setups(config["setups-file"])
+    run_setups = json.loads(config["run-setups"])
+    if len(run_setups) < 1:
+        print("run-calibration_de.py: run-setups is empty, nothing to calibrate.")
+        return
+    setup_id = run_setups[0]
+    setup = setups[setup_id]
 
     crop_to_observations = defaultdict(list)
     nuts3_region_id_to_name = {}
@@ -167,7 +140,9 @@ def run_calibration(server=None, prod_port=None, cons_port=None):
                 if len(row[i]) > 0:
                     p[n] = float(row[i])
             if len(row) == 9 and len(row[8]) > 0:
-                p["derive_function"] = lambda _, _2: eval(row[8])
+                # bind the expression now (default argument); a plain closure over row would
+                # make every derived parameter use the expression of the last csv row
+                p["derive_function"] = lambda _, _2, expr=row[8]: eval(expr)
             params.append(p)
 
     # read weights
@@ -181,20 +156,19 @@ def run_calibration(server=None, prod_port=None, cons_port=None):
             weights[int(row[2])] = float(row[4])
     #print("weights:", weights)
 
-    con_man = common.ConnectionManager()
-
-    setups = monica_run_lib.read_sim_setups(config["setups-file"])
-    run_setups = json.loads(config["run-setups"])
-    if len(config["run-setups"]) < 1:
-        return
-    setup_id = run_setups[0]
-    setup = setups[setup_id]
-    cons_reader = con_man.try_connect(cons_chan_data["reader_sr"], cast_as=fbp_capnp.Channel.Reader, retry_secs=1)
-    prod_writer = con_man.try_connect(prod_chan_data["writer_sr"], cast_as=fbp_capnp.Channel.Writer, retry_secs=1)
-
     # configure MONICA setup for spotpy
     observations = crop_to_observations[setup["crop-id"][:2]]
     only_nuts3_region_ids = json.loads(config["only_nuts3_region_ids"])
+
+    # every requested region must have observations and a weight, otherwise the run would
+    # either evaluate nothing or crash late with a KeyError
+    selected_region_ids = only_nuts3_region_ids if len(only_nuts3_region_ids) > 0 \
+        else sorted(nuts3_region_id_to_name.keys())
+    missing_obs = sorted(set(selected_region_ids) - set(nuts3_region_id_to_name.keys()))
+    missing_weights = sorted(set(selected_region_ids) - set(weights.keys()))
+    if missing_obs or missing_weights:
+        raise ValueError(f"run-calibration_de.py: regions without observations: {missing_obs}, "
+                         f"regions without weights: {missing_weights}")
 
     to_be_run_only_nuts3_region_ids = []
     if config["all_nuts3_regions_one_by_one"]:
@@ -204,6 +178,42 @@ def run_calibration(server=None, prod_port=None, cons_port=None):
             to_be_run_only_nuts3_region_ids = list([id_] for id_ in sorted(nuts3_region_id_to_name.keys()))
     else:
         to_be_run_only_nuts3_region_ids = [only_nuts3_region_ids]
+
+    # all inputs are fine -> start channels, producer and consumer
+    procs = []
+
+    prod_chan_data = get_reader_writer_srs_from_channel(config["path_to_channel"], "prod_chan")
+    procs.append(prod_chan_data["chan"])
+    cons_chan_data = get_reader_writer_srs_from_channel(config["path_to_channel"], "cons_chan")
+    procs.append(cons_chan_data["chan"])
+
+    procs.append(sp.Popen([
+        config["path_to_python"],
+        "run-producer_calibration_de.py",
+        "mode=mbm-local-remote" if local_run else "mode=hpc-local-remote",
+        f"server={config['server']}",
+        f"port={config['prod-port']}",
+        f"setups-file={config['setups-file']}",
+        f"run-setups={config['run-setups']}",
+        f"reader_sr={prod_chan_data['reader_sr']}",
+        f"test_mode={config['test_mode']}",
+        f"path_to_out={config['path_to_out']}",
+    ]))
+
+    procs.append(sp.Popen([
+        config["path_to_python"],
+        "run-consumer_calibration_de.py",
+        # "mode=remoteConsumer-remoteMonica",
+        f"server={config['server']}",
+        f"port={config['cons-port']}",
+        f"run-setups={config['run-setups']}",
+        f"writer_sr={cons_chan_data['writer_sr']}",
+        f"path_to_out={config['path_to_out']}",
+    ]))
+
+    con_man = common.ConnectionManager()
+    cons_reader = con_man.try_connect(cons_chan_data["reader_sr"], cast_as=fbp_capnp.Channel.Reader, retry_secs=1)
+    prod_writer = con_man.try_connect(prod_chan_data["writer_sr"], cast_as=fbp_capnp.Channel.Writer, retry_secs=1)
 
     spot_setup = None
     for current_only_nuts3_region_ids in to_be_run_only_nuts3_region_ids:

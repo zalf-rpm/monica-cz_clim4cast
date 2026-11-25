@@ -71,6 +71,8 @@ def run_calibration(server=None, prod_port=None, cons_port=None):
         "path_to_python": "python" if local_run else "/home/rpm/.conda/envs/clim4cast/bin/python",
         "repetitions": "500", ## Define on rundeck ## SCE-UA needs >> ngs * (2 * no_of_params + 1) to evolve
         "ngs": "4",  # number of SCE-UA complexes; ~no_of_params is usually enough
+        # simulations start with the setup's start_date (1990); the years before are spin-up and not calibrated
+        "first_calibration_year": "1995",
         "test_mode": "false",
         "all_nuts3_regions_one_by_one": False, ## Define on rundeck ##
         "only_nuts3_region_ids": "[]",  ## Define on rundeck ##
@@ -134,6 +136,13 @@ def run_calibration(server=None, prod_port=None, cons_port=None):
                     "year": year,
                     "value": np.nan if yield_t < 0.0 else yield_t * 1000.0
                 })
+
+    # spin-up: only observations from first_calibration_year on are used for calibration
+    first_calibration_year = int(config["first_calibration_year"])
+    observations = [o for o in observations if o["year"] >= first_calibration_year]
+    with open(path_to_out_file, "a") as _:
+        _.write(f"{datetime.now()} calibrating years {first_calibration_year}-{max(years)} "
+                f"(simulation start {setup['start_date']})\n")
 
     # order obs list by id to avoid mismatch between observation/evaluation lists
     observations.sort(key=lambda r: [r["id"], r["year"]])

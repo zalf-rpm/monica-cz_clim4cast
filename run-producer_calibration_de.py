@@ -28,7 +28,7 @@ import geopandas as gpd
 import rasterio
 
 import monica_io3
-import cz_soil_io3
+import de_soil_io3  # BUEK200 stores sand/clay/... in percent -> converted to fractions
 import monica_run_lib as Mrunlib
 
 PATH_TO_REPO = Path(os.path.realpath(__file__)).parent
@@ -473,7 +473,7 @@ def run_producer(server={"server": None, "port": None}):
                         if soil_id in soil_id_cache:
                             soil_profile = soil_id_cache[soil_id]
                         else:
-                            soil_profile = cz_soil_io3.soil_parameters(soil_db_con, soil_id)
+                            soil_profile = de_soil_io3.soil_parameters(soil_db_con, soil_id)
                             soil_id_cache[soil_id] = soil_profile
                         if not soil_profile or len(soil_profile) == 0:
                             continue

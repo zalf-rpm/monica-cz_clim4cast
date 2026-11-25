@@ -80,6 +80,7 @@ def run_consumer(server=None, port=None):
     writer = conman.try_connect(config["writer_sr"], cast_as=fbp_capnp.Channel.Writer, retry_secs=1)  #None
 
     envs_received = 0
+    envs_with_errors = 0
     no_of_envs_expected = None
 
     while True:
@@ -102,6 +103,15 @@ def run_consumer(server=None, port=None):
 
                 nuts3_region_id = custom_id["nuts3_region_id"]
 
+                # log MONICA errors (only the first few per round, to keep consumer.out small)
+                errors = msg.get("errors", [])
+                if errors:
+                    envs_with_errors += 1
+                    if envs_with_errors <= 3:
+                        with open(path_to_out_file, "a") as _:
+                            _.write(f"{datetime.now()} MONICA errors for env {custom_id.get('env_id')} "
+                                    f"(srow {custom_id.get('srow')}, scol {custom_id.get('scol')}): {errors}\n")
+
                 for data in msg.get("data", []):
                     results = data.get("results", [])
                     for vals in results:
@@ -111,7 +121,8 @@ def run_consumer(server=None, port=None):
 
             if no_of_envs_expected == envs_received and writer:
                 with open(path_to_out_file, "a") as _:
-                    _.write(f"{datetime.now()} last expected env received\n")
+                    _.write(f"{datetime.now()} last expected env received: {envs_received} envs, "
+                            f"{envs_with_errors} with MONICA errors\n")
                 #print("last expected env received")
                 nuts3_region_id_and_year_to_avg_yield = {}
                 for nuts3_region_id, rest in nuts3_region_id_to_year_to_yields.items():
@@ -130,6 +141,7 @@ def run_consumer(server=None, port=None):
                 nuts3_region_id_to_year_to_yields.clear()
                 no_of_envs_expected = None
                 envs_received = 0
+                envs_with_errors = 0
 
         except zmq.error.Again as _e:
             with open(path_to_out_file, "a") as _:

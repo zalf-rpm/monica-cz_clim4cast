@@ -680,6 +680,12 @@ def run_producer(server={"server": None, "port": None}):
                             "nodata": False
                         }
 
+                        # diagnostics: save the first env of a producer run exactly as it is sent to MONICA
+                        path_to_first_env = config["path_to_out"] + "/first_env.json"
+                        if sent_env_count == 0 and not os.path.exists(path_to_first_env):
+                            with open(path_to_first_env, "w") as _:
+                                json.dump(env_template, _, indent=1)
+
                         socket.send_json(env_template)
 
                         #with open(path_to_out_file, "a") as _:

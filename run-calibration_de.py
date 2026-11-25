@@ -69,7 +69,8 @@ def run_calibration(server=None, prod_port=None, cons_port=None):
         "path_to_channel": "/home/berg/GitHub/mas-infrastructure/src/cpp/common/_cmake_debug/channel" if local_run else
         "/home/rpm/start_manual_test_services/GitHub/mas-infrastructure/src/cpp/common/_cmake_release/channel",
         "path_to_python": "python" if local_run else "/home/rpm/.conda/envs/clim4cast/bin/python",
-        "repetitions": "5", ## Define on rundeck ##
+        "repetitions": "500", ## Define on rundeck ## SCE-UA needs >> ngs * (2 * no_of_params + 1) to evolve
+        "ngs": "4",  # number of SCE-UA complexes; ~no_of_params is usually enough
         "test_mode": "false",
         "all_nuts3_regions_one_by_one": False, ## Define on rundeck ##
         "only_nuts3_region_ids": "[]",  ## Define on rundeck ##
@@ -262,7 +263,16 @@ def run_calibration(server=None, prod_port=None, cons_port=None):
         with open(path_to_out_folder + "/spot_setup.out", "a") as _:
             _.write(f"{datetime.now()} sampler starts run-cal\n")
 
-        sampler.sample(rep, ngs=len(params)*2+1, kstop = 100 , peps=0.0001, pcento=0.0001)
+        try:
+            sampler.sample(rep, ngs=int(config["ngs"]), kstop=100, peps=0.0001, pcento=0.0001)
+        except calibration_spotpy_setup_MONICA.NoSimulationResultsError as e:
+            # in region-by-region runs, skip regions without any cell of the crop mask instead of
+            # stopping the whole run; a single selected region (or the national set) still fails
+            if len(to_be_run_only_nuts3_region_ids) > 1:
+                with open(path_to_out_file, "a") as _:
+                    _.write(f"{datetime.now()} skipped region(s) {current_only_nuts3_region_ids}: {e}\n")
+                continue
+            raise
 
 
         # sampler.sample(rep, nChains = 20, nCr = 3, eps = (10e-6), convergence_limit=1.0)

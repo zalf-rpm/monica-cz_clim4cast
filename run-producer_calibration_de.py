@@ -219,7 +219,8 @@ def run_producer(server={"server": None, "port": None}):
     if crop_crs not in soil_crs_to_x_transformers:
         soil_crs_to_x_transformers[crop_crs] = Transformer.from_crs(soil_crs, crop_crs)
     crop_meta, _ = Mrunlib.read_header(path_to_crop_grid)
-    crop_grid = np.loadtxt(path_to_crop_grid, dtype=int, skiprows=6)
+    # the German crop masks store 0/1 partly as floats ("0.000000000000000"), so read as float first
+    crop_grid = np.rint(np.loadtxt(path_to_crop_grid, dtype=float, skiprows=6)).astype(int)
     crop_interpolate = Mrunlib.create_ascii_grid_interpolator(crop_grid, crop_meta)
     with open(path_to_out_file, "a") as _:
         _.write(f"{datetime.now()} read: {path_to_crop_grid}\n")
@@ -651,10 +652,14 @@ def run_producer(server={"server": None, "port": None}):
                         #                     f"czechglobe/hist_csv_1961-01-01_to_2023-01-01/row-{crow}/col-{ccol}.csv.gz")
                         # env_template["pathToClimateCSV"] = climate_csv_path
 
-                        hist_subpath_to_csv = TEMPLATE_PATH_CLIMATE_CSV.format(gcm=gcm, rcm=rcm, scenario="historical", ensmem=ensmem, version=version, crow=str(crow), ccol=str(ccol))
-                        for _ in range(4):
-                             hist_subpath_to_csv = hist_subpath_to_csv.replace("//", "/")
-                        env_template["pathToClimateCSV"].insert(0, paths["monica-path-to-climate-dir"] + setup["climate_path_to_csvs"] + "/" + hist_subpath_to_csv)
+                        # DWD 1 km grid (e.g. dwd/csvs/germany_ubn_1951-01-01_to_2024-08-30 from the setup),
+                        # same file naming as in brandenburg_irrigation/run-producer.py
+                        env_template["pathToClimateCSV"] = (
+                            paths["monica-path-to-climate-dir"] + setup["climate_path_to_csvs"] +
+                            f"/{crow}/daily_mean_RES1_C{ccol}R{crow}.csv.gz")
+                        if sent_env_count == 0:
+                            with open(path_to_out_file, "a") as _:
+                                _.write(f"{datetime.now()} first pathToClimateCSV: {env_template['pathToClimateCSV']}\n")
 
 
 

@@ -27,16 +27,30 @@ from `sim_setups_calibration_de.csv` and the crop's files.
 
 ### Running the evaluation scripts on the HPC
 
-`collect-calibration-results_de.py` and `evaluate-cv_de.py` need only the Python standard library.
-Log in to the HPC and run them from the checkout of any job started after your last push:
+`collect-calibration-results_de.py` and `evaluate-cv_de.py` need only the Python standard library
+(Python 3.6 or newer). They only **read** the job output folders; their own output goes to the paths
+given with `--out` / `--summary`, e.g. in `/beegfs/palka/`.
 
+One-time setup on the HPC (own copy of the scripts):
 ```
-cd /beegfs/rpm/projects/monica/projectcheckouts/palka_<job-id>_<date>/monica-cz_clim4cast
-/home/rpm/.conda/envs/clim4cast/bin/python <script> <output folders> ...
+cd /beegfs/palka
+git clone https://github.com/zalf-rpm/monica-cz_clim4cast.git
+mkdir -p /beegfs/palka/calibration_test
+```
+Before each use, update the copy:
+```
+cd /beegfs/palka/monica-cz_clim4cast && git pull
+```
+Run the scripts from there with `python3` (check `python3 --version`; if it is older than 3.6, use
+`/home/rpm/.conda/envs/clim4cast/bin/python` instead):
+```
+cd /beegfs/palka/monica-cz_clim4cast
+python3 <script> <output folders> ... --out /beegfs/palka/calibration_test/<file>.csv
 ```
 
-Output folders can be given with wildcards, e.g. `"/beegfs/rpm/projects/monica/out/palka_2216*"`, but
-make sure a pattern does not match folders of other (old) runs.
+List the job output folders with `ls -d /beegfs/rpm/projects/monica/out/palka_*`. Output folders can be
+given with wildcards, e.g. `"/beegfs/rpm/projects/monica/out/palka_2216*"`, but make sure a pattern does
+not match folders of other (old) runs.
 
 ---
 
@@ -80,12 +94,12 @@ Check: `run-calibration.out` shows `left out: [2003]`; files are named `DE_loyo2
 
 Best national parameters (from step 1):
 ```
-<python> collect-calibration-results_de.py /beegfs/.../out/palka_<id-step1>_<date> --out ~/national_best_WW.csv
+python3 collect-calibration-results_de.py /beegfs/rpm/projects/monica/out/palka_<id-step1>_<date> --out /beegfs/palka/calibration_test/national_best_WW.csv
 ```
 National cross-validation (from step 2):
 ```
-<python> evaluate-cv_de.py /beegfs/.../out/palka_<id-fold2003>_<date> /beegfs/.../out/palka_<id-fold2018>_<date> \
-         --out ~/national_cv_WW.csv --summary ~/national_cv_summary_WW.csv
+python3 evaluate-cv_de.py /beegfs/rpm/projects/monica/out/palka_<id-fold2003>_<date> /beegfs/rpm/projects/monica/out/palka_<id-fold2018>_<date> \
+        --out /beegfs/palka/calibration_test/national_cv_WW.csv --summary /beegfs/palka/calibration_test/national_cv_summary_WW.csv
 ```
 Expected: `national: 2 predictions, cross-validated RMSE ... kg/ha, bias ... kg/ha`.
 
@@ -121,11 +135,11 @@ Check:
 
 Best `FieldConditionModifier` per region (fitted on all years):
 ```
-<python> collect-calibration-results_de.py /beegfs/.../out/palka_<id-step5>_<date> --obs calibration_WW_de.csv --out ~/regional_best_WW.csv
+python3 collect-calibration-results_de.py /beegfs/rpm/projects/monica/out/palka_<id-step5>_<date> --obs calibration_WW_de.csv --out /beegfs/palka/calibration_test/regional_best_WW.csv
 ```
 Regional cross-validation (all LOYO folds are computed from the grid results, no extra runs):
 ```
-<python> evaluate-cv_de.py /beegfs/.../out/palka_<id-step5>_<date> --out ~/regional_cv_WW.csv --summary ~/regional_cv_summary_WW.csv
+python3 evaluate-cv_de.py /beegfs/rpm/projects/monica/out/palka_<id-step5>_<date> --out /beegfs/palka/calibration_test/regional_cv_WW.csv --summary /beegfs/palka/calibration_test/regional_cv_summary_WW.csv
 ```
 Expected: `nuts3: ... predictions, cross-validated RMSE ... kg/ha, ...`; the summary has one row per region.
 

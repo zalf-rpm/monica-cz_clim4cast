@@ -95,6 +95,17 @@ def run_calibration(server=None, prod_port=None, cons_port=None):
         # e.g. no_of_region_batches=20 and region_batch=0..19 (requires all_nuts3_regions_one_by_one=true)
         "no_of_region_batches": "1",
         "region_batch": "0",
+        # nuts3: calibrate against regional yields (region by region or pooled)
+        # national: one parameter set for Germany, objective = RMSE of the yearly weighted national means
+        #   of simulations and observations over the regions having both values in a year (option B)
+        "calibration_level": "nuts3",
+        # share of each region's crop cells that is simulated (fixed random sample, at least
+        # min_cells_per_region cells); "auto" = 0.2 for national, 1.0 (all cells) for nuts3
+        "cell_sample_fraction": "auto",
+        "min_cells_per_region": "3",
+        "cell_sample_seed": "1",
+        # parameter file; empty = calibratethese_<crop>_de.csv, otherwise calibratethese_<crop>.csv
+        "params_file": "",
         "test_mode": "false",
         "all_nuts3_regions_one_by_one": False, ## Define on rundeck ##
         "only_nuts3_region_ids": "[]",  ## Define on rundeck ##
@@ -127,17 +138,33 @@ def run_calibration(server=None, prod_port=None, cons_port=None):
     crop = setup["crop-id"].split("_")[0]
     path_to_obs_csv = f"calibration_{crop}_de.csv"
     path_to_weights_csv = f"Weights_{crop}_de.csv"
-    # prefer a German parameter file if there is one
-    path_to_params_csv = next((p for p in [f"calibratethese_{crop}_de.csv", f"calibratethese_{crop}.csv"]
-                               if os.path.exists(p)), None)
+    # parameter file: as configured, otherwise prefer a German parameter file if there is one
+    if config["params_file"]:
+        path_to_params_csv = config["params_file"] if os.path.exists(config["params_file"]) else None
+        params_file_candidates = config["params_file"]
+    else:
+        path_to_params_csv = next((p for p in [f"calibratethese_{crop}_de.csv", f"calibratethese_{crop}.csv"]
+                                   if os.path.exists(p)), None)
+        params_file_candidates = f"calibratethese_{crop}_de.csv or calibratethese_{crop}.csv"
     missing_files = [p for p in [path_to_obs_csv, path_to_weights_csv] if not os.path.exists(p)]
     if path_to_params_csv is None:
-        missing_files.append(f"calibratethese_{crop}_de.csv or calibratethese_{crop}.csv")
+        missing_files.append(params_file_candidates)
+
+    calibration_level = config["calibration_level"]
+    if calibration_level not in ["nuts3", "national"]:
+        raise ValueError(f"run-calibration_de.py: calibration_level must be nuts3 or national, got {calibration_level}")
+    if calibration_level == "national" and config["all_nuts3_regions_one_by_one"]:
+        raise ValueError("run-calibration_de.py: calibration_level=national requires all_nuts3_regions_one_by_one=false")
+    cell_sample_fraction = (0.2 if calibration_level == "national" else 1.0) \
+        if config["cell_sample_fraction"] == "auto" else float(config["cell_sample_fraction"])
+    if not 0.0 < cell_sample_fraction <= 1.0:
+        raise ValueError(f"run-calibration_de.py: cell_sample_fraction must be in (0, 1], got {cell_sample_fraction}")
     if missing_files:
         raise FileNotFoundError(f"run-calibration_de.py: missing input files for crop {crop}: {missing_files}")
     with open(path_to_out_file, "a") as _:
         _.write(f"{datetime.now()} crop: {crop}, observations: {path_to_obs_csv}, "
-                f"parameters: {path_to_params_csv}, weights: {path_to_weights_csv}\n")
+                f"parameters: {path_to_params_csv}, weights: {path_to_weights_csv}, "
+                f"calibration level: {calibration_level}, cell sample fraction: {cell_sample_fraction}\n")
 
     # read observations (t/ha -> kg/ha, negative values = missing); years are taken from the header
     observations = []
@@ -260,6 +287,9 @@ def run_calibration(server=None, prod_port=None, cons_port=None):
         f"reader_sr={prod_chan_data['reader_sr']}",
         f"test_mode={config['test_mode']}",
         f"path_to_out={config['path_to_out']}",
+        f"cell_sample_fraction={cell_sample_fraction}",
+        f"min_cells_per_region={config['min_cells_per_region']}",
+        f"cell_sample_seed={config['cell_sample_seed']}",
     ]))
 
     procs.append(sp.Popen([
@@ -282,20 +312,25 @@ def run_calibration(server=None, prod_port=None, cons_port=None):
         # start timer 
         start_time = time.time()
 
-        nuts3_region_folder_name = "-".join(map(str, current_only_nuts3_region_ids))
-        filtered_observations = observations
+        # output file prefix: region id(s), or DE if all regions are calibrated together
+        nuts3_region_folder_name = "-".join(map(str, current_only_nuts3_region_ids)) or "DE"
+        # regions without any pixel of the crop can't be simulated
+        filtered_observations = [o for o in observations if region_pixels[o["id"]] > 0]
         if len(current_only_nuts3_region_ids) > 0:
-            filtered_observations = list(filter(lambda d: d["id"] in current_only_nuts3_region_ids, observations))
-            if len(filtered_observations) == 0:
-                continue
+            filtered_observations = [o for o in filtered_observations if o["id"] in current_only_nuts3_region_ids]
+        if len(filtered_observations) == 0:
+            continue
         if spot_setup:
             del spot_setup
-        #print("selected weight for region:", weights[current_only_nuts3_region_ids[0]], flush=True)
-        #spot_setup = calibration_spotpy_setup_MONICA.spot_setup(params, filtered_observations, prod_writer, cons_reader,
-                                                                #path_to_out_folder, current_only_nuts3_region_ids)
-        
-        spot_setup = calibration_spotpy_setup_MONICA.spot_setup(params, filtered_observations, prod_writer, cons_reader,
-                                                        path_to_out_folder, current_only_nuts3_region_ids, weights[current_only_nuts3_region_ids[0]])
+
+        # weight of every observation = crop pixel share of its region
+        # nuts3: weighted RMSE over all region-years (= plain RMSE for a single region)
+        # national: RMSE of the yearly weighted national means (see calibration_level)
+        spot_setup = calibration_spotpy_setup_MONICA.spot_setup(
+            params, filtered_observations, prod_writer, cons_reader, path_to_out_folder,
+            current_only_nuts3_region_ids,
+            objective="national_mean" if calibration_level == "national" else "rmse",
+            obs_weights=[weights[o["id"]] for o in filtered_observations])
 
         rep = int(config["repetitions"]) #initial number was 10
         results = []

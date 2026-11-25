@@ -22,6 +22,7 @@ import os
 from pathlib import Path
 from pyproj import CRS, Transformer
 import sqlite3
+import random
 import sys
 import time
 import zmq
@@ -120,6 +121,10 @@ def run_producer(server={"server": None, "port": None}):
         "reader_sr": None,
         "path_to_out": "out/",
         "only_nuts3_region_ids": "[]",  ## Define on rundeck ##
+        # set by run-calibration_de.py: simulate only a fixed random sample of each region's cells
+        "cell_sample_fraction": "1.0",
+        "min_cells_per_region": "3",
+        "cell_sample_seed": "1",
     }
 
 
@@ -328,6 +333,19 @@ def run_producer(server={"server": None, "port": None}):
     with open(path_to_out_file, "a") as _:
         _.write(f"{datetime.now()} collected {sum(map(len, nuts3_region_id_to_cells.values()))} cells "
                 f"in {len(nuts3_region_id_to_cells)} regions\n")
+
+    # optionally simulate only a fixed random sample of each region's cells (same sample in every
+    # iteration and every job): share cell_sample_fraction, but at least min_cells_per_region cells
+    cell_sample_fraction = float(config["cell_sample_fraction"])
+    if cell_sample_fraction < 1.0:
+        min_cells = int(config["min_cells_per_region"])
+        for region_id, cells in nuts3_region_id_to_cells.items():
+            n = min(len(cells), max(min_cells, round(cell_sample_fraction * len(cells))))
+            rng = random.Random(f"{config['cell_sample_seed']}-{region_id}")
+            nuts3_region_id_to_cells[region_id] = sorted(rng.sample(cells, n), key=lambda c: (c["srow"], c["scol"]))
+        with open(path_to_out_file, "a") as _:
+            _.write(f"{datetime.now()} sampled {sum(map(len, nuts3_region_id_to_cells.values()))} cells "
+                    f"(fraction {cell_sample_fraction}, at least {min_cells} per region)\n")
 
 
     conman = common.ConnectionManager()

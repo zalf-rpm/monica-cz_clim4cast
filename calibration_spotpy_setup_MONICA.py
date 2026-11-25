@@ -37,20 +37,34 @@ class NoSimulationResultsError(RuntimeError):
 
 
 class spot_setup(object):
-    # weight_per_region is kept for compatibility with the callers, but it is not used by the
-    # objective: a single constant weight scales the objective without changing the optimum and
-    # only makes like1 hard to interpret. like1 is the plain RMSE (kg/ha) over valid obs/sim pairs.
+    """
+    objective:
+        "rmse"          weighted RMSE over all obs/sim pairs (obs_weights, default equal weights; like1 in kg/ha)
+        "national_mean" RMSE over the years of the weighted means of obs and sim per year, using only the
+                        regions with both values in that year (obs_weights = region weight per observation)
+    weight_per_region is kept for compatibility with run-calibration.py (CZ) and not used: a single
+    constant weight scales the objective without changing the optimum.
+    """
     def __init__(self, user_params, observations, prod_writer, cons_reader, path_to_out, only_nuts3_region_ids,
-                 weight_per_region=None):
+                 weight_per_region=None, objective="rmse", obs_weights=None):
         self.user_params = user_params
         self.params = []
         self.observations = observations
         self.obs_flat_list = list(map(lambda d: d["value"], observations))
+        self.obs_years = [d["year"] for d in observations]
         self.prod_writer = prod_writer
         self.cons_reader = cons_reader
         self.path_to_out_file = path_to_out + "/spot_setup.out"
         self.only_nuts3_region_ids = only_nuts3_region_ids
         self.weight_per_region = weight_per_region
+        if objective not in ["rmse", "national_mean"]:
+            raise ValueError(f"unknown objective {objective}")
+        if obs_weights is not None and len(obs_weights) != len(observations):
+            raise ValueError("obs_weights must have one weight per observation")
+        if objective == "national_mean" and obs_weights is None:
+            raise ValueError("objective national_mean needs obs_weights")
+        self.objective = objective
+        self.obs_weights = obs_weights
 
         if not os.path.exists(path_to_out):
             try:
@@ -135,7 +149,9 @@ class spot_setup(object):
         #return unbiased_rmse_RB(evaluation, simulation)
         #return spotpy.objectivefunctions.rmse(evaluation, simulation)
         #return calculate_percentage_difference_new(evaluation, simulation)
-        return calculate_weighted_rmse(evaluation, simulation)
+        if self.objective == "national_mean":
+            return calculate_national_mean_rmse(evaluation, simulation, self.obs_years, self.obs_weights)
+        return calculate_weighted_rmse(evaluation, simulation, self.obs_weights)
 
 
 
@@ -170,6 +186,37 @@ def calculate_weighted_rmse(evaluation, simulation, weights=None):
                            "any observed region-year.")
     return np.sqrt(np.sum(w[valid] * (sim[valid] - obs[valid]) ** 2) / np.sum(w[valid]))
 
+
+
+def national_means(evaluation, simulation, years, weights):
+    """
+    Weighted means of observations and simulations per year, using only the regions (pairs) where both
+    values are available in that year, so that both means are built from the same regions.
+
+    :return: list of (year, obs_mean, sim_mean) for the years with at least one valid pair
+    """
+    obs = np.asarray(evaluation, dtype=float)
+    sim = np.asarray(simulation, dtype=float)
+    w = np.asarray(weights, dtype=float)
+    years = np.asarray(years)
+    if not (len(obs) == len(sim) == len(w) == len(years)):
+        raise ValueError("evaluation, simulation, years and weights must have the same length")
+    valid = ~np.isnan(obs) & ~np.isnan(sim) & ~np.isnan(w) & (w > 0)
+    means = []
+    for year in np.unique(years):
+        sel = valid & (years == year)
+        if sel.any():
+            means.append((int(year), np.sum(w[sel] * obs[sel]) / np.sum(w[sel]),
+                          np.sum(w[sel] * sim[sel]) / np.sum(w[sel])))
+    return means
+
+
+def calculate_national_mean_rmse(evaluation, simulation, years, weights):
+    """RMSE over the years between the yearly weighted national means of observations and simulations."""
+    means = national_means(evaluation, simulation, years, weights)
+    if not means:
+        raise RuntimeError("No year with a valid observation/simulation pair.")
+    return float(np.sqrt(np.mean([(s - o) ** 2 for _, o, s in means])))
 
 
 def calculate_percentage_difference_new(evaluation: list, simulation: list) -> float:

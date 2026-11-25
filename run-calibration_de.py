@@ -51,6 +51,24 @@ def get_reader_writer_srs_from_channel(path_to_channel_binary, chan_name=None):
     return {"chan": chan, "reader_sr": reader_sr, "writer_sr": writer_sr}
 
 
+def balanced_region_batches(region_ids, region_pixels, no_of_batches, overhead_pixels=100):
+    """
+    Split regions into no_of_batches batches with similar expected run time.
+
+    The cost of a region is its number of crop pixels (MONICA runs per iteration) plus a fixed
+    overhead_pixels for the per-iteration costs that don't depend on the region size. Regions are
+    assigned largest first to the currently cheapest batch. The result is deterministic, so every
+    HPC job computes the same split and picks its own batch.
+    """
+    batches = [[] for _ in range(no_of_batches)]
+    loads = [0] * no_of_batches
+    for id_ in sorted(region_ids, key=lambda i: (-region_pixels[i], i)):
+        b = min(range(no_of_batches), key=lambda k: (loads[k], k))
+        batches[b].append(id_)
+        loads[b] += region_pixels[id_] + overhead_pixels
+    return [sorted(batch) for batch in batches]
+
+
 local_run = False
 
 
@@ -73,6 +91,10 @@ def run_calibration(server=None, prod_port=None, cons_port=None):
         "ngs": "4",  # number of SCE-UA complexes; ~no_of_params is usually enough
         # simulations start with the setup's start_date (1990); the years before are spin-up and not calibrated
         "first_calibration_year": "1995",
+        # split the regions of a region-by-region run into balanced batches, one HPC job per batch:
+        # e.g. no_of_region_batches=20 and region_batch=0..19 (requires all_nuts3_regions_one_by_one=true)
+        "no_of_region_batches": "1",
+        "region_batch": "0",
         "test_mode": "false",
         "all_nuts3_regions_one_by_one": False, ## Define on rundeck ##
         "only_nuts3_region_ids": "[]",  ## Define on rundeck ##
@@ -167,8 +189,9 @@ def run_calibration(server=None, prod_port=None, cons_port=None):
                 p["derive_function"] = lambda _, _2, expr=row[8]: eval(expr)
             params.append(p)
 
-    # read weights
+    # read weights and number of crop pixels per region
     weights = {}
+    region_pixels = {}
     with open(path_to_weights_csv) as weights_csv:
         dialect = csv.Sniffer().sniff(weights_csv.read(), delimiters=';,\t')
         weights_csv.seek(0)
@@ -176,6 +199,7 @@ def run_calibration(server=None, prod_port=None, cons_port=None):
         next(reader, None)  # skip the header
         for row in reader:
             weights[int(row[2])] = float(row[4])
+            region_pixels[int(row[2])] = int(float(row[3]))
     #print("weights:", weights)
 
     # configure MONICA setup for spotpy
@@ -191,12 +215,27 @@ def run_calibration(server=None, prod_port=None, cons_port=None):
         raise ValueError(f"run-calibration_de.py: regions without observations: {missing_obs}, "
                          f"regions without weights: {missing_weights}")
 
+    no_of_region_batches = int(config["no_of_region_batches"])
+    region_batch = int(config["region_batch"])
+    if not 0 <= region_batch < no_of_region_batches:
+        raise ValueError(f"run-calibration_de.py: region_batch must be in 0..{no_of_region_batches - 1}, "
+                         f"got {region_batch}")
+    if no_of_region_batches > 1 and not config["all_nuts3_regions_one_by_one"]:
+        raise ValueError("run-calibration_de.py: no_of_region_batches > 1 requires all_nuts3_regions_one_by_one=true")
+
     to_be_run_only_nuts3_region_ids = []
     if config["all_nuts3_regions_one_by_one"]:
-        if len(only_nuts3_region_ids) > 0:
-            to_be_run_only_nuts3_region_ids = list([id_] for id_ in sorted(only_nuts3_region_ids))
-        else:
-            to_be_run_only_nuts3_region_ids = list([id_] for id_ in sorted(nuts3_region_id_to_name.keys()))
+        region_ids = sorted(selected_region_ids)
+        # regions without any pixel of this crop have nothing to simulate
+        no_crop_ids = [id_ for id_ in region_ids if region_pixels[id_] == 0]
+        region_ids = [id_ for id_ in region_ids if region_pixels[id_] > 0]
+        if no_of_region_batches > 1:
+            region_ids = balanced_region_batches(region_ids, region_pixels, no_of_region_batches)[region_batch]
+        to_be_run_only_nuts3_region_ids = [[id_] for id_ in region_ids]
+        with open(path_to_out_file, "a") as _:
+            _.write(f"{datetime.now()} region batch {region_batch} of {no_of_region_batches}: "
+                    f"{len(region_ids)} regions, {sum(region_pixels[i] for i in region_ids)} crop pixels: "
+                    f"{region_ids}; regions without {crop} pixels (not run): {no_crop_ids}\n")
     else:
         to_be_run_only_nuts3_region_ids = [only_nuts3_region_ids]
 

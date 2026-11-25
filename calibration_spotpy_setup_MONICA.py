@@ -32,6 +32,10 @@ PATH_TO_CAPNP_SCHEMAS = (PATH_TO_MAS_INFRASTRUCTURE_REPO / "capnproto_schemas").
 abs_imports = [str(PATH_TO_CAPNP_SCHEMAS)]
 fbp_capnp = capnp.load(str(PATH_TO_CAPNP_SCHEMAS / "fbp.capnp"), imports=abs_imports)
 
+class NoSimulationResultsError(RuntimeError):
+    """MONICA returned no results at all, e.g. because the selected region has no cells of the crop mask."""
+
+
 class spot_setup(object):
     # weight_per_region is kept for compatibility with the callers, but it is not used by the
     # objective: a single constant weight scales the objective without changing the optimum and
@@ -90,8 +94,8 @@ class spot_setup(object):
         if len(nuts3_region_id_and_year_to_avg_yield) == 0:
             # nothing was simulated (e.g. region ids unknown to the producer's region grid);
             # stop instead of silently calibrating against nothing
-            raise RuntimeError(f"No simulation results received for regions {self.only_nuts3_region_ids}. "
-                               f"Check producer.out (number of sent envs) and the region ids.")
+            raise NoSimulationResultsError(f"No simulation results received for regions {self.only_nuts3_region_ids}. "
+                                           f"Check producer.out (number of sent envs) and the region ids.")
 
         #with open(self.path_to_out_file, "a") as _:
         #    _.write(f"{datetime.now()} jsons loaded cal-sp-set-M\n")

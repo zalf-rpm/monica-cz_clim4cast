@@ -4,7 +4,7 @@
 """
 Collect the best parameter set and its RMSE of all regions into one table.
 
-Reads every <region>_SCEUA_monica_results.csv in the given output folders (e.g. the output folders of
+Reads every <region>_SCEUA_monica_results.csv or <region>_GRID_monica_results.csv in the given output folders (e.g. the output folders of
 all region batch jobs), takes the run with the lowest like1 (= RMSE in kg/ha) per region and writes
 one csv row per region.
 
@@ -24,7 +24,7 @@ import os
 import re
 import sys
 
-RESULTS_FILE_PATTERN = re.compile(r"^(?P<region>.+)_SCEUA_monica_results\.csv$")
+RESULTS_FILE_PATTERN = re.compile(r"^(?P<region>.+)_(SCEUA|GRID)_monica_results\.csv$")
 
 
 def best_run(path_to_results_csv):
@@ -96,7 +96,7 @@ def main():
             region_to_result[region] = result
 
     if not region_to_result:
-        sys.exit(f"no *_SCEUA_monica_results.csv found in {len(folders)} folder(s)")
+        sys.exit(f"no *_SCEUA_monica_results.csv or *_GRID_monica_results.csv found in {len(folders)} folder(s)")
 
     def sort_key(region):
         return (0, int(region)) if region.isdigit() else (1, region)

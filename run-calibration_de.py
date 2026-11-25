@@ -5,6 +5,7 @@ import capnp
 from collections import defaultdict
 import json
 import csv
+import itertools
 import matplotlib.pyplot as plt
 import monica_run_lib
 import numpy as np
@@ -69,6 +70,73 @@ def balanced_region_batches(region_ids, region_pixels, no_of_batches, overhead_p
     return [sorted(batch) for batch in batches]
 
 
+def write_observations_file(path, observations, weights, calibration_level):
+    """
+    Write which observation belongs to which simulation_<i> column of the results file: index, region id,
+    year, observed yield (kg/ha, also for held-out years), region weight, held out (1/0), calibration level.
+    """
+    with open(path, "w", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow(["index", "region_id", "year", "obs_kg_ha", "weight", "held_out", "calibration_level"])
+        for i, o in enumerate(observations):
+            writer.writerow([i, o["id"], o["year"], o["observed"], weights[o["id"]], int(o["held_out"]),
+                             calibration_level])
+
+
+class GridParameterVector(list):
+    """Parameter values plus their names, as spot_setup.simulation expects from spotpy."""
+    def __init__(self, names, values):
+        super().__init__(values)
+        self.name = names
+
+
+def grid_search(spot_setup, params, grid_points, path_to_results_csv, path_to_best_out, path_to_plot):
+    """
+    Evaluate all combinations of grid_points equally spaced values between low and high of each calibrated
+    parameter. Writes a results csv in the same layout as spotpy's (like1, par<name>..., simulation_<i>...,
+    chain), the best parameter set and a plot of the objective function.
+    """
+    free_params = [p for p in params if "derive_function" not in p]
+    names = [p["name"] for p in free_params]
+    axes = [[round(float(v), 10) for v in np.linspace(p["low"], p["high"], grid_points)] for p in free_params]
+    no_of_runs = grid_points ** len(free_params)
+    if no_of_runs > 10000:
+        raise ValueError(f"grid search with {len(free_params)} parameters and {grid_points} points "
+                         f"would need {no_of_runs} runs")
+
+    evaluation = spot_setup.evaluation()
+    runs = []
+    with open(path_to_results_csv, "w", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow(["like1"] + [f"par{n}" for n in names] +
+                        [f"simulation_{i}" for i in range(len(evaluation))] + ["chain"])
+        for values in itertools.product(*axes):
+            simulation = spot_setup.simulation(GridParameterVector(names, list(values)))
+            like1 = spot_setup.objectivefunction(simulation, evaluation)
+            writer.writerow([like1] + list(values) + list(simulation) + [0])
+            f.flush()
+            runs.append((like1, values))
+
+    best_like1, best_values = min(runs, key=lambda r: r[0])
+    with open(path_to_best_out, "a") as f:
+        f.write(f"*** Grid search summary ***\nTotal runs: {len(runs)}\n"
+                f"Minimal objective value: {best_like1:g}\nCorresponding parameter setting:\n")
+        for name, value in zip(names, best_values):
+            f.write(f"par{name}: {value:g}\n")
+
+    fig = plt.figure(1, figsize=(9, 6))
+    if len(names) == 1:
+        plt.plot([r[1][0] for r in runs], [r[0] for r in runs], "r+-")
+        plt.xlabel(names[0])
+    else:
+        plt.plot([r[0] for r in runs], "r+")
+        plt.xlabel("Run")
+    plt.ylabel("RMSE (kg/ha)")
+    fig.savefig(path_to_plot, dpi=150)
+    plt.close(fig)
+    return best_like1, dict(zip(names, best_values))
+
+
 local_run = False
 
 
@@ -100,12 +168,20 @@ def run_calibration(server=None, prod_port=None, cons_port=None):
         #   of simulations and observations over the regions having both values in a year (option B)
         "calibration_level": "nuts3",
         # share of each region's crop cells that is simulated (fixed random sample, at least
-        # min_cells_per_region cells); "auto" = 0.2 for national, 1.0 (all cells) for nuts3
+        # min_cells_per_region cells); "auto" = 0.1 for national, 1.0 (all cells) for nuts3
         "cell_sample_fraction": "auto",
         "min_cells_per_region": "3",
         "cell_sample_seed": "1",
         # parameter file; empty = calibratethese_<crop>_de.csv, otherwise calibratethese_<crop>.csv
         "params_file": "",
+        # sceua: SCE-UA optimisation (repetitions, ngs)
+        # grid: evaluate grid_points equally spaced values between low and high of each parameter
+        #   (all combinations), e.g. 51 points = steps of 0.01 between 0.5 and 1.0
+        "sampler": "sceua",
+        "grid_points": "51",
+        # cross-validation: years excluded from the objective, e.g. [2003]; their simulations are still
+        # stored, output files get the suffix _loyo<years>
+        "leave_out_years": "[]",
         "test_mode": "false",
         "all_nuts3_regions_one_by_one": False, ## Define on rundeck ##
         "only_nuts3_region_ids": "[]",  ## Define on rundeck ##
@@ -155,10 +231,14 @@ def run_calibration(server=None, prod_port=None, cons_port=None):
         raise ValueError(f"run-calibration_de.py: calibration_level must be nuts3 or national, got {calibration_level}")
     if calibration_level == "national" and config["all_nuts3_regions_one_by_one"]:
         raise ValueError("run-calibration_de.py: calibration_level=national requires all_nuts3_regions_one_by_one=false")
-    cell_sample_fraction = (0.2 if calibration_level == "national" else 1.0) \
+    cell_sample_fraction = (0.1 if calibration_level == "national" else 1.0) \
         if config["cell_sample_fraction"] == "auto" else float(config["cell_sample_fraction"])
     if not 0.0 < cell_sample_fraction <= 1.0:
         raise ValueError(f"run-calibration_de.py: cell_sample_fraction must be in (0, 1], got {cell_sample_fraction}")
+    if config["sampler"] not in ["sceua", "grid"]:
+        raise ValueError(f"run-calibration_de.py: sampler must be sceua or grid, got {config['sampler']}")
+    if config["sampler"] == "grid" and int(config["grid_points"]) < 2:
+        raise ValueError("run-calibration_de.py: grid_points must be at least 2")
     if missing_files:
         raise FileNotFoundError(f"run-calibration_de.py: missing input files for crop {crop}: {missing_files}")
     with open(path_to_out_file, "a") as _:
@@ -189,9 +269,24 @@ def run_calibration(server=None, prod_port=None, cons_port=None):
     # spin-up: only observations from first_calibration_year on are used for calibration
     first_calibration_year = int(config["first_calibration_year"])
     observations = [o for o in observations if o["year"] >= first_calibration_year]
+
+    # cross-validation: left-out years stay in the observation list (so their simulations are stored in
+    # the results file), but with value NaN they are ignored by the objective
+    leave_out_years = sorted(json.loads(config["leave_out_years"]))
+    unknown_years = [y for y in leave_out_years if y < first_calibration_year or y > max(years)]
+    if unknown_years:
+        raise ValueError(f"run-calibration_de.py: leave_out_years {unknown_years} outside of the calibration "
+                         f"years {first_calibration_year}-{max(years)}")
+    for o in observations:
+        o["observed"] = o["value"]
+        o["held_out"] = o["year"] in leave_out_years
+        if o["held_out"]:
+            o["value"] = np.nan
+    loyo_suffix = ("_loyo" + "-".join(map(str, leave_out_years))) if leave_out_years else ""
+
     with open(path_to_out_file, "a") as _:
         _.write(f"{datetime.now()} calibrating years {first_calibration_year}-{max(years)} "
-                f"(simulation start {setup['start_date']})\n")
+                f"(simulation start {setup['start_date']}), left out: {leave_out_years}\n")
 
     # order obs list by id to avoid mismatch between observation/evaluation lists
     observations.sort(key=lambda r: [r["id"], r["year"]])
@@ -225,8 +320,11 @@ def run_calibration(server=None, prod_port=None, cons_port=None):
         reader = csv.reader(weights_csv, dialect)
         next(reader, None)  # skip the header
         for row in reader:
-            weights[int(row[2])] = float(row[4])
             region_pixels[int(row[2])] = int(float(row[3]))
+    # weight = share of the region's crop pixels, computed from the pixel counts: the weight column of the
+    # file is rounded to 4 decimals, which is 0.0000 for small regions (e.g. 28 WW regions)
+    total_pixels = sum(region_pixels.values())
+    weights = {id_: px / total_pixels for id_, px in region_pixels.items()}
     #print("weights:", weights)
 
     # configure MONICA setup for spotpy
@@ -312,8 +410,8 @@ def run_calibration(server=None, prod_port=None, cons_port=None):
         # start timer 
         start_time = time.time()
 
-        # output file prefix: region id(s), or DE if all regions are calibrated together
-        nuts3_region_folder_name = "-".join(map(str, current_only_nuts3_region_ids)) or "DE"
+        # output file prefix: region id(s), or DE if all regions are calibrated together, plus left-out years
+        nuts3_region_folder_name = ("-".join(map(str, current_only_nuts3_region_ids)) or "DE") + loyo_suffix
         # regions without any pixel of the crop can't be simulated
         filtered_observations = [o for o in observations if region_pixels[o["id"]] > 0]
         if len(current_only_nuts3_region_ids) > 0:
@@ -331,6 +429,28 @@ def run_calibration(server=None, prod_port=None, cons_port=None):
             current_only_nuts3_region_ids,
             objective="national_mean" if calibration_level == "national" else "rmse",
             obs_weights=[weights[o["id"]] for o in filtered_observations])
+
+        # which observation (region, year, observed value, weight, held out) belongs to which
+        # simulation_<i> column of the results file; used by the cross-validation evaluation
+        write_observations_file(f"{path_to_out_folder}/{nuts3_region_folder_name}_observations.csv",
+                                filtered_observations, weights, calibration_level)
+
+        if config["sampler"] == "grid":
+            try:
+                grid_search(spot_setup, params, int(config["grid_points"]),
+                            f"{path_to_out_folder}/{nuts3_region_folder_name}_GRID_monica_results.csv",
+                            f"{path_to_out_folder}/{nuts3_region_folder_name}_best.out",
+                            f"{path_to_out_folder}/{nuts3_region_folder_name}_GRID_objectivefunction_MONICA.png")
+            except calibration_spotpy_setup_MONICA.NoSimulationResultsError as e:
+                if len(to_be_run_only_nuts3_region_ids) > 1:
+                    with open(path_to_out_file, "a") as _:
+                        _.write(f"{datetime.now()} skipped region(s) {current_only_nuts3_region_ids}: {e}\n")
+                    continue
+                raise
+            with open(path_to_out_folder + "/spot_setup.out", "a") as _:
+                _.write(f"{datetime.now()} grid search for {nuts3_region_folder_name} took "
+                        f"{time.time() - start_time:.2f} seconds\n")
+            continue
 
         rep = int(config["repetitions"]) #initial number was 10
         results = []

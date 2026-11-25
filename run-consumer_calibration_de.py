@@ -82,7 +82,6 @@ def run_consumer(server=None, port=None):
     envs_received = 0
     envs_with_errors = 0
     no_of_envs_expected = None
-    logged_example_msg = False
 
     while True:
         try:
@@ -93,13 +92,6 @@ def run_consumer(server=None, port=None):
                 no_of_envs_expected = custom_id["no_of_sent_envs"]
             else:
                 envs_received += 1
-
-                # write one complete (shortened) MONICA message once per consumer run for diagnostics
-                if not logged_example_msg:
-                    logged_example_msg = True
-                    with open(path_to_out_file, "a") as _:
-                        _.write(f"{datetime.now()} example MONICA message (keys {list(msg.keys())}): "
-                                f"{json.dumps(msg)[:3000]}\n")
 
                 # with open(path_to_out_file, "a") as _:
                 #     _.write(f"received result customId: {custom_id}\nresult: {msg.get('data',[])}")

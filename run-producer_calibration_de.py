@@ -657,10 +657,6 @@ def run_producer(server={"server": None, "port": None}):
                         env_template["pathToClimateCSV"] = (
                             paths["monica-path-to-climate-dir"] + setup["climate_path_to_csvs"] +
                             f"/{crow}/daily_mean_RES1_C{ccol}R{crow}.csv.gz")
-                        if sent_env_count == 0:
-                            with open(path_to_out_file, "a") as _:
-                                _.write(f"{datetime.now()} first pathToClimateCSV: {env_template['pathToClimateCSV']}\n")
-
 
 
                         #env_template["pathToClimateCSV"] = "/beegfs/common/data/col-304.csv"
@@ -679,12 +675,6 @@ def run_producer(server={"server": None, "port": None}):
                             #"param_value": p_value,
                             "nodata": False
                         }
-
-                        # diagnostics: save the first env of a producer run exactly as it is sent to MONICA
-                        path_to_first_env = config["path_to_out"] + "/first_env.json"
-                        if sent_env_count == 0 and not os.path.exists(path_to_first_env):
-                            with open(path_to_first_env, "w") as _:
-                                json.dump(env_template, _, indent=1)
 
                         socket.send_json(env_template)
 

@@ -156,7 +156,7 @@ plot_maps <- function(panels, file, mainTitle, width = 17, height = 8) {
   dev.off()
 }
 
-yieldPalette <- brewer.pal(11, "RdYlGn")
+yieldPalette <- brewer.pal(9, "YlOrBr")
 diffPalette  <- brewer.pal(11, "RdBu")
 yieldLimits  <- c(3, 9)
 yieldBreaks  <- seq(3, 9, 1)

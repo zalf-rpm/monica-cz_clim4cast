@@ -418,6 +418,16 @@ def run_calibration(server=None, prod_port=None, cons_port=None):
             filtered_observations = [o for o in filtered_observations if o["id"] in current_only_nuts3_region_ids]
         if len(filtered_observations) == 0:
             continue
+        # regions without any observation in the calibration years (or only held-out ones) have nothing to
+        # calibrate against; the objective would fail and stop all following regions of the job
+        if all(np.isnan(o["value"]) for o in filtered_observations):
+            if len(to_be_run_only_nuts3_region_ids) > 1:
+                with open(path_to_out_file, "a") as _:
+                    _.write(f"{datetime.now()} skipped region(s) {current_only_nuts3_region_ids}: no observations "
+                            f"in the calibration years\n")
+                continue
+            raise ValueError(f"run-calibration_de.py: no observations in the calibration years for regions "
+                             f"{current_only_nuts3_region_ids or 'DE'}")
         if spot_setup:
             del spot_setup
 

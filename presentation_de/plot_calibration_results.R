@@ -129,9 +129,9 @@ color_bar <- function(zlim, palette, breaks, title, barWidth = 0.5, barHeight = 
   par(plt = c(0.5 - barWidth / 2, 0.5 + barWidth / 2, 0.55 - barHeight, 0.55))
   image(x = seq(min(zlim), max(zlim), length.out = 101), y = 1, z = matrix(seq_len(101), ncol = 1),
         col = cols, axes = FALSE, xlab = "", ylab = "")
-  axis(1, at = breaks, labels = breaks, cex.axis = 1.3)
+  axis(1, at = breaks, labels = breaks, cex.axis = 1)
   box(col = "grey30")
-  mtext(title, side = 3, line = 0.4, cex = 1.1)
+  mtext(title, side = 3, line = 0.4, cex = 1)
 }
 
 map_panel <- function(values, title, zlim, palette) {
@@ -144,11 +144,12 @@ map_panel <- function(values, title, zlim, palette) {
 }
 
 # panels: list of list(values, title, zlim, palette, breaks, legend)
-plot_maps <- function(panels, file, mainTitle, width = 17, height = 9) {
-  png(filename = file.path(outFolder, file), width = width, height = height, units = "in", res = 300)
+# size, resolution and outer margins as in plot_absolute_maps_Claas.R (17 x 8 in, 600 dpi, oma c(2, 2, 6, 2))
+plot_maps <- function(panels, file, mainTitle, width = 17, height = 8) {
+  png(filename = file.path(outFolder, file), width = width, height = height, units = "in", res = 600)
   n <- length(panels)
   layout(rbind(seq_len(n), n + seq_len(n)), heights = c(5, 1))
-  par(oma = c(0.5, 1, 4, 1), xaxs = "i", yaxs = "i")
+  par(oma = c(2, 2, 6, 2), xaxs = "i", yaxs = "i")
   for (p in panels) map_panel(p$values, p$title, p$zlim, p$palette)
   for (p in panels) color_bar(p$zlim, p$palette, p$breaks, p$legend)
   mtext(mainTitle, side = 3, line = 1, outer = TRUE, cex = 2, font = 2, adj = 0)
@@ -231,4 +232,4 @@ plot_maps(list(
        palette = brewer.pal(9, "YlGnBu"), breaks = seq(0.8, 1.1, 0.1), legend = "FieldConditionModifier (-)"),
   list(values = rmse, title = "Cross-validated RMSE", zlim = c(0, 1.5),
        palette = brewer.pal(9, "YlOrRd"), breaks = seq(0, 1.5, 0.5), legend = "RMSE (t/ha)")
-), paste0(myCrop, "_map_fcm_rmse.png"), paste(myCropName, "- regional calibration"), width = 12)
+), paste0(myCrop, "_map_fcm_rmse.png"), paste(myCropName, "- regional calibration"), width = 11.5)

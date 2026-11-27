@@ -195,7 +195,7 @@ p <- ggplot(lineData, aes(x = year, y = yield, color = type)) +
   geom_point(size = 2.5) +
   annotate("text", x = Inf, y = Inf, label = stats_label(national$obs, national$sim, r2 = FALSE),
            hjust = 1.05, vjust = 1.3, size = 5, lineheight = 1.1) +
-  scale_color_manual(values = c("Observed" = "grey30", "Simulated" = "#366C62")) +
+  scale_color_manual(values = c("Observed" = "grey70", "Simulated" = "#366C62")) +
   scale_x_continuous(breaks = seq(1995, 2025, by = 5)) +
   labs(title = paste(myCropName, "- national mean yields"),
        subtitle = "Simulated: leave-one-year-out cross-validation",

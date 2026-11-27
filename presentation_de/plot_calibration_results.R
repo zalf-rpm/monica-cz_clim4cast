@@ -20,7 +20,7 @@ require("RColorBrewer")
 
 myCrop       <- "WW"
 myCropName   <- "Winter wheat"
-myDryYears   <- c(2003, 2018, 2022)
+myDryYears   <- c(2003, 2018)
 firstYear    <- 1995
 minObsYears  <- 2        # regions with fewer observed years use the national FieldConditionModifier
 outFolder    <- "presentation_de/figures"
@@ -181,7 +181,7 @@ yield_panels <- function(years, label) {
 #### 1 Scatter plot (districts) ####
 
 p <- scatter_plot(regional, paste(myCropName, "- district yields"),
-                  pointColor = "#009988", pointAlpha = 0.15, pointSize = 1.5)
+                  pointColor = "#366C62", pointAlpha = 0.15, pointSize = 1.5)
 save_plot(p, paste0(myCrop, "_scatter_regional"))
 
 
@@ -194,7 +194,7 @@ p <- ggplot(lineData, aes(x = year, y = yield, color = type)) +
   geom_point(size = 2.5) +
   annotate("text", x = Inf, y = Inf, label = stats_label(national$obs, national$sim, r2 = FALSE),
            hjust = 1.05, vjust = 1.3, size = 5, lineheight = 1.1) +
-  scale_color_manual(values = c("Observed" = "black", "Simulated" = "darkgreen")) +
+  scale_color_manual(values = c("Observed" = "grey30", "Simulated" = "#366C62")) +
   scale_x_continuous(breaks = seq(1995, 2025, by = 5)) +
   labs(title = paste(myCropName, "- national mean yields"),
        subtitle = "Simulated: leave-one-year-out cross-validation",

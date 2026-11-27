@@ -63,6 +63,13 @@ def read_runs(path, no_of_obs):
     return runs
 
 
+def no_of_complete_runs(path):
+    with open(path, newline="") as f:
+        reader = csv.reader(f)
+        header = next(reader, [])
+        return sum(1 for row in reader if len(row) >= len(header))
+
+
 def valid_pairs(obs, sims, use):
     """Indices with observation and simulation available and use(observation) true."""
     return [i for i, o in enumerate(obs) if use(o) and not is_nan(o["obs"]) and not is_nan(sims[i])]
@@ -166,20 +173,33 @@ def main():
     if not folders:
         sys.exit(f"no folders found for {args.folders}")
 
-    records = []
+    # the same calibration (e.g. region 150, or DE_loyo2003) may be in several folders, e.g. after a re-run
+    # with a wider grid: use the results file with the most complete runs, with equal runs the newer one
+    candidates = {}
     for folder in folders:
         for file_name in sorted(os.listdir(folder)):
             if not file_name.endswith("_observations.csv"):
                 continue
-            prefix = os.path.join(folder, file_name[:-len("_observations.csv")])
+            name = file_name[:-len("_observations.csv")]
+            prefix = os.path.join(folder, name)
             found = [(prefix + suffix, sampler) for suffix, sampler in RESULTS_TYPES if os.path.exists(prefix + suffix)]
             if not found:
                 print(f"skipped {prefix}: no results file")
                 continue
             for results_path, sampler in found:
-                problem = evaluate(prefix, results_path, sampler, records)
-                if problem:
-                    print(f"skipped {os.path.basename(results_path)}: {problem}")
+                key = (no_of_complete_runs(results_path), os.path.getmtime(results_path))
+                candidates.setdefault((name, sampler), []).append((key, prefix, results_path))
+
+    records = []
+    for (name, sampler), files in sorted(candidates.items()):
+        files.sort(reverse=True)
+        _, prefix, results_path = files[0]
+        if len(files) > 1:
+            print(f"NOTE: {name} found in {len(files)} folders; using {os.path.dirname(results_path)} "
+                  f"({files[0][0][0]} runs)")
+        problem = evaluate(prefix, results_path, sampler, records)
+        if problem:
+            print(f"skipped {os.path.basename(results_path)}: {problem}")
 
     if not records:
         sys.exit("no cross-validation predictions found")

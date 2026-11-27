@@ -88,10 +88,15 @@ def main():
                       "rmse_kg_ha": like1, "no_of_runs": no_of_runs, "best_run": best_index,
                       "folder": folder, **params}
             if region in region_to_result:
+                # e.g. a region re-run with a wider grid: keep the calibration with more runs (the wider grid),
+                # with the same number of runs the one with the lower RMSE
                 prev = region_to_result[region]
-                print(f"WARNING: region {region} found in {prev['folder']} and {folder}; "
-                      f"keeping the one with the lower RMSE")
-                if like1 is None or (prev["rmse_kg_ha"] is not None and prev["rmse_kg_ha"] <= like1):
+                prev_key = (prev["no_of_runs"], prev["rmse_kg_ha"] is not None, -(prev["rmse_kg_ha"] or 0))
+                new_key = (no_of_runs, like1 is not None, -(like1 or 0))
+                kept = result if new_key > prev_key else prev
+                print(f"NOTE: region {region} found in {prev['folder']} ({prev['no_of_runs']} runs) and "
+                      f"{folder} ({no_of_runs} runs); using {kept['folder']}")
+                if kept is prev:
                     continue
             region_to_result[region] = result
 

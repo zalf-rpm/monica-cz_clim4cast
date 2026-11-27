@@ -155,10 +155,23 @@ Revert the test parameters in `crop_calibration_de.json` (`git revert <commit of
 |---|---|---|---|
 | National, all years | `calibration_level=national run-setups=[3] repetitions=500` | 1 | ~13-14 h |
 | National LOYO folds | `... repetitions=500 leave_out_years=[<year>]` for 1995 ... 2024 | 30 | ~13-14 h each |
-| Regional grid (incl. LOYO) | `all_nuts3_regions_one_by_one=true no_of_region_batches=10 region_batch=<0..9> run-setups=[3] sampler=grid params_file=calibratethese_WW_regional.csv` | 10 | ~1-2 h each |
+| Regional grid (incl. LOYO) | `all_nuts3_regions_one_by_one=true no_of_region_batches=10 region_batch=<0..9> run-setups=[3] sampler=grid grid_points=<n> params_file=calibratethese_WW_regional.csv` | 10 | ~45-60 min each (20 points) |
 
 - National runs use 10% of the cells by default (`cell_sample_fraction`).
-- The regional grid uses 51 values (steps of 0.01) by default (`grid_points`).
+- Regional range: national `FieldConditionModifier` -20% to +20%, rounded outwards to the grid step, set as
+  `low`/`high` in `calibratethese_<crop>_regional.csv`. `grid_points = (high - low) / step + 1`, e.g. national 0.93,
+  step 0.02: 0.74-1.12, `grid_points=20`. Without `grid_points`, 51 values are used.
+- Regions without observations in the calibration years are skipped (listed in `run-calibration.out`).
+- To re-run some regions (e.g. with a wider range): `only_nuts3_region_ids=[...]` with
+  `all_nuts3_regions_one_by_one=true`, optionally split with `no_of_region_batches`. Give the old and the new
+  folders to the evaluation scripts: for a region found more than once, the results file with the most runs is used.
+- Lookup table for the production simulations (regional values, national value where there is no reliable
+  regional one):
+  ```
+  python3 make-regional-fcm_de.py --best regional_best_WW.csv --obs calibration_WW_de.csv           --weights Weights_WW_de.csv --national 0.93 --out regional_fcm_WW_de.csv
+  ```
+  The national value is used for regions without a valid run, with fewer than `--min-obs` (default 2) observed
+  years, or without crop pixels.
 - All jobs of one crop must use the same `no_of_region_batches`.
 - Run the regional step only after the national parameters of all years are in `crop_calibration_de.json`.
 
@@ -197,4 +210,4 @@ Revert the test parameters in `crop_calibration_de.json` (`git revert <commit of
 - The regional cross-validation uses national parameters calibrated on all years, including the held-out
   year, so it is slightly optimistic compared to a fully nested cross-validation.
 - Region-specific `FieldConditionModifier` values from step 3 cannot be stored in `crop_calibration_de.json`
-  (one value per crop); simulations that use them need a per-region lookup.
+  (one value per crop); production simulations use the lookup table of `make-regional-fcm_de.py`.

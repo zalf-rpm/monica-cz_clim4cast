@@ -5,20 +5,20 @@
 			"cropParams": {
 				"species": {
   					"=": ["include-from-file", "crops/species/old/wheat.json"],
-					"FieldConditionModifier": 1
+					"FieldConditionModifier": 0.93
 					
   				},
 				"cultivar": {
   					"=": ["include-from-file", "crops/cultivars/winter-wheat_modoklim_pheno.json"],
-					  "CropSpecificMaxRootingDepth": 1.01,
-					  "MaxAssimilationRate": 32,
+					  "CropSpecificMaxRootingDepth": 1.86,
+					  "MaxAssimilationRate": 33,
 					  "SpecificLeafArea": [
-						0.0014,
-						0.0015,
-						0.0013,
-						0.0013,
-						0.0012,
-						0.0012
+						0.00123,
+						0.00132,
+						0.00114,
+						0.00114,
+						0.00106,
+						0.00106
 					  ]
 				}
 			},
